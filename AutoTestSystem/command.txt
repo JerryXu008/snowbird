@@ -1,0 +1,4 @@
+echo y
+sudo -S <<<bento nmcli con down '5G'
+sleep 5
+sudo -S <<<bento nmcli con up '5G'

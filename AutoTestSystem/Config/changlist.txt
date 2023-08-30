@@ -1,0 +1,3 @@
+﻿20230516
+1 uploadjson 400 错误不传
+2 修复spec <>中的值retry的时候把spec写到minlimit中的bug
