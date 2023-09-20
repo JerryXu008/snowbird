@@ -65,8 +65,10 @@ namespace TestConsole
         }
 
 
-
-       static void CreateCSVData() {
+        /// <summary>
+        /// Merci MBFT 生成
+        /// </summary>
+       static void CreateCSVDataMerciMBFT() {
 
             var list = GetColumnData("./test.xlsx", 0);
             var finalCSV = "./testFinal.csv";
@@ -148,16 +150,176 @@ namespace TestConsole
             File.WriteAllText(finalCSV, sb.ToString());
         }
 
- 
-
-
-static void Main(string[] args)
+        static void CreateCSVDataSnowbirdMBFT()
         {
 
+            var list = GetColumnData("./test.xlsx", 0);
+            var finalCSV = "./testFinal.csv";
+            var sb = new StringBuilder();
+            for (var i = 0; i < list.Count; i++)
+            {
 
-            CreateCSVData();
+                //处理wifi
+                var name = list[i];
+                if (name.StartsWith("WIFI"))
+                {
+
+                    var arr = name.Split('_');
+                    
+                    if (arr.Length != 7 && arr.Length != 8)
+                    {
+                        Console.WriteLine($"{name} 长度不对");
 
 
+                        continue;
+                    }
+
+
+                    // ,WIFI_TX_POWER_F5955_BW20_MCS0_C1,WIFI_TX_POWER_F5955_BW20_MCS0_C1,y,6G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,Tx,1,,,,5955, HE_SU-MCS0,,,,,,,,,,,,
+
+
+                    if (!name.Contains("_TEMP_"))
+                    {
+                        var flag = name.Contains("C0") ? "0" : "1";
+                        var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
+                        var f = arr[3].Replace('F', ' ').Trim();
+                        var type = "HE" + "_" +  "SU" + "-" + arr[5];
+                        var line = $",{name},{name},y,5G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
+
+                        sb.AppendLine(line);
+                    }
+                    else
+                    {
+                        //WIFI_TX_CPU_TEMP_F2472_BW20_MCS0_C0
+                        var flag = name.Contains("C0") ? "0" : "1";
+                        var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
+                        var f = arr[3].Replace('F', ' ').Trim();
+                        var type = "HE" + "_" +  "SU"   + "-" + arr[5];
+                        var line = $",{name},{name},y,5G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
+
+                        sb.AppendLine(line);
+
+                    }
+
+
+                }
+
+                else if (name.StartsWith("BLE") || name.StartsWith("ZB"))
+                {
+                    var arr = name.Split('_');
+                    //,BLE_RX_PER_F2402_P-91,BLE_RX_PER_F2402_P-91,y,BLE,1.4.1.1: Equipment.DUT.Initiate,0,3,Rx,,,,,2402,,,,,,,,,,,,,
+                    //,ZB_TX_POWER_F2480,ZB_TX_POWER_F2480,y,Zigbee,1.4.1.1: Equipment.DUT.Initiate,0,3,Tx,,,,,2480,,,,,,,,,ZB_TX_POWER_F2405,,,,
+
+                    if (arr.Length != 4 && arr.Length != 5)
+                    {
+                        Console.WriteLine($"{name} 长度不对");
+
+
+                        continue;
+                    }
+                    var t = name.StartsWith("BLE") ? "BLE" : "Zigbee";
+                    var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
+                    var f = arr[3].Replace('F', ' ').Trim();
+                    var line = $",{name},{name},y,{t},1.4.1.1: Equipment.DUT.Initiate,0,3,{TxOrRx},,,,,{f},,,,,,,,,,,,,";
+                    sb.AppendLine(line);
+                }
+                else
+                {
+                    Console.WriteLine($"{name} 格式不对");
+                }
+
+            }
+            File.WriteAllText(finalCSV, sb.ToString());
+        }
+
+
+        static void CreateCSVDataSnowbirdSRF()
+        {
+
+            var list = GetColumnData("./test.xlsx", 0);
+            var finalCSV = "./testFinal.csv";
+            var sb = new StringBuilder();
+            for (var i = 0; i < list.Count; i++)
+            {
+
+                //处理wifi
+                var name = list[i];
+                if (name.StartsWith("WIFI"))
+                {
+
+                    var arr = name.Split('_');
+
+                    if (arr.Length != 7 && arr.Length != 8)
+                    {
+                        Console.WriteLine($"{name} 长度不对");
+
+
+                        continue;
+                    }
+
+
+                    // ,WIFI_TX_POWER_F5955_BW20_MCS0_C1,WIFI_TX_POWER_F5955_BW20_MCS0_C1,y,6G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,Tx,1,,,,5955, HE_SU-MCS0,,,,,,,,,,,,
+
+
+                    if (!name.Contains("_TEMP_"))
+                    {
+                        var flag = name.Contains("C0") ? "0" : "1";
+                        var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
+                        var f = arr[3].Replace('F', ' ').Trim();
+                        //var type = "HE" + "_" + "SU" + "-" + arr[5];
+                        var type = "";
+                        var line = $",{name},{name},y,5G,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
+
+                        sb.AppendLine(line);
+                    }
+                    else
+                    {
+                        //WIFI_TX_CPU_TEMP_F2472_BW20_MCS0_C0
+                        var flag = name.Contains("C0") ? "0" : "1";
+                        var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
+                        var f = arr[3].Replace('F', ' ').Trim();
+                        //var type = "HE" + "_" + "SU" + "-" + arr[6];
+                        var type = "";
+                        var line = $",{name},{name},y,5G,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
+
+                        sb.AppendLine(line);
+
+                    }
+
+
+                }
+
+                else if (name.StartsWith("BLE") || name.StartsWith("ZB"))
+                {
+                    var arr = name.Split('_');
+                    //,BLE_RX_PER_F2402_P-91,BLE_RX_PER_F2402_P-91,y,BLE,1.4.1.1: Equipment.DUT.Initiate,0,3,Rx,,,,,2402,,,,,,,,,,,,,
+                    //,ZB_TX_POWER_F2480,ZB_TX_POWER_F2480,y,Zigbee,1.4.1.1: Equipment.DUT.Initiate,0,3,Tx,,,,,2480,,,,,,,,,ZB_TX_POWER_F2405,,,,
+
+                    if (arr.Length != 4 && arr.Length != 5)
+                    {
+                        Console.WriteLine($"{name} 长度不对");
+
+
+                        continue;
+                    }
+                    var t = name.StartsWith("BLE") ? "BLE" : "Zigbee";
+                    var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
+                    var f = arr[3].Replace('F', ' ').Trim();
+                    var line = $",{name},{name},y,{t},1.4.1.1: Equipment.DUT.Initiate,0,3,{TxOrRx},,,,,{f},,,,,,,,,,,,,";
+                    sb.AppendLine(line);
+                }
+                else
+                {
+                    Console.WriteLine($"{name} 格式不对");
+                }
+
+            }
+            File.WriteAllText(finalCSV, sb.ToString());
+        }
+
+
+
+        static void TestOthers() {
             //try {
 
             //    mescheckroute = new Mescheckroute("10.90.122.68");
@@ -180,6 +342,17 @@ static void Main(string[] args)
             //var rec = "";
             //var ff = SendCommand("iperf3 -c 192.168.0.20 -i1 -t10 -O2 -P8 -R", ref rec, "iperf Done", 20000);
             //int ii = 0;
+        }
+
+        static void Main(string[] args)
+        {
+
+
+            // CreateCSVDataMerciMBFT();
+            //CreateCSVDataSnowbirdMBFT();
+            CreateCSVDataSnowbirdSRF();
+            Console.WriteLine("生成完毕!!!");
+
 
             while (1 == 1)
             {

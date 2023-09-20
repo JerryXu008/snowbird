@@ -111,8 +111,8 @@ namespace AutoTestSystem.Model
             {
                 string verName = GetMidStr(item.ComdOrParam, "<", ">");
                 item.ComdOrParam = GetMidStr(item.ComdOrParam, null, "<") + GetVerReflection(f1, verName) + GetMidStr(item.ComdOrParam, ">", null);
-                retry = 0;  //！有变量不允许retry
-                retryTimes = 0;
+                //retry = 0;  //！有变量不允许retry
+                //retryTimes = 0;
             }
             // Spec值中含有变量
             while (!string.IsNullOrEmpty(item.Spec) && item.Spec.Contains("<") && item.Spec.Contains(">"))
@@ -630,7 +630,7 @@ namespace AutoTestSystem.Model
                                             break;
                                         }
                                         else {
-                                            //bt 会在对应软件log下面生成pass或者fail文件夹，本次merci wifi没有生成pass/fai文件夹
+                                            //bt 会在对应软件log下面生成pass或者fail文件夹，本次snowbird wifi没有生成pass/fai文件夹
                                             logger.Info("没有pass或者fail结尾,当做pass");
                                             zipPath = zipPathPass;
 
@@ -1538,26 +1538,7 @@ namespace AutoTestSystem.Model
                                         item.Limit_max = temp[10];
                                     }
 
-
-                                    if (
-                                        item.ItemName == "WIFI_RX_PER_F5540_BW20_P-90-97_C0"
-                                        || item.ItemName == "WIFI_RX_PER_F5540_BW20_P-90-97_C1"
-                                        || item.ItemName == "WIFI_RX_PER_F5530_BW80_P-85-91_C0"
-                                        || item.ItemName == "WIFI_RX_PER_F5530_BW80_P-85-91_C1"
-                                        || item.ItemName == "WIFI_RX_PER_F5570_BW160_P-81-88_C0"
-                                        || item.ItemName == "WIFI_RX_PER_F5570_BW160_P-81-88_C1"
-                                        )
-                                    {
-                                        item.testValue = temp[12];
-                                        item.Unit = "dBm";
-                                        item.Limit_min = "";
-                                        item.Limit_max = "";
-                                    }
-
-
-
-
-
+ 
                                     if (string.IsNullOrEmpty(item.Limit_min) && string.IsNullOrEmpty(item.Limit_max))
                                         rReturn = temp[15].ToLower() == "pass" ? true : false;
                                     else
@@ -1568,19 +1549,9 @@ namespace AutoTestSystem.Model
                                     }
 
                                     if (!rReturn) {
-                                        for (var ii = 0; ii < temp.Length; ii++) {
-                                            logger.Info("temp2:" + temp[ii]);
-                                        }
-                                        
                                         
                                         ErrorList = temp[2].Trim().Split(new string[] { "\n" }, 0);
-
-                                        //if (temp[2] == "" || temp[2] == "NA")
-                                        //{
-                                        //    ErrorList = item.ErrorCode.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                                        //}
-
-                                        logger.Info("xxxxxxxxxxx:" + ErrorList);
+ 
                                     }
                                        
 
@@ -1590,6 +1561,444 @@ namespace AutoTestSystem.Model
                             logger.Error($"Don't find test result in csv,test fail!");
                         }
                         break;
+
+                    case "6G_RadioValidation":
+                    case "5G_RadioValidation":
+                    case "2G_RadioValidation":
+                        {
+                            if (!IsNullOrEmpty(item.CheckStr1))
+                            {
+                                //这里是加上powerSpec
+                                item.ItemName = item.ItemName + "-" + item.CheckStr1;
+                            }
+
+
+
+                            /// MBFT
+                            for (int i = 1; i < csvLines.Length; i++)
+                            {
+                                string[] temp = csvLines[i].Split(new char[] { ',' }, StringSplitOptions.None);
+
+                                 
+
+                                    //5G ,  TX   , 0/1 ,   5775 ,    HE_SU-MCS13/NA ,  
+                                    if ((temp[0] == item.TestKeyword.Substring(0, 2) && temp[1] == item.SubStr1 && temp[4] == item.SubStr2 && temp[5].Trim() == item.ComdOrParam && temp[6].Trim() == item.ExpectStr)
+                                    && (temp[21].Trim() == item.CheckStr1 || IsNullOrEmpty(item.CheckStr1)))
+                                {
+                                    logger.Info($"find test result in csv line{i + 1}.testResult={temp[46]}");
+                                    rReturn = temp[46].ToLower() == "pass" ? true : false;
+                                    if (!rReturn)
+                                    {
+
+                                        try
+                                        {
+                                            ErrorList = temp[3].Trim().Split(new string[] { "\n" }, 0);
+                                            ValidationFail = true;
+                                            // return rReturn;
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            logger.Error("~~~~~~~~~" + ex.ToString());
+                                            ValidationFail = true;
+                                            ErrorList = item.error_code.Trim().Split(new string[] { "\n" }, 0);
+                                            // return rReturn;
+                                        }
+
+                                    }
+
+
+
+
+                                    if (
+                                        item.ItemName.ToLower().Contains("rx_per")
+                                        || 
+                                        item.ItemName.ToLower().Contains("rx_power") // 非Sweep版本的时候使用
+                                        
+                                        )
+                                    {
+
+                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+
+                                        item.testValue = temp[37];
+
+
+                                        if (temp[39] != "" && temp[39] != "NA" && temp[39] != "N/A" && temp[39] != "null" && temp[39] != "None" && temp[39] != "NULL")
+                                        {
+                                            item.Limit_min = temp[39];
+                                        }
+
+                                        if (temp[40] != "" && temp[40] != "NA" && temp[40] != "N/A" && temp[40] != "null" && temp[40] != "None" && temp[40] != "NULL")
+                                        {
+                                            item.Limit_max = temp[40];
+                                        }
+
+                                        if (temp[38] != "" && temp[38] != "NA" && temp[38] != "N/A" && temp[38] != "null" && temp[38] != "None" && temp[38] != "NULL")
+                                        {
+                                            item.Unit = temp[38];
+                                        }
+
+
+
+
+                                    }
+
+                                    //else if (item.ItemName.ToLower().Contains("rx_power"))//这是sweep版本的时候取值，非sweep版不用
+                                    //{
+
+
+                                    //    item.testValue = temp[42];
+                                    //    item.Unit = temp[43];
+                                    //    item.Limit_min = temp[44];
+                                    //    item.Limit_max = temp[45];
+
+                                    //}
+
+
+
+
+
+
+                                    else if (item.ItemName.ToLower().Contains("tx_power"))
+                                    {
+                                        if (item.ItemName.ToLower().Contains("user1"))
+                                        {
+                                            item.testValue = temp[66];
+                                            item.Unit = temp[67];
+                                            item.Limit_min = temp[68];
+                                            item.Limit_max = temp[69];
+                                        }
+                                        else if (item.ItemName.ToLower().Contains("user2"))
+                                        {
+                                            item.testValue = temp[70];
+                                            item.Unit = temp[71];
+                                            item.Limit_min = temp[72];
+                                            item.Limit_max = temp[73];
+                                        }
+                                        else
+                                        {
+
+                                            item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                            item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+
+
+                                            item.testValue = temp[20];
+
+                                            if (temp[23] != "" && temp[23] != "NA" && temp[23] != "N/A" && temp[23] != "null" && temp[23] != "None" && temp[23] != "NULL")
+                                            {
+                                                item.Limit_min = temp[23];
+                                            }
+
+                                            if (temp[24] != "" && temp[24] != "NA" && temp[24] != "N/A" && temp[24] != "null" && temp[24] != "None" && temp[24] != "NULL")
+                                            {
+                                                item.Limit_max = temp[24];
+                                            }
+
+                                            if (temp[22] != "" && temp[22] != "NA" && temp[22] != "N/A" && temp[22] != "null" && temp[22] != "None" && temp[22] != "NULL")
+                                            {
+                                                item.Unit = temp[22];
+                                            }
+ 
+                                        }
+                                    }
+                                    else if (item.ItemName.ToLower().Contains("tx_evm"))
+                                    {
+                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+
+                                        if (item.ItemName.ToLower().Contains("user1"))
+                                        {
+                                            item.testValue = temp[98];
+                                            item.Unit = temp[99];
+                                            item.Limit_min = temp[100];
+                                            item.Limit_max = temp[101];
+                                        }
+                                        else if (item.ItemName.ToLower().Contains("user2"))
+                                        {
+                                            item.testValue = temp[102];
+                                            item.Unit = temp[103];
+                                            item.Limit_min = temp[104];
+                                            item.Limit_max = temp[105];
+                                        }
+                                        else
+                                        {
+                                            item.testValue = temp[8];
+                                            item.Unit = temp[9];
+                                            item.Limit_min = temp[10];
+                                            item.Limit_max = temp[11];
+                                        }
+                                    }
+                                   
+                                    else if (item.ItemName.ToLower().Contains("tx_loleak"))
+                                    {
+                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+
+
+                                        item.testValue = temp[25];
+                                        if (temp[27] != "" && temp[27] != "NA" && temp[27] != "N/A" && temp[27] != "null" && temp[27] != "None" && temp[27] != "NULL")
+                                        {
+                                            item.Limit_min = temp[27];
+                                        }
+
+                                        if (temp[28] != "" && temp[28] != "NA" && temp[28] != "N/A" && temp[28] != "null" && temp[28] != "None" && temp[28] != "NULL")
+                                        {
+                                            item.Limit_max = temp[28];
+                                        }
+
+                                        if (temp[26] != "" && temp[26] != "NA" && temp[26] != "N/A" && temp[26] != "null" && temp[26] != "None" && temp[26] != "NULL")
+                                        {
+                                            item.Unit = temp[26];
+                                        }
+ 
+
+                                    }
+
+
+
+                                    else if (item.ItemName.ToLower().Contains("tx_freqerr"))
+                                    {
+
+
+                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+
+                                        item.testValue = temp[12];
+
+
+
+                                        if (temp[14] != "" && temp[14] != "NA" && temp[14] != "N/A" && temp[14] != "null" && temp[14] != "None" && temp[14] != "NULL")
+                                        {
+                                            item.Limit_min = temp[14];
+                                        }
+
+                                        if (temp[15] != "" && temp[15] != "NA" && temp[15] != "N/A" && temp[15] != "null" && temp[15] != "None" && temp[15] != "NULL")
+                                        {
+                                            item.Limit_max = temp[15];
+                                        }
+
+                                        if (temp[13] != "" && temp[13] != "NA" && temp[13] != "N/A" && temp[13] != "null" && temp[13] != "None" && temp[13] != "NULL")
+                                        {
+                                            item.Unit = temp[13];
+                                        }
+ 
+
+                                    }
+                                    else if (item.ItemName.ToLower().Contains("tx_sysclkerr"))
+                                    {
+
+                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+
+                                        item.testValue = temp[16];
+
+
+                                        if (temp[18] != "" && temp[18] != "NA" && temp[18] != "N/A" && temp[18] != "null" && temp[18] != "None" && temp[18] != "NULL")
+                                        {
+                                            item.Limit_min = temp[18];
+                                        }
+
+                                        if (temp[19] != "" && temp[19] != "NA" && temp[19] != "N/A" && temp[19] != "null" && temp[19] != "None" && temp[19] != "NULL")
+                                        {
+                                            item.Limit_max = temp[19];
+                                        }
+
+                                        if (temp[17] != "" && temp[17] != "NA" && temp[17] != "N/A" && temp[17] != "null" && temp[17] != "None" && temp[17] != "NULL")
+                                        {
+                                            item.Unit = temp[17];
+                                        }
+
+ 
+
+                                    }
+                                    else if (item.ItemName.ToLower().Contains("tx_specmsk"))
+                                    {
+                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+
+                                        item.testValue = temp[33];
+
+
+                                        if (temp[35] != "" && temp[35] != "NA" && temp[35] != "N/A" && temp[35] != "null" && temp[35] != "None" && temp[35] != "NULL")
+                                        {
+                                            item.Limit_min = temp[35];
+                                        }
+
+                                        if (temp[36] != "" && temp[36] != "NA" && temp[36] != "N/A" && temp[36] != "null" && temp[36] != "None" && temp[36] != "NULL")
+                                        {
+                                            item.Limit_max = temp[36];
+                                        }
+
+                                        if (temp[34] != "" && temp[34] != "NA" && temp[34] != "N/A" && temp[34] != "null" && temp[34] != "None" && temp[34] != "NULL")
+                                        {
+                                            item.Unit = temp[34];
+                                        }
+
+
+ 
+
+                                    }
+                                    else if (item.ItemName.ToLower().Contains("tx_specflat"))
+                                    {
+                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+
+                                        item.testValue = temp[29];
+
+
+
+                                        if (temp[31] != "" && temp[31] != "NA" && temp[31] != "N/A" && temp[31] != "null" && temp[31] != "None" && temp[31] != "NULL")
+                                        {
+                                            item.Limit_min = temp[31];
+                                        }
+
+                                        if (temp[32] != "" && temp[32] != "NA" && temp[32] != "N/A" && temp[32] != "null" && temp[32] != "None" && temp[32] != "NULL")
+                                        {
+                                            item.Limit_max = temp[32];
+                                        }
+
+                                        if (temp[30] != "" && temp[30] != "NA" && temp[30] != "N/A" && temp[30] != "null" && temp[30] != "None" && temp[30] != "NULL")
+                                        {
+                                            item.Unit = temp[30];
+                                        }
+
+ 
+                                    }
+
+
+
+                                    else if (item.ItemName.ToLower().Contains("tx_radio_temp"))
+                                    {
+
+
+                                        item.testValue = temp[130];
+                                        item.Unit = "C";
+
+                                    }
+
+
+
+                                    if (string.IsNullOrEmpty(item.Limit_min) && string.IsNullOrEmpty(item.Limit_max))
+                                    {
+                                        rReturn = temp[46].ToLower() == "pass" ? true : false;
+                                    }
+
+                                    else
+                                    {
+
+                                        //判断当前是否是GoldenSN
+                                        if (Global.GoldenSN.Contains(SN) && Global.STATIONNAME == "MBFT")
+                                        {
+                                            if (item.ItemName.ToLower().Contains("tx_power")) //只处理tx_power,和台湾数据作对比
+                                            {
+
+                                                if (csvGoldenLines != null && csvGoldenLines.Length > 0)
+                                                {
+                                                    bool foundTempInfo = false;
+                                                    for (int i1 = 1; i1 < csvGoldenLines.Length; i1++)
+                                                    {
+                                                        string[] goldenTemp = csvGoldenLines[i1].Split(new char[] { ',' }, StringSplitOptions.None);
+
+
+
+                                                        if ((temp[0] == goldenTemp[0] && temp[1] == goldenTemp[1] && temp[4] == goldenTemp[4] && temp[5].Trim() == goldenTemp[5].Trim() && temp[6].Trim() == goldenTemp[6].Trim() && temp[21].Trim() == goldenTemp[21].Trim()))
+
+                                                        {
+                                                            foundTempInfo = true;
+                                                            logger.Info("找到了GoldenSN 对应的数据");
+                                                            logger.Info($"goldenSN 信息：{ goldenTemp[0]},{ goldenTemp[1]},{goldenTemp[4]},{goldenTemp[5].Trim()},{goldenTemp[6].Trim()},{goldenTemp[21]}");
+
+                                                            var goldenValue = "";
+                                                            if (item.ItemName.ToLower().Contains("user1"))
+                                                            {
+                                                                goldenValue = goldenTemp[66];
+
+                                                            }
+                                                            else if (item.ItemName.ToLower().Contains("user2"))
+                                                            {
+                                                                goldenValue = goldenTemp[70];
+
+                                                            }
+                                                            else
+                                                            {
+                                                                goldenValue = goldenTemp[20];
+
+                                                            }
+                                                            var goldenValueDouble = double.Parse(goldenValue);
+                                                            var itemValueDouble = double.Parse(item.testValue);
+                                                            double sub = goldenValueDouble - itemValueDouble;
+                                                            logger.Info($"goldValue:{goldenValueDouble}, itemValue:{itemValueDouble}, Sub:{sub}");
+                                                            double limit = double.Parse(Global.TXPowerLimit);
+                                                            if ((sub <= limit) && (sub >= -limit))
+                                                            {
+                                                                rReturn = true;
+                                                            }
+                                                            else
+                                                            {
+
+                                                                rReturn = false;
+
+                                                                ErrorList = new string[] { "1.4.1.1:Equipment.DUT.Initiate" };
+                                                            }
+
+                                                            break;
+
+                                                        }
+
+                                                    }
+                                                    if (foundTempInfo == false)
+                                                    {
+                                                        logger.Info("未找到GoldenSN 对应的数据，按照比对limit的方式进行");
+                                                        rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                                                    }
+
+
+                                                }
+                                                else
+                                                {
+                                                    rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                                                }
+
+
+                                            }
+                                            else
+                                            {
+                                                rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                                        }
+
+
+                                    }
+
+
+                                    if (!rReturn)
+                                    {
+                                        ErrorList = temp[3].Trim().Split(new string[] { "\n" }, 0);
+
+                                        ValidationFail = true;
+                                    }
+
+                                    if (item.ItemName.ToLower().Contains("tx_temp"))
+                                    {
+                                        item.testValue = temp[130];
+                                        item.Unit = "C";
+                                        rReturn = true;
+                                    }
+
+                                    return rReturn;
+                                }
+                            }
+                            logger.Error($"Don't find test result in csv,test fail!");
+                        }
+                        break;
+
+
+
+
 
                     case "6G_Calibration":
                     case "5G_Calibration":
@@ -1959,485 +2368,7 @@ namespace AutoTestSystem.Model
 
 
 
-                    case "6G_RadioValidation":
-                    case "5G_RadioValidation":
-                    case "2G_RadioValidation":
-                        {
-                            if (!IsNullOrEmpty(item.CheckStr1))
-                            {
-                                //这里是加上powerSpec
-                                item.ItemName = item.ItemName + "-" + item.CheckStr1;
-                            }
-
- 
-
-                          /// MBFT
-                                for (int i = 1; i < csvLines.Length; i++)
-                            {
-                                string[] temp = csvLines[i].Split(new char[] { ',' }, StringSplitOptions.None);
-
-
-
-                                //5G ,  TX   , 0/1 ,   5775 ,    HE_SU-MCS13/NA ,  
-                                if ((temp[0] == item.TestKeyword.Substring(0, 2) && temp[1] == item.SubStr1 && temp[4] == item.SubStr2 && temp[5].Trim() == item.ComdOrParam && temp[6].Trim() == item.ExpectStr)
-                                    && (temp[21].Trim() == item.CheckStr1 || IsNullOrEmpty(item.CheckStr1)))
-                                {
-                                    logger.Info($"find test result in csv line{i + 1}.testResult={temp[46]}");
-                                    rReturn = temp[46].ToLower() == "pass" ? true : false;
-                                    if (!rReturn)
-                                    {
-
-                                        try
-                                        {
-                                            ErrorList = temp[3].Trim().Split(new string[] { "\n" }, 0);
-                                            ValidationFail = true;
-                                           // return rReturn;
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            logger.Error("~~~~~~~~~" + ex.ToString());
-                                            ValidationFail = true;
-                                            ErrorList = item.error_code.Trim().Split(new string[] { "\n" }, 0);
-                                           // return rReturn;
-                                        }
-
-                                    }
-
-                                 
-
-
-                                    if (item.ItemName.ToLower().Contains("rx_per") || item.ItemName.ToLower().Contains("rx_power"))
-                                    {
-
-                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
-
-                                        item.testValue = temp[37];
-                                      
-
-                                        if (temp[39] != "" && temp[39] != "NA" && temp[39] != "N/A" && temp[39] != "null" && temp[39] != "None" && temp[39] != "NULL") {
-                                            item.Limit_min = temp[39];
-                                        }
-
-                                        if (temp[40] != "" && temp[40] != "NA" && temp[40] != "N/A" && temp[40] != "null" && temp[40] != "None" && temp[40] != "NULL")
-                                        {
-                                            item.Limit_max = temp[40];
-                                        }
-
-                                        if (temp[38] != "" && temp[38] != "NA" && temp[38] != "N/A" && temp[38] != "null" && temp[38] != "None" && temp[38] != "NULL")
-                                        {
-                                            item.Unit = temp[38];
-                                        }
-
-                                     
-
-
-                                    }
-                                    else if (item.ItemName.ToLower().Contains("tx_power"))
-                                    {
-                                        if (item.ItemName.ToLower().Contains("user1"))
-                                        {
-                                            item.testValue = temp[66];
-                                            item.Unit = temp[67];
-                                            item.Limit_min = temp[68];
-                                            item.Limit_max = temp[69];
-                                        }
-                                        else if (item.ItemName.ToLower().Contains("user2"))
-                                        {
-                                            item.testValue = temp[70];
-                                            item.Unit = temp[71];
-                                            item.Limit_min = temp[72];
-                                            item.Limit_max = temp[73];
-                                        }
-                                        else
-                                        {
-
-                                            item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                            item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
-
-                                           
-                                            item.testValue = temp[20];
-
-                                            if (temp[23] != "" && temp[23] != "NA" && temp[23] != "N/A" && temp[23] != "null" && temp[23] != "None" && temp[23] != "NULL")
-                                            {
-                                                item.Limit_min = temp[23];
-                                            }
-
-                                            if (temp[24] != "" && temp[24] != "NA" && temp[24] != "N/A" && temp[24] != "null" && temp[24] != "None" && temp[24] != "NULL")
-                                            {
-                                                item.Limit_max = temp[24];
-                                            }
-
-                                            if (temp[22] != "" && temp[22] != "NA" && temp[22] != "N/A" && temp[22] != "null" && temp[22] != "None" && temp[22] != "NULL")
-                                            {
-                                                item.Unit = temp[22];
-                                            }
-
-
-
-
-
-
-
-
-
-                                            //item.Unit = temp[22];
-                                            //item.Limit_min = temp[23];
-                                            //item.Limit_max = temp[24];
-                                        }
-                                    }
-                                    else if (item.ItemName.ToLower().Contains("tx_evm"))
-                                    {
-                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
-
-                                        if (item.ItemName.ToLower().Contains("user1"))
-                                        {
-                                            item.testValue = temp[98];
-                                            item.Unit = temp[99];
-                                            item.Limit_min = temp[100];
-                                            item.Limit_max = temp[101];
-                                        }
-                                        else if (item.ItemName.ToLower().Contains("user2"))
-                                        {
-                                            item.testValue = temp[102];
-                                            item.Unit = temp[103];
-                                            item.Limit_min = temp[104];
-                                            item.Limit_max = temp[105];
-                                        }
-                                        else
-                                        {
-                                            item.testValue = temp[8];
-                                            item.Unit = temp[9];
-                                            item.Limit_min = temp[10];
-                                            item.Limit_max = temp[11];
-                                        }
-                                    }
-                                    //else if (item.ItemName.ToLower().Contains("rx_power"))//这是sweep版本的时候取值，非sweep版不用
-                                    //{
-
-
-                                    //    item.testValue = temp[42];
-                                    //    item.Unit = temp[43];
-                                    //    item.Limit_min = temp[44];
-                                    //    item.Limit_max = temp[45];
-
-                                    //}
-                                    else if (item.ItemName.ToLower().Contains("tx_loleak"))
-                                    {
-                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
-
-
-                                        item.testValue = temp[25];
-                                        if (temp[27] != "" && temp[27] != "NA" && temp[27] != "N/A" && temp[27] != "null" && temp[27] != "None" && temp[27] != "NULL")
-                                        {
-                                            item.Limit_min = temp[27];
-                                        }
-
-                                        if (temp[28] != "" && temp[28] != "NA" && temp[28] != "N/A" && temp[28] != "null" && temp[28] != "None" && temp[28] != "NULL")
-                                        {
-                                            item.Limit_max = temp[28];
-                                        }
-
-                                        if (temp[26] != "" && temp[26] != "NA" && temp[26] != "N/A" && temp[26] != "null" && temp[26] != "None" && temp[26] != "NULL")
-                                        {
-                                            item.Unit = temp[26];
-                                        }
-
-
-
-
-                                        //item.Unit = temp[26];
-                                        //item.Limit_min = temp[27];
-                                        //item.Limit_max = temp[28];
-
-                                    }
-
-
-
-                                    else if (item.ItemName.ToLower().Contains("tx_freqerr"))
-                                    {
-
-
-                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
-
-                                        item.testValue = temp[12];
-
-
-
-                                        if (temp[14] != "" && temp[14] != "NA" && temp[14] != "N/A" && temp[14] != "null" && temp[14] != "None" && temp[14] != "NULL")
-                                        {
-                                            item.Limit_min = temp[14];
-                                        }
-
-                                        if (temp[15] != "" && temp[15] != "NA" && temp[15] != "N/A" && temp[15] != "null" && temp[15] != "None" && temp[15] != "NULL")
-                                        {
-                                            item.Limit_max = temp[15];
-                                        }
-
-                                        if (temp[13] != "" && temp[13] != "NA" && temp[13] != "N/A" && temp[13] != "null" && temp[13] != "None" && temp[13] != "NULL")
-                                        {
-                                            item.Unit = temp[13];
-                                        }
-
-
-
-
-
-
-
-
-
-
-
-
-                                        //item.Unit = temp[13];
-                                        //item.Limit_min = temp[14];
-                                        //item.Limit_max = temp[15];
-
-                                    }
-                                    else if (item.ItemName.ToLower().Contains("tx_sysclkerr"))
-                                    {
-
-                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
-
-                                        item.testValue = temp[16];
-
-
-                                        if (temp[18] != "" && temp[18] != "NA" && temp[18] != "N/A" && temp[18] != "null" && temp[18] != "None" && temp[18] != "NULL")
-                                        {
-                                            item.Limit_min = temp[18];
-                                        }
-
-                                        if (temp[19] != "" && temp[19] != "NA" && temp[19] != "N/A" && temp[19] != "null" && temp[19] != "None" && temp[19] != "NULL")
-                                        {
-                                            item.Limit_max = temp[19];
-                                        }
-
-                                        if (temp[17] != "" && temp[17] != "NA" && temp[17] != "N/A" && temp[17] != "null" && temp[17] != "None" && temp[17] != "NULL")
-                                        {
-                                            item.Unit = temp[17];
-                                        }
-
-
-
-
-
-
-                                        //item.Unit = temp[17];
-                                        //item.Limit_min = temp[18];
-                                        //item.Limit_max = temp[19];
-
-                                    }
-                                    else if (item.ItemName.ToLower().Contains("tx_specmsk"))
-                                    {
-                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
-
-                                        item.testValue = temp[33];
-
-
-
-
-
-
-
-
-
-
-
-                                        if (temp[35] != "" && temp[35] != "NA" && temp[35] != "N/A" && temp[35] != "null" && temp[35] != "None" && temp[35] != "NULL")
-                                        {
-                                            item.Limit_min = temp[35];
-                                        }
-
-                                        if (temp[36] != "" && temp[36] != "NA" && temp[36] != "N/A" && temp[36] != "null" && temp[36] != "None" && temp[36] != "NULL")
-                                        {
-                                            item.Limit_max = temp[36];
-                                        }
-
-                                        if (temp[34] != "" && temp[34] != "NA" && temp[34] != "N/A" && temp[34] != "null" && temp[34] != "None" && temp[34] != "NULL")
-                                        {
-                                            item.Unit = temp[34];
-                                        }
-
-
-
-
-
-
-
-
-                                        //item.Unit = temp[34];
-                                        //item.Limit_min = temp[35];
-                                        //item.Limit_max = temp[36];
-
-                                    }
-                                    else if (item.ItemName.ToLower().Contains("tx_specflat"))
-                                    {
-                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
-
-                                        item.testValue = temp[29];
-
-
-
-                                        if (temp[31] != "" && temp[31] != "NA" && temp[31] != "N/A" && temp[31] != "null" && temp[31] != "None" && temp[31] != "NULL")
-                                        {
-                                            item.Limit_min = temp[31];
-                                        }
-
-                                        if (temp[32] != "" && temp[32] != "NA" && temp[32] != "N/A" && temp[32] != "null" && temp[32] != "None" && temp[32] != "NULL")
-                                        {
-                                            item.Limit_max = temp[32];
-                                        }
-
-                                        if (temp[30] != "" && temp[30] != "NA" && temp[30] != "N/A" && temp[30] != "null" && temp[30] != "None" && temp[30] != "NULL")
-                                        {
-                                            item.Unit = temp[30];
-                                        }
-
-
-
-
-
-
-                                        //item.Unit = temp[30];
-                                        //item.Limit_min = temp[31];
-                                        //item.Limit_max = temp[32];
-
-                                    }
-
-
-
-                                    else if (item.ItemName.ToLower().Contains("tx_radio_temp"))
-                                    {
-                                        
-
-                                        item.testValue = temp[130];
-                                        item.Unit = "C";
-
-                                    }
-                                 
-
-
-                                    if (string.IsNullOrEmpty(item.Limit_min) && string.IsNullOrEmpty(item.Limit_max)) {
-                                        rReturn = temp[46].ToLower() == "pass" ? true : false;
-                                    }
-
-                                    else {
-
-                                        //判断当前是否是GoldenSN
-                                        if (Global.GoldenSN.Contains(SN) && Global.STATIONNAME == "MBFT")
-                                        {
-                                            if (item.ItemName.ToLower().Contains("tx_power")) //只处理tx_power,和台湾数据作对比
-                                            {
-
-                                                if (csvGoldenLines != null && csvGoldenLines.Length > 0)
-                                                {
-                                                    bool foundTempInfo = false;
-                                                    for (int i1 = 1; i1 < csvGoldenLines.Length; i1++)
-                                                    {
-                                                        string[] goldenTemp = csvGoldenLines[i1].Split(new char[] { ',' }, StringSplitOptions.None);
-
-
-
-                                                        if ((temp[0] == goldenTemp[0] && temp[1] == goldenTemp[1] && temp[4] == goldenTemp[4] && temp[5].Trim() == goldenTemp[5].Trim() && temp[6].Trim() == goldenTemp[6].Trim() && temp[21].Trim() == goldenTemp[21].Trim()))
-
-                                                        {
-                                                            foundTempInfo = true;
-                                                            logger.Info("找到了GoldenSN 对应的数据");
-                                                            logger.Info($"goldenSN 信息：{ goldenTemp[0]},{ goldenTemp[1]},{goldenTemp[4]},{goldenTemp[5].Trim()},{goldenTemp[6].Trim()},{goldenTemp[21]}");
-
-                                                            var goldenValue = "";
-                                                            if (item.ItemName.ToLower().Contains("user1"))
-                                                            {
-                                                                goldenValue = goldenTemp[66];
-
-                                                            }
-                                                            else if (item.ItemName.ToLower().Contains("user2"))
-                                                            {
-                                                                goldenValue = goldenTemp[70];
-
-                                                            }
-                                                            else
-                                                            {
-                                                                goldenValue = goldenTemp[20];
-
-                                                            }
-                                                            var goldenValueDouble = double.Parse(goldenValue);
-                                                            var itemValueDouble = double.Parse(item.testValue);
-                                                            double sub = goldenValueDouble - itemValueDouble;
-                                                            logger.Info($"goldValue:{goldenValueDouble}, itemValue:{itemValueDouble}, Sub:{sub}");
-                                                            double limit = double.Parse(Global.TXPowerLimit);
-                                                            if ((sub <= limit) && (sub >= -limit))
-                                                            {
-                                                                rReturn = true;
-                                                            }
-                                                            else
-                                                            {
-
-                                                                rReturn = false;
-
-                                                                ErrorList = new string[] { "1.4.1.1:Equipment.DUT.Initiate" };  
-                                                            }
-
-                                                            break;
-
-                                                        }
-
-                                                    }
-                                                    if (foundTempInfo == false)
-                                                    {
-                                                        logger.Info("未找到GoldenSN 对应的数据，按照比对limit的方式进行");
-                                                        rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
-                                                    }
-
-
-                                                }
-                                                else
-                                                {
-                                                    rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
-                                                }
-
-
-                                            }
-                                            else {
-                                                rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
-                                        }
-
-                                           
-                                    }
-                                        
-
-                                    if (!rReturn)
-                                    {
-                                        ErrorList = temp[3].Trim().Split(new string[] { "\n" }, 0);
-                                        
-                                        ValidationFail = true;
-                                    }
-
-                                    if (item.ItemName.ToLower().Contains("tx_temp"))
-                                    {
-                                        item.testValue = temp[130];
-                                        item.Unit = "C";
-                                        rReturn = true;
-                                    }
-
-                                    return rReturn;
-                                }
-                            }
-                            logger.Error($"Don't find test result in csv,test fail!");
-                        }
-                        break;
+                
 
                     case "GetIQXInfo":
                         {
@@ -2586,29 +2517,29 @@ namespace AutoTestSystem.Model
                             }
                             //RTT 的6.1.0.2.1: OTA.Throughput.Radio1.5GHz.Tx 和 6.1.0.2.1: OTA.Throughput.Radio0.2GHz.Tx 特殊处理
                           
-                            if ( Global.STATIONNAME=="RTT" && !rReturn && retry == 2) {
-                                //删除log 并 重新启动iperf3
-                                try
-                                {
-                                    logger.Info("stationName=" + "RTT" + ", retry=2, restart iperf3");
-                                    logger.Debug("start delete file " + $@"{System.Environment.CurrentDirectory}\{item.ComdOrParam}");
-                                    File.Delete($@"{System.Environment.CurrentDirectory}\{item.ComdOrParam}");
-                                    logger.Debug("restart iperf3");
-                                    if (item.ComdOrParam == "WIFI2G_THROUGHPUT_parallel_Tx.txt")
-                                    {
-                                        dosCmd.SendCommand3("start /B iperf3 -c 192.168.1.2 -i1 -O2 -P10 -t10 -B 192.168.1.12 > WIFI2G_THROUGHPUT_parallel_Tx.txt  & exit");
-                                    }
-                                    else if (item.ComdOrParam == "WIFI5G_THROUGHPUT_parallel_Tx1.txt") {
-                                        dosCmd.SendCommand3("start /B iperf3 -c 192.168.1.50 -i1 -O2 -P30 -t10 -B 192.168.1.15 > WIFI5G_THROUGHPUT_parallel_Tx1.txt  & exit");
-                                    }
+                            //if ( Global.STATIONNAME=="RTT" && !rReturn && retry == 2) {
+                            //    //删除log 并 重新启动iperf3
+                            //    try
+                            //    {
+                            //        logger.Info("stationName=" + "RTT" + ", retry=2, restart iperf3");
+                            //        logger.Debug("start delete file " + $@"{System.Environment.CurrentDirectory}\{item.ComdOrParam}");
+                            //        File.Delete($@"{System.Environment.CurrentDirectory}\{item.ComdOrParam}");
+                            //        logger.Debug("restart iperf3");
+                            //        if (item.ComdOrParam == "WIFI2G_THROUGHPUT_parallel_Tx.txt")
+                            //        {
+                            //            dosCmd.SendCommand3("start /B iperf3 -c 192.168.1.2 -i1 -O2 -P10 -t10 -B 192.168.1.12 > WIFI2G_THROUGHPUT_parallel_Tx.txt  & exit");
+                            //        }
+                            //        else if (item.ComdOrParam == "WIFI5G_THROUGHPUT_parallel_Tx1.txt") {
+                            //            dosCmd.SendCommand3("start /B iperf3 -c 192.168.1.50 -i1 -O2 -P30 -t10 -B 192.168.1.15 > WIFI5G_THROUGHPUT_parallel_Tx1.txt  & exit");
+                            //        }
                                     
-                                }
-                                catch(Exception ex) {
-                                    logger.Debug("Delete file action error:" + ex.Message.ToString());
-                                    retry = 0;//直接retry=0，不需要下次retry了
-                                }
+                            //    }
+                            //    catch(Exception ex) {
+                            //        logger.Debug("Delete file action error:" + ex.Message.ToString());
+                            //        retry = 0;//直接retry=0，不需要下次retry了
+                            //    }
                                 
-                            }
+                            //}
                         }
                         break;
 

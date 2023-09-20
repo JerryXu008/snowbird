@@ -247,7 +247,7 @@ namespace AutoTestSystem.BLL
             try
             {
                 // request = WebRequest.Create("http://www.google.com");
-                request = WebRequest.Create("http://10.90.122.1");
+                request = WebRequest.Create("http://10.90.116.15");
 
                 request.Timeout = 1000;
 

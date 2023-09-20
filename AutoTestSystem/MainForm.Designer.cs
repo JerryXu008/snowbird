@@ -413,7 +413,7 @@ namespace AutoTestSystem
             this.lb_mode.Name = "lb_mode";
             this.lb_mode.Size = new System.Drawing.Size(86, 19);
             this.lb_mode.TabIndex = 1;
-            this.lb_mode.Text = "Merici";
+            this.lb_mode.Text = "Snowbird";
             this.lb_mode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // groupBox1

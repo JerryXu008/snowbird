@@ -231,7 +231,6 @@
     <Content Include="Config\data_api_client.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Config\MBFT备份\MBFT_key.txt" />
     <Content Include="PLINK.EXE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -264,7 +263,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Readme.txt" />
-    <Content Include="Config\Merci.xlsx">
+    <Content Include="Config\Snowbird.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="test.ico" />
@@ -290,11 +289,6 @@
     <None Include="Config\GoldenSN\GGC21D0422750210_DVT_V027_USBC25G_Test_Report.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Config\MBFT.json" />
-    <None Include="Config\MBFT备份\GGC3510233430168_Test_Report.csv" />
-    <None Include="Config\MBFT备份\Old_GGC3510233370104_Test_Report.csv" />
-    <None Include="Config\MBFT备份\MBFT.json" />
-    <None Include="Config\MBLT.json" />
     <None Include="Config\RTT.json" />
     <None Include="Config\SFT.json" />
     <None Include="Config\SRF.json" />

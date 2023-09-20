@@ -11,13 +11,12 @@ import argparse
 import requests
 import sys
 
-local_url = "http://luxshare:bento@localhost:8100/api/1/"
-rs_url = "http://luxshare:bento@10.90.122.1:8100/api/1/"  # SF results server IP. Most testings occur in SF
+local_url = "http://luxshare:bento@localhost:8101/api/1/"
+rs_url = "http://luxshare:bento@10.90.116.15:8101/api/1/"  # SF results server IP. Most testings occur in SF
 base_url = ""
 
 
-# https://docs.google.com/document/d/1iiESDdm2Qhd8-rcwDn8C8FKgLZc09mBXnvwxsoJSRzU/edit
-
+ 
 def check_connection():
     # will return "Connected" if the server is running
     url = base_url + "ping"
