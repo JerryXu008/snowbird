@@ -544,6 +544,46 @@ namespace AutoTestSystem.BLL
                 RunDosCmd($"net use {mapDrive}: /del /y"); // 删除盘符
             }
         }
+        public static bool PowerCycleOutlet(int index)
+        {
+                bool rReturn = false;
+            
+                bool rReturnoff = PoeConfigSetting(index.ToString(), "disable");
+                Thread.Sleep(1000);
+                bool rReturnon = PoeConfigSetting(index.ToString(), "poeDot3af");
+                Thread.Sleep(1000);
+                rReturn = rReturnoff && rReturnon;
+            
+            return rReturn;
+        }
+
+        public  static  bool PoeConfigSetting(string peo_Port, string cmd)
+        {
+
+            bool re = false;
+            try
+            {
+                var cookies = new CookieContainer();
+                var client = GetClient(cookies, "admin", "admin123");
+                string url = $@"http://169.254.100.101/api/v1/service";
+                string data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{peo_Port}\",{{\"Mode\":\"{cmd}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":164}}";
+                StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+                var result = client.PostAsync(url, content).Result;
+                var response_content = result.Content.ReadAsByteArrayAsync().Result;
+                var responseStr = System.Text.Encoding.UTF8.GetString(response_content);
+                logger.Debug(result.StatusCode + ":" + responseStr);
+                if (result.IsSuccessStatusCode && responseStr.Contains("\"error\":null"))
+                    re = true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.Message);
+                re = false;
+            }
+            return re;
+
+
+        }
 
         #region 测试功能函数
 

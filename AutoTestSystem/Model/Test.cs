@@ -43,6 +43,13 @@ namespace AutoTestSystem.Model
             DUTIP = _DUTIP;
         }
 
+
+        
+
+
+
+
+
         public bool StepTest(test_phases testPhase, Items item, int retryTimes, phase_items phaseItem, ref int retry)
         {
 
@@ -784,21 +791,37 @@ namespace AutoTestSystem.Model
 
                     case "POEconfig":
                         {
-                            //Random r = new Random();
-                            //int num = r.Next(1, 101);
-                            var cookies = new CookieContainer();
-                            var client = GetClient(cookies, "admin", "admin123");
-                            string url = $@"http://169.254.100.101/api/v1/service";
-                            string data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{Global.POE_PORT}\",{{\"Mode\":\"{item.ComdOrParam}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":164}}";
-                            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-                            var result = client.PostAsync(url, content).Result;
-                            var response_content = result.Content.ReadAsByteArrayAsync().Result;
-                            var responseStr = System.Text.Encoding.UTF8.GetString(response_content);
-                            logger.Debug(result.StatusCode + ":" + responseStr);
-                            if (result.IsSuccessStatusCode && responseStr.Contains("\"error\":null"))
-                                rReturn = true;
+                            
+                            rReturn = PoeConfigSetting(Global.POE_PORT, item.ComdOrParam);
                         }
                         break;
+
+                    case "PowerCycleTest":
+                        {
+               
+                               
+                                bool powercycle_ALL = true;
+                                for (int i = 0; i < int.Parse(item.ComdOrParam); i++)
+                                {
+                                    logger.Info($"--Times {i} ");
+                                    bool powercycle = PowerCycleOutlet(int.Parse(Global.POE_PORT));
+                                    //Thread.Sleep(1000);
+                                    powercycle_ALL &= powercycle;
+                                    if (!powercycle)
+                                    {
+                                        break;
+                                    }
+                                }
+                                if (powercycle_ALL)
+                                {
+                                    rReturn = true;
+                                }
+                            
+                        }
+                        break;
+
+
+
 
                     case "CheckEeroABA":
                         {
