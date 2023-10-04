@@ -9,6 +9,11 @@ using System.Threading.Tasks;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.IO;
+using System.Net.Http;
+using System.Net;
+using Newtonsoft.Json;
+using System.Text.RegularExpressions;
+
 namespace TestConsole
 {
     internal class Program
@@ -68,7 +73,7 @@ namespace TestConsole
         /// <summary>
         /// Merci MBFT 生成
         /// </summary>
-       static void CreateCSVDataMerciMBFT() {
+       static void CreateCSVDataMerciAndSnowBirdMBFT() {
 
             var list = GetColumnData("./test.xlsx", 0);
             var finalCSV = "./testFinal.csv";
@@ -102,7 +107,13 @@ namespace TestConsole
                         var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
                         var f = arr[3].Replace('F', ' ').Trim();
                         var type = arr[4] + "_" + (arr[4] == "HE" ? "SU" : "MU") + "-" + arr[6];
-                        var line = $",{name},{name},y,6G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
+
+                        string pattern = "-P-\\d+";
+                        string replacement = "";
+
+                        type = Regex.Replace(type, pattern, replacement);
+
+                        var line = $",{name},{name},y,5G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
 
                         sb.AppendLine(line);
                     }
@@ -113,88 +124,12 @@ namespace TestConsole
                         var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
                         var f = arr[4].Replace('F', ' ').Trim();
                         var type = arr[5] + "_" + (arr[5] == "HE" ? "SU" : "MU") + "-" + arr[7];
-                        var line = $",{name},{name},y,6G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
 
-                        sb.AppendLine(line);
+                        string pattern = "-P-\\d+";
+                        string replacement = "";
 
-                    }
+                        type = Regex.Replace(type, pattern, replacement);
 
-
-                }
-
-                else if (name.StartsWith("BLE") || name.StartsWith("ZB"))
-                {
-                    var arr = name.Split('_');
-                    //,BLE_RX_PER_F2402_P-91,BLE_RX_PER_F2402_P-91,y,BLE,1.4.1.1: Equipment.DUT.Initiate,0,3,Rx,,,,,2402,,,,,,,,,,,,,
-                    //,ZB_TX_POWER_F2480,ZB_TX_POWER_F2480,y,Zigbee,1.4.1.1: Equipment.DUT.Initiate,0,3,Tx,,,,,2480,,,,,,,,,ZB_TX_POWER_F2405,,,,
-
-                    if (arr.Length != 4 && arr.Length != 5)
-                    {
-                        Console.WriteLine($"{name} 长度不对");
-
-
-                        continue;
-                    }
-                    var t = name.StartsWith("BLE") ? "BLE" : "Zigbee";
-                    var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
-                    var f = arr[3].Replace('F', ' ').Trim();
-                    var line = $",{name},{name},y,{t},1.4.1.1: Equipment.DUT.Initiate,0,3,{TxOrRx},,,,,{f},,,,,,,,,,,,,";
-                    sb.AppendLine(line);
-                }
-                else
-                {
-                    Console.WriteLine($"{name} 格式不对");
-                }
-
-            }
-            File.WriteAllText(finalCSV, sb.ToString());
-        }
-
-        static void CreateCSVDataSnowbirdMBFT()
-        {
-
-            var list = GetColumnData("./test.xlsx", 0);
-            var finalCSV = "./testFinal.csv";
-            var sb = new StringBuilder();
-            for (var i = 0; i < list.Count; i++)
-            {
-
-                //处理wifi
-                var name = list[i];
-                if (name.StartsWith("WIFI"))
-                {
-
-                    var arr = name.Split('_');
-                    
-                    if (arr.Length != 7 && arr.Length != 8)
-                    {
-                        Console.WriteLine($"{name} 长度不对");
-
-
-                        continue;
-                    }
-
-
-                    // ,WIFI_TX_POWER_F5955_BW20_MCS0_C1,WIFI_TX_POWER_F5955_BW20_MCS0_C1,y,6G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,Tx,1,,,,5955, HE_SU-MCS0,,,,,,,,,,,,
-
-
-                    if (!name.Contains("_TEMP_"))
-                    {
-                        var flag = name.Contains("C0") ? "0" : "1";
-                        var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
-                        var f = arr[3].Replace('F', ' ').Trim();
-                        var type = "HE" + "_" +  "SU" + "-" + arr[5];
-                        var line = $",{name},{name},y,5G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
-
-                        sb.AppendLine(line);
-                    }
-                    else
-                    {
-                        //WIFI_TX_CPU_TEMP_F2472_BW20_MCS0_C0
-                        var flag = name.Contains("C0") ? "0" : "1";
-                        var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
-                        var f = arr[3].Replace('F', ' ').Trim();
-                        var type = "HE" + "_" +  "SU"   + "-" + arr[5];
                         var line = $",{name},{name},y,5G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
 
                         sb.AppendLine(line);
@@ -231,6 +166,88 @@ namespace TestConsole
             }
             File.WriteAllText(finalCSV, sb.ToString());
         }
+
+        //static void CreateCSVDataSnowbirdMBFT()
+        //{
+
+        //    var list = GetColumnData("./test.xlsx", 0);
+        //    var finalCSV = "./testFinal.csv";
+        //    var sb = new StringBuilder();
+        //    for (var i = 0; i < list.Count; i++)
+        //    {
+
+        //        //处理wifi
+        //        var name = list[i];
+        //        if (name.StartsWith("WIFI"))
+        //        {
+
+        //            var arr = name.Split('_');
+
+        //            if (arr.Length != 7 && arr.Length != 8 && arr.Length != 9)
+        //            {
+        //                Console.WriteLine($"{name} 长度不对");
+
+
+        //                continue;
+        //            }
+
+
+        //            // ,WIFI_TX_POWER_F5955_BW20_MCS0_C1,WIFI_TX_POWER_F5955_BW20_MCS0_C1,y,6G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,Tx,1,,,,5955, HE_SU-MCS0,,,,,,,,,,,,
+
+
+        //            if (!name.Contains("_TEMP_"))
+        //            {
+        //                var flag = name.Contains("C0") ? "0" : "1";
+        //                var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
+        //                var f = arr[3].Replace('F', ' ').Trim();
+        //                var type = "HE" + "_" +  "SU" + "-" + arr[5];
+        //                var line = $",{name},{name},y,5G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
+
+        //                sb.AppendLine(line);
+        //            }
+        //            else
+        //            {
+        //                //WIFI_TX_CPU_TEMP_F2472_BW20_MCS0_C0
+        //                var flag = name.Contains("C0") ? "0" : "1";
+        //                var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
+        //                var f = arr[3].Replace('F', ' ').Trim();
+        //                var type = "HE" + "_" +  "SU"   + "-" + arr[5];
+        //                var line = $",{name},{name},y,5G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
+
+        //                sb.AppendLine(line);
+
+        //            }
+
+
+        //        }
+
+        //        else if (name.StartsWith("BLE") || name.StartsWith("ZB"))
+        //        {
+        //            var arr = name.Split('_');
+        //            //,BLE_RX_PER_F2402_P-91,BLE_RX_PER_F2402_P-91,y,BLE,1.4.1.1: Equipment.DUT.Initiate,0,3,Rx,,,,,2402,,,,,,,,,,,,,
+        //            //,ZB_TX_POWER_F2480,ZB_TX_POWER_F2480,y,Zigbee,1.4.1.1: Equipment.DUT.Initiate,0,3,Tx,,,,,2480,,,,,,,,,ZB_TX_POWER_F2405,,,,
+
+        //            if (arr.Length != 4 && arr.Length != 5)
+        //            {
+        //                Console.WriteLine($"{name} 长度不对");
+
+
+        //                continue;
+        //            }
+        //            var t = name.StartsWith("BLE") ? "BLE" : "Zigbee";
+        //            var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
+        //            var f = arr[3].Replace('F', ' ').Trim();
+        //            var line = $",{name},{name},y,{t},1.4.1.1: Equipment.DUT.Initiate,0,3,{TxOrRx},,,,,{f},,,,,,,,,,,,,";
+        //            sb.AppendLine(line);
+        //        }
+        //        else
+        //        {
+        //            Console.WriteLine($"{name} 格式不对");
+        //        }
+
+        //    }
+        //    File.WriteAllText(finalCSV, sb.ToString());
+        //}
 
 
         static void CreateCSVDataSnowbirdSRF()
@@ -343,15 +360,55 @@ namespace TestConsole
             //var ff = SendCommand("iperf3 -c 192.168.0.20 -i1 -t10 -O2 -P8 -R", ref rec, "iperf Done", 20000);
             //int ii = 0;
         }
-
-        static void Main(string[] args)
+        public static HttpClient GetClient(CookieContainer cookies, string username, string password)
         {
+            var handler = new HttpClientHandler() { CookieContainer = cookies, UseCookies = false };
+            var client = new HttpClient(handler);
+
+            client.DefaultRequestHeaders.Add("User-Agent", "GetLimit");
+            client.DefaultRequestHeaders.Add("Accept", "*/*");
+            //client.DefaultRequestHeaders.Add("Pragma", "no-cache");
+            client.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
+            string strLoginPassword = string.Format("{0}:{1}", username, password);
+            byte[] bytLoginPassword = System.Text.Encoding.UTF8.GetBytes(strLoginPassword);
+            string strLoginPasswordEncoded = Convert.ToBase64String(bytLoginPassword);
+            client.DefaultRequestHeaders.Add("Authorization", $"Basic {strLoginPasswordEncoded}");
+            return client;
+        }
+       static void ControlPOE() {
+            var cookies = new CookieContainer();
+            var client = GetClient(cookies, "admin", "admin123");
+            string url = $@"http://169.254.100.101/api/v1/service";
+            //string data = $"{{\"method\":\"poe.status.powerin.get\",\"params\":[],\"id\":80}}";
+
+            string data = $"{{\"method\":\"poe.status.interface.get\",\"params\":[],\"id\":138}}";
+            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            var result = client.PostAsync(url, content).Result;
+            var response_content = result.Content.ReadAsByteArrayAsync().Result;
+            var responseStr = System.Text.Encoding.UTF8.GetString(response_content);
+
+            Root root = JsonConvert.DeserializeObject<Root>(responseStr);
+
+            foreach (var result2 in root.result)
+            {
+                Console.WriteLine(result2.val.CurrentConsumption);
+            }
 
 
-            // CreateCSVDataMerciMBFT();
-            //CreateCSVDataSnowbirdMBFT();
-            CreateCSVDataSnowbirdSRF();
-            Console.WriteLine("生成完毕!!!");
+
+           // Console.WriteLine(responseStr);
+        }
+         
+    static void Main(string[] args)
+        {
+           // ControlPOE();
+
+             CreateCSVDataMerciAndSnowBirdMBFT();
+           
+          //  CreateCSVDataSnowbirdSRF();
+         //   Console.WriteLine("生成完毕!!!");
+
+
 
 
             while (1 == 1)

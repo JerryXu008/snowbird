@@ -1489,6 +1489,17 @@ namespace AutoTestSystem.Model
                                     else
                                         rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
 
+
+
+                                    if (temp[57] == "FAIL")
+                                    {
+                                        logger.Error("zhubo csv 返回fail，所以为fail");
+                                        rReturn = false;
+
+                                    }
+
+
+
                                     if (!rReturn) {
                                         ErrorList = temp[2].Trim().Split(new string[] { "\n" }, 0);
 
@@ -1602,7 +1613,10 @@ namespace AutoTestSystem.Model
                             {
                                 string[] temp = csvLines[i].Split(new char[] { ',' }, StringSplitOptions.None);
 
-                                 
+                                 if (item.ItemName== "WIFI_TX_POWER_F5180_HE_BW20_MCS0_C0")
+                                {
+                                    int ii = 0;
+                                }
 
                                     //5G ,  TX   , 0/1 ,   5775 ,    HE_SU-MCS13/NA ,  
                                     if ((temp[0] == item.TestKeyword.Substring(0, 2) && temp[1] == item.SubStr1 && temp[4] == item.SubStr2 && temp[5].Trim() == item.ComdOrParam && temp[6].Trim() == item.ExpectStr)
@@ -1640,8 +1654,24 @@ namespace AutoTestSystem.Model
                                         )
                                     {
 
-                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                        try
+                                        {
+                                            item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                        }
+                                        catch
+                                        {
+                                            item.Limit_min = "0.0";
+                                        }
+
+                                        try
+                                        {
+                                            item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                        }
+                                        catch
+                                        {
+                                            item.Limit_max = "0.0";
+                                        }
+
 
                                         item.testValue = temp[37];
 
@@ -1701,8 +1731,24 @@ namespace AutoTestSystem.Model
                                         else
                                         {
 
-                                            item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                            item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                            try
+                                            {
+                                                item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                            }
+                                            catch
+                                            {
+                                                item.Limit_min = "0.0";
+                                            }
+
+                                            try
+                                            {
+                                                item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                            }
+                                            catch
+                                            {
+                                                item.Limit_max = "0.0";
+                                            }
+
 
 
                                             item.testValue = temp[20];
@@ -1726,8 +1772,24 @@ namespace AutoTestSystem.Model
                                     }
                                     else if (item.ItemName.ToLower().Contains("tx_evm"))
                                     {
-                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                        try
+                                        {
+                                            item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                        }
+                                        catch
+                                        {
+                                            item.Limit_min = "0.0";
+                                        }
+
+                                        try
+                                        {
+                                            item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                        }
+                                        catch
+                                        {
+                                            item.Limit_max = "0.0";
+                                        }
+
 
                                         if (item.ItemName.ToLower().Contains("user1"))
                                         {
@@ -1754,8 +1816,22 @@ namespace AutoTestSystem.Model
                                    
                                     else if (item.ItemName.ToLower().Contains("tx_loleak"))
                                     {
-                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                        try {
+                                            item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                        }
+                                        catch {
+                                            item.Limit_min = "0.0";
+                                        }
+
+                                        try
+                                        {
+                                            item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                        }
+                                        catch {
+                                            item.Limit_max = "0.0";
+                                        }
+
+                                            
 
 
                                         item.testValue = temp[25];
@@ -1783,8 +1859,24 @@ namespace AutoTestSystem.Model
                                     {
 
 
-                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                        try
+                                        {
+                                            item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                        }
+                                        catch
+                                        {
+                                            item.Limit_min = "0.0";
+                                        }
+
+                                        try
+                                        {
+                                            item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                        }
+                                        catch
+                                        {
+                                            item.Limit_max = "0.0";
+                                        }
+
 
                                         item.testValue = temp[12];
 
@@ -1810,8 +1902,24 @@ namespace AutoTestSystem.Model
                                     else if (item.ItemName.ToLower().Contains("tx_sysclkerr"))
                                     {
 
-                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                        try
+                                        {
+                                            item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                        }
+                                        catch
+                                        {
+                                            item.Limit_min = "0.0";
+                                        }
+
+                                        try
+                                        {
+                                            item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                        }
+                                        catch
+                                        {
+                                            item.Limit_max = "0.0";
+                                        }
+
 
                                         item.testValue = temp[16];
 
@@ -1836,8 +1944,24 @@ namespace AutoTestSystem.Model
                                     }
                                     else if (item.ItemName.ToLower().Contains("tx_specmsk"))
                                     {
-                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                        try
+                                        {
+                                            item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                        }
+                                        catch
+                                        {
+                                            item.Limit_min = "0.0";
+                                        }
+
+                                        try
+                                        {
+                                            item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                        }
+                                        catch
+                                        {
+                                            item.Limit_max = "0.0";
+                                        }
+
 
                                         item.testValue = temp[33];
 
@@ -1863,8 +1987,24 @@ namespace AutoTestSystem.Model
                                     }
                                     else if (item.ItemName.ToLower().Contains("tx_specflat"))
                                     {
-                                        item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                        item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                        try
+                                        {
+                                            item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                        }
+                                        catch
+                                        {
+                                            item.Limit_min = "0.0";
+                                        }
+
+                                        try
+                                        {
+                                            item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                        }
+                                        catch
+                                        {
+                                            item.Limit_max = "0.0";
+                                        }
+
 
                                         item.testValue = temp[29];
 

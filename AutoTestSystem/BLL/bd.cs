@@ -551,7 +551,7 @@ namespace AutoTestSystem.BLL
                 bool rReturnoff = PoeConfigSetting(index.ToString(), "disable");
                 Thread.Sleep(1000);
                 bool rReturnon = PoeConfigSetting(index.ToString(), "poeDot3af");
-                Thread.Sleep(1000);
+                Thread.Sleep(10000);
                 rReturn = rReturnoff && rReturnon;
             
             return rReturn;
