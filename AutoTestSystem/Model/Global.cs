@@ -53,6 +53,7 @@ namespace AutoTestSystem.Model
         public static string CameraType;                //新版还是老版摄像头
         public static string TXPowerLimit;              //TX power 和golden的差值
         public static string IsDownloadPathloss;        // 是否在线下载pathloss
+        public static string SweepVersion;
         ///**************************ini配置文件DUT全局配置变量**********************/
         public static string DUTIP;
         public static string SSH_PORT;
@@ -324,6 +325,10 @@ namespace AutoTestSystem.Model
                 LOGSERVERUser = iniConfig.Readini("Station", "LOGSERVERUser").Trim();
                 LOGSERVERPwd = iniConfig.Readini("Station", "LOGSERVERPwd").Trim();
                 PopFixture = iniConfig.Readini("Station", "PopFixture").Trim().ToLower() == "true" ? true : false;
+                SweepVersion = iniConfig.Readini("Station", "SweepVersion").Trim();
+
+                
+
 #if DEBUG
                // FIXTUREFLAG = "0";
                  FIXTUREFLAG = iniConfig.Readini("Station", "FIXTUREFLAG").Trim();

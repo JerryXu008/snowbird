@@ -1558,9 +1558,14 @@ namespace AutoTestSystem.Model
                                         //item.Limit_max = "10.0";
 
                                        // item.testValue = temp[12];//Rx_Level power
+                                      
+                                        
                                         item.testValue = temp[13];//PER
                                         item.Unit = temp[14];
-                                      //  item.Limit_min = temp[9];
+                                     
+                                        
+                                        
+                                        //  item.Limit_min = temp[9];
                                       //  item.Limit_max = temp[10];
                                         //item.Unit = "dB";
                                     }

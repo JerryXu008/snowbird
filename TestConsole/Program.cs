@@ -13,6 +13,7 @@ using System.Net.Http;
 using System.Net;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace TestConsole
 {
@@ -391,22 +392,36 @@ namespace TestConsole
 
             foreach (var result2 in root.result)
             {
-                Console.WriteLine(result2.val.CurrentConsumption);
+                Console.Write(result2.val.CurrentConsumption + "   ");
             }
 
-
+            Console.WriteLine("");
 
            // Console.WriteLine(responseStr);
         }
          
     static void Main(string[] args)
         {
-           // ControlPOE();
+            ControlPOE();
 
-             CreateCSVDataMerciAndSnowBirdMBFT();
-           
-          //  CreateCSVDataSnowbirdSRF();
-         //   Console.WriteLine("生成完毕!!!");
+            Console.WriteLine("sleep 10s");
+            Thread.Sleep(10000);
+
+            ControlPOE();
+
+            Console.WriteLine("sleep 10s");
+            Thread.Sleep(10000);
+
+
+            ControlPOE();
+
+       
+            
+
+            //  CreateCSVDataMerciAndSnowBirdMBFT();
+
+            //  CreateCSVDataSnowbirdSRF();
+            //   Console.WriteLine("生成完毕!!!");
 
 
 

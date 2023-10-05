@@ -7658,7 +7658,7 @@
         "startIndex": 0,
         "start_time_json": "0001-01-01T00:00:00",
         "start_time": "0001-01-01T00:00:00",
-        "ItemName": "WIFI_TX_RADIO_TEMP_F5745_HE_BW20_MCS13_C0",
+        "ItemName": "WIFI_TX_RADIO_TEMP_F5745_EHT_BW20_MCS13_C0",
         "ErrorCode": "1.4.1.1: Equipment.DUT.Initiate",
         "RetryTimes": "0",
         "TimeOut": "3",
@@ -7684,7 +7684,7 @@
         "Spec": "",
         "error_code": "",
         "Json": "y",
-        "EeroName": "WIFI_TX_RADIO_TEMP_F5745_HE_BW20_MCS13_C0",
+        "EeroName": "WIFI_TX_RADIO_TEMP_F5745_EHT_BW20_MCS13_C0",
         "NoContain": "",
         "SpecStatic": ""
       },
