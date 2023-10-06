@@ -180,6 +180,12 @@
     <Compile Include="DAL\SSH.cs" />
     <Compile Include="DAL\SyncSocket.cs" />
     <Compile Include="DAL\Telnet.cs" />
+    <Compile Include="InutMEASPOP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InutMEASPOP.Designer.cs">
+      <DependentUpon>InutMEASPOP.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -270,6 +276,9 @@
     <Content Include="test.ico" />
     <EmbeddedResource Include="ButtonShow.resx">
       <DependentUpon>ButtonShow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InutMEASPOP.resx">
+      <DependentUpon>InutMEASPOP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="USBConfirmDialog.resx">
       <DependentUpon>USBConfirmDialog.cs</DependentUpon>

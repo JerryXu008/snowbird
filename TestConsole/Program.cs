@@ -286,7 +286,8 @@ namespace TestConsole
                         var f = arr[3].Replace('F', ' ').Trim();
                         //var type = "HE" + "_" + "SU" + "-" + arr[5];
                         var type = "";
-                        var line = $",{name},{name},y,5G,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
+                        var g5org2 = f.StartsWith("2") ? "2G" : "5G";
+                        var line = $",{name},{name},y,{g5org2},1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
 
                         sb.AppendLine(line);
                     }
@@ -298,7 +299,8 @@ namespace TestConsole
                         var f = arr[3].Replace('F', ' ').Trim();
                         //var type = "HE" + "_" + "SU" + "-" + arr[6];
                         var type = "";
-                        var line = $",{name},{name},y,5G,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
+                        var g5org2 = f.StartsWith("2") ? "2G" : "5G";
+                        var line = $",{name},{name},y,{g5org2},1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
 
                         sb.AppendLine(line);
 
@@ -402,26 +404,26 @@ namespace TestConsole
          
     static void Main(string[] args)
         {
-            ControlPOE();
+            //ControlPOE();
 
-            Console.WriteLine("sleep 10s");
-            Thread.Sleep(10000);
+            //Console.WriteLine("sleep 10s");
+            //Thread.Sleep(10000);
 
-            ControlPOE();
+            //ControlPOE();
 
-            Console.WriteLine("sleep 10s");
-            Thread.Sleep(10000);
+            //Console.WriteLine("sleep 10s");
+            //Thread.Sleep(10000);
 
 
-            ControlPOE();
+            //ControlPOE();
 
-       
-            
 
-            //  CreateCSVDataMerciAndSnowBirdMBFT();
+
+
+            CreateCSVDataMerciAndSnowBirdMBFT();
 
             //  CreateCSVDataSnowbirdSRF();
-            //   Console.WriteLine("生成完毕!!!");
+            Console.WriteLine("生成完毕!!!");
 
 
 

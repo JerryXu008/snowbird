@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
@@ -127,6 +128,12 @@ namespace AutoTestSystem
         private CollectCsvResult collectCsvResult;
         public static List<string> ArrayListCsv;
         public static List<string> ArrayListCsvHeader;
+        public static List<string> ArrayListCsvHeaderMIN;
+        public static List<string> ArrayListCsvHeaderMAX;
+        public static List<string> ArrayListCsvHeaderUNIT;
+
+
+
         public static bool SetDefaultIP;
         public static string inPutValue = "";
         public static string BtDevAddress = "";
@@ -483,7 +490,10 @@ namespace AutoTestSystem
                     }
                    
                 }
-               
+                RestartProcess("QUTSStatusApp", @"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp.exe");
+                
+
+
             }
             else if (Global.STATIONNAME == "SRF") {
                 if (Global.IsDownloadPathloss == "1")
@@ -495,6 +505,7 @@ namespace AutoTestSystem
                     }
                        
                 }
+                RestartProcess("QUTSStatusApp", @"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp.exe");
             }
 
             
@@ -1283,6 +1294,12 @@ namespace AutoTestSystem
             InitCreateDirs();
             ArrayListCsv = new List<string>();
             ArrayListCsvHeader = new List<string>();
+
+            ArrayListCsvHeaderMIN = new List<string>();
+            ArrayListCsvHeaderMAX = new List<string>();
+            ArrayListCsvHeaderUNIT = new List<string>();
+
+
             error_code = "";
             error_details = "";
             error_code_firstfail = "";
@@ -3489,64 +3506,190 @@ namespace AutoTestSystem
         /// <summary>
         /// 收集测试数据到CSV文件.
         /// </summary>
+        //private void CollectResultToCsv()
+        //{
+        //    List<string[]> testDataList = new List<String[]>();
+        //    //CSVFilePath = $@"{Global.LOGFOLDER}\CsvData\{DateTime.Now.ToString("yyyy-MM-dd--HH")}-00-00_{Global.STATIONNO}.csv";
+        //    string csvColumnPath = $@"{Environment.CurrentDirectory}\Config\CSV_COLUMN.txt";
+        //    //CSVFilePath = $@"{Environment.CurrentDirectory}\Output\{DateTime.Now.ToString("yyyy-MM-dd")}_{Global.STATIONNO}.csv";
+        //    CSVFilePath = $@"{Global.LOGFOLDER}\CsvData\{DateTime.Now.ToString("yyyy-MM-dd")}_{Global.STATIONNO}.csv";
+        //    try
+        //    {
+        //        SetButtonPro(buttonBegin, Properties.Resources.start);
+        //        SetButtonPro(buttonExit, Properties.Resources.close);
+
+        //        ArrayListCsvHeader.InsertRange(0, new string[] {
+        //         "UBOOT_LED_W_ReMSG1","UBOOT_LED_W_ReMSG2","UBOOT_LED_W_ReMSG3","UBOOT_LED_W_ReMSG4","UBOOT_LED_W_ReMSG5","FIXTURE_CLOSE","DUT_PING" , "AT-ScanTimeSpan","DEVICE_TYPE", "STATION_TYPE", "FACILITY_ID", "LINE_ID", "FIXTURE_ID", "DUT_POSITION", "SN", "FW_VERSION",  "HW_REVISION", "SW_VERSION",  "START_TIME", "TEST_DURATION","DUT_TEST_RESULT", "FIRST_FAIL", "ERROR_CODE", "TIME_ZONE", "TEST_DEBUG", "JSON_UPLOAD", "MES_UPLOAD",
+        //            });
+        //        File.Delete(csvColumnPath);
+        //        using (StreamWriter sw = new StreamWriter(csvColumnPath, true, Encoding.Default))
+        //        {
+        //            foreach (var item in ArrayListCsvHeader)
+        //                sw.Write(item + "\t");
+        //        }
+        //        bool updateColumn = finalTestResult.ToUpper() == "PASS" && !IsDebug;
+        //        CreatCSVFile(CSVFilePath, csvColumnPath, updateColumn);
+
+
+        //        TimeSpan timeSpan = Global.time1.Subtract(Global.time2).Duration();
+        //        var timeSpanStr = timeSpan.TotalMilliseconds + " ms";
+        //        // logger.Info(">>>>>>>>>>>>>>治具按下-获取SN时间间隔:" + timeSpan.TotalMilliseconds + " ms");
+        //        UBOOT_LED_W_ReMSG1 = Regex.Replace(UBOOT_LED_W_ReMSG1, " ", "");
+        //        UBOOT_LED_W_ReMSG2 = Regex.Replace(UBOOT_LED_W_ReMSG2, " ", "");
+        //        UBOOT_LED_W_ReMSG3 = Regex.Replace(UBOOT_LED_W_ReMSG3, " ", "");
+        //        UBOOT_LED_W_ReMSG4 = Regex.Replace(UBOOT_LED_W_ReMSG4, " ", "");
+        //        UBOOT_LED_W_ReMSG5 = Regex.Replace(UBOOT_LED_W_ReMSG5, " ", "");
+
+
+        //        UBOOT_LED_W_ReMSG1 = Regex.Replace(UBOOT_LED_W_ReMSG1, "\r", "");
+        //        UBOOT_LED_W_ReMSG2 = Regex.Replace(UBOOT_LED_W_ReMSG2, "\r", "");
+        //        UBOOT_LED_W_ReMSG3 = Regex.Replace(UBOOT_LED_W_ReMSG3, "\r", "");
+        //        UBOOT_LED_W_ReMSG4 = Regex.Replace(UBOOT_LED_W_ReMSG4, "\r", "");
+        //        UBOOT_LED_W_ReMSG5 = Regex.Replace(UBOOT_LED_W_ReMSG5, "\r", "");
+
+        //        UBOOT_LED_W_ReMSG1 = Regex.Replace(UBOOT_LED_W_ReMSG1, "\n", "");
+        //        UBOOT_LED_W_ReMSG2 = Regex.Replace(UBOOT_LED_W_ReMSG2, "\n", "");
+        //        UBOOT_LED_W_ReMSG3 = Regex.Replace(UBOOT_LED_W_ReMSG3, "\n", "");
+        //        UBOOT_LED_W_ReMSG4 = Regex.Replace(UBOOT_LED_W_ReMSG4, "\n", "");
+        //        UBOOT_LED_W_ReMSG5 = Regex.Replace(UBOOT_LED_W_ReMSG5, "\n", "");
+
+        //        UBOOT_LED_W_ReMSG1 = Regex.Replace(UBOOT_LED_W_ReMSG1, ",", "$");
+        //        UBOOT_LED_W_ReMSG2 = Regex.Replace(UBOOT_LED_W_ReMSG2, ",", "$");
+        //        UBOOT_LED_W_ReMSG3 = Regex.Replace(UBOOT_LED_W_ReMSG3, ",", "$");
+        //        UBOOT_LED_W_ReMSG4 = Regex.Replace(UBOOT_LED_W_ReMSG4, ",", "$");
+        //        UBOOT_LED_W_ReMSG5 = Regex.Replace(UBOOT_LED_W_ReMSG5, ",", "$");
+
+        //        ArrayListCsv.InsertRange(0, new string[] {
+        //         UBOOT_LED_W_ReMSG1,UBOOT_LED_W_ReMSG2,UBOOT_LED_W_ReMSG3,UBOOT_LED_W_ReMSG4,UBOOT_LED_W_ReMSG5 ,MainForm.f1.FIXTURE_TIME,MainForm.f1.DUT_PING_TIME   , timeSpanStr,  DutMode, Global.STATIONNAME, "Luxshare", WorkOrder, Global.FIXTURENAME, "1", SN, mesPhases.FW_VERSION, mesPhases.HW_REVISION, mesPhases.test_software_version, startTime.ToString("yyyy/MM/dd HH:mm:ss"), sec.ToString(), finalTestResult, mesPhases.FIRST_FAIL, error_details_firstfail, "UTC", (Global.TESTMODE == "debug" || Global.TESTMODE.ToLower() == "fa") ? "1" : "0", mesPhases.JSON_UPLOAD, mesPhases.MES_UPLOAD,
+        //            });
+        //        testDataList.Add(ArrayListCsv.ToArray());
+        //        WriteCSV(CSVFilePath, true, testDataList);
+        //        testDataList.Clear();
+        //        logger.Debug($"Export test results to {CSVFilePath} succeed");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.Fatal($"Export test results to CSVFilePath error!:{ ex.Message} ");
+        //    }
+        //}
+
         private void CollectResultToCsv()
         {
             List<string[]> testDataList = new List<String[]>();
-            //CSVFilePath = $@"{Global.LOGFOLDER}\CsvData\{DateTime.Now.ToString("yyyy-MM-dd--HH")}-00-00_{Global.STATIONNO}.csv";
-            string csvColumnPath = $@"{Environment.CurrentDirectory}\Config\CSV_COLUMN.txt";
-            //CSVFilePath = $@"{Environment.CurrentDirectory}\Output\{DateTime.Now.ToString("yyyy-MM-dd")}_{Global.STATIONNO}.csv";
             CSVFilePath = $@"{Global.LOGFOLDER}\CsvData\{DateTime.Now.ToString("yyyy-MM-dd")}_{Global.STATIONNO}.csv";
+            string csvColumnPath = $@"{Environment.CurrentDirectory}\Config\CSV_COLUMN.txt";
+            string csvColumnPathMAX = $@"{Environment.CurrentDirectory}\Config\CSV_COLUMNMAX.txt";
+            string csvColumnPathMIN = $@"{Environment.CurrentDirectory}\Config\CSV_COLUMNMIN.txt";
+            string csvColumnPathUNIT = $@"{Environment.CurrentDirectory}\Config\CSV_COLUMNUNIT.txt";
+            //CSVFilePath = $@"{Environment.CurrentDirectory}\Output\{DateTime.Now.ToString("yyyy-MM-dd")}_{Global.STATIONNO}.csv";
+
             try
             {
                 SetButtonPro(buttonBegin, Properties.Resources.start);
                 SetButtonPro(buttonExit, Properties.Resources.close);
+                var headerArr = new string[] {
+                      "AT-ScanTimeSpan",  "Product", "Station Name", "Site", "LINE_ID", "Station ID", "DUT_POSITION", "SerialNumber", "FW_VERSION",  "HW_REVISION", "SW_VERSION",  "StartTime", "EndTime", "TEST_DURATION","Test Pass/Fail Status", "FIRST_FAIL", "ERROR_CODE", "TIME_ZONE", "TEST_DEBUG", "JSON_UPLOAD", "MES_UPLOAD",
+                    };
+                ArrayListCsvHeader.InsertRange(0, headerArr);
 
-                ArrayListCsvHeader.InsertRange(0, new string[] {
-                 "UBOOT_LED_W_ReMSG1","UBOOT_LED_W_ReMSG2","UBOOT_LED_W_ReMSG3","UBOOT_LED_W_ReMSG4","UBOOT_LED_W_ReMSG5","FIXTURE_CLOSE","DUT_PING" , "AT-ScanTimeSpan","DEVICE_TYPE", "STATION_TYPE", "FACILITY_ID", "LINE_ID", "FIXTURE_ID", "DUT_POSITION", "SN", "FW_VERSION",  "HW_REVISION", "SW_VERSION",  "START_TIME", "TEST_DURATION","DUT_TEST_RESULT", "FIRST_FAIL", "ERROR_CODE", "TIME_ZONE", "TEST_DEBUG", "JSON_UPLOAD", "MES_UPLOAD",
-                    });
+
+                var headerEmptyMAX = new List<string>();
+                for (var i = 0; i < headerArr.Length; i++)
+                {
+                    if (i == 0)
+                    {
+                        headerEmptyMAX.Add("Upper Limit ----->");
+                    }
+                    else
+                        headerEmptyMAX.Add(" ");
+                }
+                var headerEmptyMIN = new List<string>();
+                for (var i = 0; i < headerArr.Length; i++)
+                {
+                    if (i == 0)
+                    {
+                        headerEmptyMIN.Add("Lower Limit ----->");
+                    }
+                    else
+                        headerEmptyMIN.Add(" ");
+                }
+
+                var headerEmptyUNIT = new List<string>();
+                for (var i = 0; i < headerArr.Length; i++)
+                {
+                    if (i == 0)
+                    {
+                        headerEmptyUNIT.Add("Measurement Unit ----->");
+                    }
+                    else
+                        headerEmptyUNIT.Add(" ");
+                }
+
+
+
+
+                ArrayListCsvHeaderMAX.InsertRange(0, headerEmptyMAX.ToArray());
+                ArrayListCsvHeaderMIN.InsertRange(0, headerEmptyMIN.ToArray());
+                ArrayListCsvHeaderUNIT.InsertRange(0, headerEmptyUNIT.ToArray());
+
+
                 File.Delete(csvColumnPath);
+                File.Delete(csvColumnPathMAX);
+                File.Delete(csvColumnPathMIN);
+                File.Delete(csvColumnPathUNIT);
+
                 using (StreamWriter sw = new StreamWriter(csvColumnPath, true, Encoding.Default))
                 {
                     foreach (var item in ArrayListCsvHeader)
                         sw.Write(item + "\t");
                 }
+                using (StreamWriter sw = new StreamWriter(csvColumnPathMAX, true, Encoding.Default))
+                {
+                    foreach (var item in ArrayListCsvHeaderMAX)
+                        sw.Write(item + "\t");
+                }
+                using (StreamWriter sw = new StreamWriter(csvColumnPathMIN, true, Encoding.Default))
+                {
+                    foreach (var item in ArrayListCsvHeaderMIN)
+                        sw.Write(item + "\t");
+                }
+                using (StreamWriter sw = new StreamWriter(csvColumnPathUNIT, true, Encoding.Default))
+                {
+                    foreach (var item in ArrayListCsvHeaderUNIT)
+                        sw.Write(item + "\t");
+                }
+
+
+
+
                 bool updateColumn = finalTestResult.ToUpper() == "PASS" && !IsDebug;
-                CreatCSVFile(CSVFilePath, csvColumnPath, updateColumn);
-                
-                
+
+
+
+                CreatCSVFileWithMINAndMAX(CSVFilePath, csvColumnPath, csvColumnPathMAX, csvColumnPathMIN, csvColumnPathUNIT, updateColumn);
+
+
+
+
+
                 TimeSpan timeSpan = Global.time1.Subtract(Global.time2).Duration();
-                var timeSpanStr = timeSpan.TotalMilliseconds + " ms";
-                // logger.Info(">>>>>>>>>>>>>>治具按下-获取SN时间间隔:" + timeSpan.TotalMilliseconds + " ms");
-                UBOOT_LED_W_ReMSG1 = Regex.Replace(UBOOT_LED_W_ReMSG1, " ", "");
-                UBOOT_LED_W_ReMSG2 = Regex.Replace(UBOOT_LED_W_ReMSG2, " ", "");
-                UBOOT_LED_W_ReMSG3 = Regex.Replace(UBOOT_LED_W_ReMSG3, " ", "");
-                UBOOT_LED_W_ReMSG4 = Regex.Replace(UBOOT_LED_W_ReMSG4, " ", "");
-                UBOOT_LED_W_ReMSG5 = Regex.Replace(UBOOT_LED_W_ReMSG5, " ", "");
+                var timeSpan2 = (timeSpan.TotalMilliseconds / 1000);
 
+                var timeSpanStr = Math.Round(timeSpan2, 2).ToString() + " s";
+                //    mesPhases.AT_SCAN_TIME = timeSpanStr;
 
-                UBOOT_LED_W_ReMSG1 = Regex.Replace(UBOOT_LED_W_ReMSG1, "\r", "");
-                UBOOT_LED_W_ReMSG2 = Regex.Replace(UBOOT_LED_W_ReMSG2, "\r", "");
-                UBOOT_LED_W_ReMSG3 = Regex.Replace(UBOOT_LED_W_ReMSG3, "\r", "");
-                UBOOT_LED_W_ReMSG4 = Regex.Replace(UBOOT_LED_W_ReMSG4, "\r", "");
-                UBOOT_LED_W_ReMSG5 = Regex.Replace(UBOOT_LED_W_ReMSG5, "\r", "");
-
-                UBOOT_LED_W_ReMSG1 = Regex.Replace(UBOOT_LED_W_ReMSG1, "\n", "");
-                UBOOT_LED_W_ReMSG2 = Regex.Replace(UBOOT_LED_W_ReMSG2, "\n", "");
-                UBOOT_LED_W_ReMSG3 = Regex.Replace(UBOOT_LED_W_ReMSG3, "\n", "");
-                UBOOT_LED_W_ReMSG4 = Regex.Replace(UBOOT_LED_W_ReMSG4, "\n", "");
-                UBOOT_LED_W_ReMSG5 = Regex.Replace(UBOOT_LED_W_ReMSG5, "\n", "");
-
-                UBOOT_LED_W_ReMSG1 = Regex.Replace(UBOOT_LED_W_ReMSG1, ",", "$");
-                UBOOT_LED_W_ReMSG2 = Regex.Replace(UBOOT_LED_W_ReMSG2, ",", "$");
-                UBOOT_LED_W_ReMSG3 = Regex.Replace(UBOOT_LED_W_ReMSG3, ",", "$");
-                UBOOT_LED_W_ReMSG4 = Regex.Replace(UBOOT_LED_W_ReMSG4, ",", "$");
-                UBOOT_LED_W_ReMSG5 = Regex.Replace(UBOOT_LED_W_ReMSG5, ",", "$");
 
                 ArrayListCsv.InsertRange(0, new string[] {
-                 UBOOT_LED_W_ReMSG1,UBOOT_LED_W_ReMSG2,UBOOT_LED_W_ReMSG3,UBOOT_LED_W_ReMSG4,UBOOT_LED_W_ReMSG5 ,MainForm.f1.FIXTURE_TIME,MainForm.f1.DUT_PING_TIME   , timeSpanStr,  DutMode, Global.STATIONNAME, "Luxshare", WorkOrder, Global.FIXTURENAME, "1", SN, mesPhases.FW_VERSION, mesPhases.HW_REVISION, mesPhases.test_software_version, startTime.ToString("yyyy/MM/dd HH:mm:ss"), sec.ToString(), finalTestResult, mesPhases.FIRST_FAIL, error_details_firstfail, "UTC", (Global.TESTMODE == "debug" || Global.TESTMODE.ToLower() == "fa") ? "1" : "0", mesPhases.JSON_UPLOAD, mesPhases.MES_UPLOAD,
+                       timeSpanStr, DutMode, Global.STATIONNAME, "Luxshare", WorkOrder, Global.FIXTURENAME, "1", SN, mesPhases.FW_VERSION, mesPhases.HW_REVISION, mesPhases.test_software_version, startTime.ToString("yyyy/MM/dd HH:mm:ss"),startTime.AddSeconds(sec).ToString("yyyy/MM/dd HH:mm:ss"), sec.ToString(), finalTestResult, mesPhases.FIRST_FAIL, error_details_firstfail, "UTC", (Global.TESTMODE == "debug" || Global.TESTMODE == "fa") ? "1" : "0", mesPhases.JSON_UPLOAD, mesPhases.MES_UPLOAD,
                     });
                 testDataList.Add(ArrayListCsv.ToArray());
+
+
+
                 WriteCSV(CSVFilePath, true, testDataList);
+
+
+
                 testDataList.Clear();
                 logger.Debug($"Export test results to {CSVFilePath} succeed");
             }
@@ -3557,7 +3700,142 @@ namespace AutoTestSystem
         }
 
 
+
+
+        public static void CreatCSVFileWithMINAndMAX(string csvFilePath, string columnFilePath, string columnPathMAX, string columnPathMIN, string columnPathUNIT, bool updateColumn = false)
+        {
+            string[] colHeader;
+            string[] colHeaderMAX;
+            string[] colHeaderMIN;
+            string[] colHeaderUNIT;
+            if (!File.Exists(csvFilePath))
+            {
+                File.Create(csvFilePath).Close();
+                File.SetAttributes(csvFilePath, FileAttributes.Normal);
+                Thread.Sleep(500);
+                if (File.Exists(csvFilePath))
+                {
+                    var rowList = new List<string[]>();
+
+
+
+                    using (var sr = new StreamReader(columnFilePath))
+                    {
+                        colHeader = sr.ReadToEnd().Split(new[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                    }
+
+                    using (var sr = new StreamReader(columnPathMAX))
+                    {
+                        colHeaderMAX = sr.ReadToEnd().Split(new[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                    }
+                    using (var sr = new StreamReader(columnPathMIN))
+                    {
+                        colHeaderMIN = sr.ReadToEnd().Split(new[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                    }
+                    using (var sr = new StreamReader(columnPathUNIT))
+                    {
+                        colHeaderUNIT = sr.ReadToEnd().Split(new[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                    }
+
+
+                    for (var i = 0; i < colHeaderMAX.Length; i++)
+                    {
+
+                        var one = colHeaderMAX[i];
+                        if (Regex.Replace(one, " ", "") == "")
+                        {
+                            colHeaderMAX[i] = "";
+                        }
+                    }
+
+                    for (var i = 0; i < colHeaderMIN.Length; i++)
+                    {
+
+                        var one = colHeaderMIN[i];
+                        if (Regex.Replace(one, " ", "") == "")
+                        {
+                            colHeaderMIN[i] = "";
+                        }
+                    }
+
+                    for (var i = 0; i < colHeaderUNIT.Length; i++)
+                    {
+
+                        var one = colHeaderUNIT[i];
+                        if (Regex.Replace(one, " ", "") == "")
+                        {
+                            colHeaderUNIT[i] = "";
+                        }
+                    }
+
+
+                    rowList.Add(colHeader);
+                    rowList.Add(colHeaderMAX);
+                    rowList.Add(colHeaderMIN);
+                    rowList.Add(colHeaderUNIT);
+
+                    WriteCSV(csvFilePath, false, rowList);
+                }
+            }
+            else
+            {
+                if (updateColumn)
+                {
+                    var rowList = new List<string[]>();
+                    using (var sr = new StreamReader(columnFilePath))
+                    {
+                        colHeader = sr.ReadToEnd().Split(new[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                    }
+                    using (var sr = new StreamReader(columnPathMAX))
+                    {
+                        colHeaderMAX = sr.ReadToEnd().Split(new[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                    }
+                    using (var sr = new StreamReader(columnPathMIN))
+                    {
+                        colHeaderMIN = sr.ReadToEnd().Split(new[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                    }
+                    using (var sr = new StreamReader(columnPathUNIT))
+                    {
+                        colHeaderUNIT = sr.ReadToEnd().Split(new[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                    }
+
+                    var ls = ReadCSV(csvFilePath);
+                    if (!Enumerable.SequenceEqual(ls[0], colHeader))
+                    {
+                        //ls[0] = colHeader;
+                        //WriteCSV(csvFilePath, false, ls);
+                        rowList.Add(colHeader);
+                        rowList.Add(colHeaderMAX);
+                        rowList.Add(colHeaderMIN);
+                        rowList.Add(colHeaderUNIT);
+                        WriteCSV(csvFilePath, false, rowList);
+
+
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+
+
+
         #endregion 测试功能函数
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         #region 控件更新处理函数

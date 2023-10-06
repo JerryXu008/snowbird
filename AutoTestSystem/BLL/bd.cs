@@ -1472,7 +1472,7 @@ namespace AutoTestSystem.BLL
 
             if (!string.IsNullOrEmpty(limitMin) && string.IsNullOrEmpty(limitMax)) //只需比较最小值
             {
-                rReturn = temp > double.Parse(limitMin);
+                rReturn = temp >= double.Parse(limitMin);
                 logger.Debug("Compare Limit_min...");
             }
 

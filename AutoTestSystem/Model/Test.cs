@@ -1058,8 +1058,24 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
+                    case "GROUND_POINT_MEAS": {
+                            InutMEASPOP usbDialog = new InutMEASPOP();
+                            double value=-1;
+                            usbDialog.TextHandler = (str) => {
 
+                                value = double.Parse(str);
+                            };
+                            usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                            usbDialog.ShowTip();
+                            usbDialog.ShowDialog();
 
+                            logger.Info("输入的值:" + value);
+                            item.testValue = value.ToString();
+                            rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+
+                            int ii = 0;
+                        }
+                        break;
                     case "ShowFixtureTip": {
                             ShowFixtureTip usbDialog = new ShowFixtureTip();
                             usbDialog.TextHandler = (str) => { };
@@ -3554,10 +3570,17 @@ namespace AutoTestSystem.Model
                 {
                     if (item.testValue.ToUpper() != "TRUE" && item.testValue.ToUpper() != "FALSE") {
 
-                       // logger.Info("打印看看: EeroName=" + item.EeroName + " Value:" + item.testValue);
-                        
+
+
                         ArrayListCsvHeader.AddRange(new string[] { item.EeroName });
+                        ArrayListCsvHeaderMAX.AddRange(new string[] { IsNullOrEmpty(item.Limit_max) ? "NA" : item.Limit_max });
+                        ArrayListCsvHeaderMIN.AddRange(new string[] { IsNullOrEmpty(item.Limit_min) ? "NA" : item.Limit_min });
+                        ArrayListCsvHeaderUNIT.AddRange(new string[] { " " });
                         ArrayListCsv.AddRange(new string[] { item.testValue });
+
+
+
+ 
                     }
                    
                 }
@@ -3565,8 +3588,11 @@ namespace AutoTestSystem.Model
 
 
 
-                    ArrayListCsvHeader.AddRange(new string[] { item.EeroName, item.EeroName + "_LIMIT_MIN", item.EeroName + "_LIMIT_MAX" });
-                    ArrayListCsv.AddRange(new string[] { item.testValue, item.Limit_min, item.Limit_max });
+                    ArrayListCsvHeader.AddRange(new string[] { item.EeroName });
+                    ArrayListCsvHeaderMAX.AddRange(new string[] { IsNullOrEmpty(item.Limit_max) ? "NA" : item.Limit_max });
+                    ArrayListCsvHeaderMIN.AddRange(new string[] { IsNullOrEmpty(item.Limit_min) ? "NA" : item.Limit_min });
+                    ArrayListCsvHeaderUNIT.AddRange(new string[] { " " });
+                    ArrayListCsv.AddRange(new string[] { item.testValue });
                 }
                
             }
@@ -3575,6 +3601,9 @@ namespace AutoTestSystem.Model
                 if (item.testValue.ToUpper() != "TRUE" && item.testValue.ToUpper() != "FALSE")
                 {
                     ArrayListCsvHeader.AddRange(new string[] { item.EeroName, item.EeroName + "_SPEC" });
+                    ArrayListCsvHeaderMAX.AddRange(new string[] { "NA", "NA" });
+                    ArrayListCsvHeaderMIN.AddRange(new string[] { "NA", "NA" });
+                    ArrayListCsvHeaderUNIT.AddRange(new string[] { " ", " " });
                     ArrayListCsv.AddRange(new string[] { item.testValue, item.Spec });
 
                 }
@@ -3585,6 +3614,9 @@ namespace AutoTestSystem.Model
                 if (item.testValue.ToUpper() != "TRUE" && item.testValue.ToUpper() != "FALSE")
                 {
                     ArrayListCsvHeader.AddRange(new string[] { item.EeroName });
+                    ArrayListCsvHeaderMAX.AddRange(new string[] { "NA" });
+                    ArrayListCsvHeaderMIN.AddRange(new string[] { "NA" });
+                    ArrayListCsvHeaderUNIT.AddRange(new string[] { " " });
                     ArrayListCsv.AddRange(new string[] { item.testValue });
                 }
             }
