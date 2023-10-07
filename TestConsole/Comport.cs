@@ -36,11 +36,11 @@ namespace AutoTestSystem.DAL
                 }
 
                 SerialPort.Open();
-                logger.Info($"{SerialPort.PortName} serialPort.OpenCOM()!!");
+                loggerInfo($"{SerialPort.PortName} serialPort.OpenCOM()!!");
             }
             catch (Exception ex)
             {
-                logger.Fatal($"{ex.ToString()}");
+                loggerFatal($"{ex.ToString()}");
             }
         }
 
@@ -54,12 +54,12 @@ namespace AutoTestSystem.DAL
                 }
                 SerialPort.Open();
                 SerialPort.DataReceived += ComPort_DataReceived;
-                logger.Info($"{SerialPort.PortName} serialPort.Open()!!");
+                loggerInfo($"{SerialPort.PortName} serialPort.Open()!!");
                 return true;
             }
             catch (Exception ex)
             {
-                logger.Fatal($"{ex.ToString()}");
+                loggerFatal($"{ex.ToString()}");
                 return false;
             }
         }
@@ -73,12 +73,12 @@ namespace AutoTestSystem.DAL
                 sReceiveAll += readStr;
                 if (!string.IsNullOrEmpty(readStr))
                 {
-                    logger.Debug(readStr);
+                    loggerDebug(readStr);
                 }
             }
             catch (Exception ex)
             {
-                logger.Fatal($"{ex.ToString()}");
+                loggerFatal($"{ex.ToString()}");
             }
         }
 
@@ -86,12 +86,12 @@ namespace AutoTestSystem.DAL
         {
             try
             {
-                logger.Info($"{SerialPort.PortName} serialPort.Close!!");
+                loggerInfo($"{SerialPort.PortName} serialPort.Close!!");
                 SerialPort.Close();
             }
             catch (Exception ex)
             {
-                logger.Fatal($"{ex.ToString()}");
+                loggerFatal($"{ex.ToString()}");
             }
         }
 
@@ -106,7 +106,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex.ToString());
+                loggerFatal(ex.ToString());
             }
         }
 
@@ -128,7 +128,7 @@ namespace AutoTestSystem.DAL
                 {//如果不发命令则不发送换行
                     command = command + "\n";
                 }
-                logger.Debug($"{SerialPort.PortName.ToUpper()}SendComd-->{command}");
+                loggerDebug($"{SerialPort.PortName.ToUpper()}SendComd-->{command}");
                 SerialPort.ReadTimeout = (timeout + 1) * 1000;
                 sReceiveAll = "";
                 SerialPort.DiscardInBuffer();
@@ -141,21 +141,21 @@ namespace AutoTestSystem.DAL
                     {
                         strRecAll = sReceiveAll;
                         sReceiveAll = "";
-                        logger.Error(strRecAll);
-                        logger.Error($"Waiting for:\"{DataToWaitFor}\" TimeOut({timeout}),FAIL!!!");
+                        loggerError(strRecAll);
+                        loggerError($"Waiting for:\"{DataToWaitFor}\" TimeOut({timeout}),FAIL!!!");
                         return false;
                     }
                     Thread.Sleep(1);
                 }
                 strRecAll = sReceiveAll;
                 sReceiveAll = "";
-                //logger.Info(strRecAll);
-                logger.Info($"Waiting for:\"{DataToWaitFor}\" succeed!!");
+                //loggerInfo(strRecAll);
+                loggerInfo($"Waiting for:\"{DataToWaitFor}\" succeed!!");
                 return true;
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex.ToString());
+                loggerFatal(ex.ToString());
                 return false;
             }
         }
@@ -168,7 +168,7 @@ namespace AutoTestSystem.DAL
                 Sleep(10);
                 long lngStart = DateTime.Now.AddSeconds(timeout).Ticks;
                 strRecAll = "";
-                logger.Debug($"{SerialPort.PortName.ToUpper()}SendComdToFix-->{command}");
+                loggerDebug($"{SerialPort.PortName.ToUpper()}SendComdToFix-->{command}");
                 //command = command + "\r\n"; //治具不用加回车换行
                 SerialPort.DiscardInBuffer();
                 SerialPort.Write(command);
@@ -180,21 +180,21 @@ namespace AutoTestSystem.DAL
                     {
                         strRecAll = sReceiveAll;
                         sReceiveAll = "";
-                        logger.Error(strRecAll);
-                        logger.Error($"Waiting for:{DataToWaitFor} TimeOut({timeout}),FAIL!!!");
+                        loggerError(strRecAll);
+                        loggerError($"Waiting for:{DataToWaitFor} TimeOut({timeout}),FAIL!!!");
                         return false;
                     }
                     Thread.Sleep(1);
                 }
                 strRecAll = sReceiveAll;
                 sReceiveAll = "";
-                logger.Info(strRecAll);
-                logger.Info($"Waiting for:{DataToWaitFor} succeed!!");
+                loggerInfo(strRecAll);
+                loggerInfo($"Waiting for:{DataToWaitFor} succeed!!");
                 return true;
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex.ToString());
+                loggerFatal(ex.ToString());
                 return false;
             }
         }
@@ -213,14 +213,14 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex.ToString());
+                loggerFatal(ex.ToString());
             }
             finally
             {
 
                 if (!string.IsNullOrEmpty(readExisting))
                 {
-                    logger.Debug(readExisting);
+                    loggerDebug(readExisting);
                 }
             }
             return readExisting;

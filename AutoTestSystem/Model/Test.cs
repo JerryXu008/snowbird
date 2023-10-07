@@ -55,10 +55,10 @@ namespace AutoTestSystem.Model
 
             if (DateTime.Now.ToLongDateString().Contains("2021"))
             { //时间不对
-                logger.Info("time error ,update time>>");
+                loggerInfo("time error ,update time>>");
                 RunDosCmd("tzutil /s \"UTC_dstoff\"");// 设置电脑时区为UTC
                 var dateTime = SyDateTimeHelper.GetNetDateTime(DateTime.Now);
-                logger.Info("get updated time>>>:" + dateTime.ToLongTimeString());
+                loggerInfo("get updated time>>>:" + dateTime.ToLongTimeString());
                 SyDateTimeHelper.SetLocalDateTime2(dateTime);
 
             }
@@ -73,13 +73,13 @@ namespace AutoTestSystem.Model
                 
                 if (same == false)
                 { //时间不对
-                    logger.Info("!!!startTime error,update time");
+                    loggerInfo("!!!startTime error,update time");
 
                     RunDosCmd("tzutil /s \"UTC_dstoff\"");// 设置电脑时区为UTC
 
                     var dateTime = SyDateTimeHelper.GetNetDateTime(DateTime.Now);
                     startTime = dateTime;
-                    logger.Info("!!!get updated time:" + dateTime.ToLongTimeString());
+                    loggerInfo("!!!get updated time:" + dateTime.ToLongTimeString());
                     SyDateTimeHelper.SetLocalDateTime(dateTime);
 
                 }
@@ -100,7 +100,7 @@ namespace AutoTestSystem.Model
                 || item.TestKeyword.Contains("CheckEeroABA")
                 || item.TestKeyword.Contains("GetWorkOrder")))
             {
-                logger.Warn("This is debug mode.Skip this step.");
+                loggerWarn("This is debug mode.Skip this step.");
                 testPhase.phase_details = "This is debug mode.";
                 return rReturn = true;
             }
@@ -108,7 +108,7 @@ namespace AutoTestSystem.Model
 
             if (item.TestKeyword.Contains("SetDHCP"))
             {
-                logger.Warn("This is debug mode.Skip this step2.");
+                loggerWarn("This is debug mode.Skip this step2.");
                 testPhase.phase_details = "This is debug mode.";
                 rReturn = true;
             }
@@ -138,14 +138,14 @@ namespace AutoTestSystem.Model
                 if (item.TestKeyword == "Veritfy_QSDK_Version")
                 {
                     mes_qsdk_version = mescheckroute.getFirmwareFW(SN);
-                    logger.Debug($"mescheckroute.getFirmwareFW:{mes_qsdk_version}");
+                    loggerDebug($"mescheckroute.getFirmwareFW:{mes_qsdk_version}");
                 }
 #endif
                 string verName = GetMidStr(item.Spec, "<", ">");
                 item.Spec = GetMidStr(item.Spec, null, "<") + GetVerReflection(f1, verName) + GetMidStr(item.Spec, ">", null);
                 if (string.IsNullOrEmpty(item.Spec))
                 {
-                    logger.Error($"Parsing item.Spec failed, IsNullOrEmpty!!! test FAIL.");
+                    loggerError($"Parsing item.Spec failed, IsNullOrEmpty!!! test FAIL.");
                     retry = 0;  //！有变量不允许retry
                     retryTimes = 0;
                     error_code = ErrorList[0].Split(':')[0].Trim();
@@ -154,7 +154,7 @@ namespace AutoTestSystem.Model
                     testPhase.error_code = error_code;
                     return rReturn = false;
                 }
-                logger.Debug($"item.Spec:{item.Spec}");
+                loggerDebug($"item.Spec:{item.Spec}");
             }
 
             //added 20230516  SpecStatic,为了解决specFlag默认等于false的bug，导致jsonupload fail
@@ -162,13 +162,13 @@ namespace AutoTestSystem.Model
             {
                 if (item.EeroName == "TEST_IMAGE_VERSION" && Global.STATIONNAME.ToUpper() == "MBLT")
                 {
-                    logger.Info($"MBLT Test_Image_Version特殊处理,设置specFlag=false");
+                    loggerInfo($"MBLT Test_Image_Version特殊处理,设置specFlag=false");
                     specFlag = false;
                 }
 
                 else
                 {
-                    logger.Info($"item.SpecStatic:{item.SpecStatic},设置specFlag=true");
+                    loggerInfo($"item.SpecStatic:{item.SpecStatic},设置specFlag=true");
                     specFlag = true; //这样spec的值就不会作为minlimit传给服务器
 
                 }
@@ -214,19 +214,19 @@ namespace AutoTestSystem.Model
                                     }
                                     else
                                     {
-                                        logger.Fatal($"limit_type {lim.limit_type.ToLower()} is unknow");
+                                        loggerFatal($"limit_type {lim.limit_type.ToLower()} is unknow");
                                         throw new Exception($"limit_type {lim.limit_type.ToLower()} is unknow");
                                     }
-                                    logger.Info($"get online limit:{item.EeroName} Spec:{item.Spec},Min:{item.Limit_min},Max:{item.Limit_max}");
+                                    loggerInfo($"get online limit:{item.EeroName} Spec:{item.Spec},Min:{item.Limit_min},Max:{item.Limit_max}");
                                     findFlag = true;
                                     break;
                                 }
                                 else
-                                    logger.Info($"{item.EeroName} found, but {lim.model},{lim.station_type} is match.");
+                                    loggerInfo($"{item.EeroName} found, but {lim.model},{lim.station_type} is match.");
                             }
                         }
                         if (!findFlag)
-                            logger.Info($"{item.EeroName} not found in online limit");
+                            loggerInfo($"{item.EeroName} not found in online limit");
                     }
                 }
             }
@@ -246,7 +246,7 @@ namespace AutoTestSystem.Model
                     case "skip":
                         {
                             rReturn = true;
-                            logger.Debug("当前测试项跳过");
+                            loggerDebug("当前测试项跳过");
                         }
                         break;
                     case "KillProcess":
@@ -292,12 +292,12 @@ namespace AutoTestSystem.Model
                         if (!IsNullOrEmpty(SN) && (item.CheckStr1.Contains(SN) || Global.GoldenSN.Contains(SN)))
                         {
                             rReturn = Copyfile(item.ComdOrParam + $@"\Golden", item.ExpectStr);
-                            logger.Warn("run Gloden ATE config.");
+                            loggerWarn("run Gloden ATE config.");
                         }
                         else
                         {
                             rReturn = Copyfile(item.ComdOrParam + $@"\NoGolden", item.ExpectStr);
-                            logger.Warn("run no Gloden ATE config.");
+                            loggerWarn("run no Gloden ATE config.");
                         }
                         break;
 
@@ -330,13 +330,13 @@ namespace AutoTestSystem.Model
                         {
                             //var url = $"http://10.90.108.172:8086/api/1/CheckRoute/serial/{SN}/station/CCT-8020";
                             var url = $"http://10.90.108.172:8086/api/EeroRevert/CheckRoute/serial/{SN}/terminal/CCT-8020";
-                            logger.Debug(url);
+                            loggerDebug(url);
 
                             var ret = "";
                             try
                             {
                                 ret = HttpGet(url);
-                                logger.Info(">>>>:" + ret);
+                                loggerInfo(">>>>:" + ret);
                                 if (ret.Contains("OK"))
                                 {
                                     rReturn = true;
@@ -349,7 +349,7 @@ namespace AutoTestSystem.Model
                             catch
                             {
 
-                                logger.Info(">>>>:" + ret);
+                                loggerInfo(">>>>:" + ret);
                                 rReturn = false;
                             }
 
@@ -372,7 +372,7 @@ namespace AutoTestSystem.Model
                         }
                         catch (Exception ex) {
                             rReturn = false;
-                            logger.Error(ex.ToString());
+                            loggerError(ex.ToString());
                         }
                        
                         break;
@@ -386,7 +386,7 @@ namespace AutoTestSystem.Model
                         catch (Exception ex)
                         {
                             rReturn = false;
-                            logger.Error(ex.ToString());
+                            loggerError(ex.ToString());
                         }
 
                         break;
@@ -581,7 +581,7 @@ namespace AutoTestSystem.Model
                         {
                             string zipPath = item.ExpectStr.Replace($@"./", $@"{System.Environment.CurrentDirectory}\").Replace("SN", SN).Replace("DateTime.Now:yyyy-MM-dd_hh-mm-ss", $"{startTime:yyyy-MM-dd_HH-mm-ss}");
                             
-                            logger.Info("压缩后的文件路径:"+zipPath);
+                            loggerInfo("压缩后的文件路径:"+zipPath);
                                 
 
                             var files = Directory.GetFileSystemEntries(item.ComdOrParam);
@@ -593,8 +593,8 @@ namespace AutoTestSystem.Model
                                 {
                                     if (File.Exists(zipPathPass))//说明wifi测试pass了，接着要看当前的bt结果了
                                     {
-                                        logger.Info("存在了pass路径:" + zipPathPass);
-                                        logger.Info("看看file=" + file);
+                                        loggerInfo("存在了pass路径:" + zipPathPass);
+                                        loggerInfo("看看file=" + file);
 
                                         if (file.ToLower().EndsWith("pass"))//bt 测试pass，接着向之前的pass路径压缩
                                         {
@@ -608,7 +608,7 @@ namespace AutoTestSystem.Model
                                                 Directory.CreateDirectory(Path.GetDirectoryName(zipPathFail));
                                             }
 
-                                            logger.Info("移动路径:from:" + zipPathPass + " to:" + zipPathFail);
+                                            loggerInfo("移动路径:from:" + zipPathPass + " to:" + zipPathFail);
                                             File.Move(zipPathPass, zipPathFail);
                                             break;
                                         }
@@ -625,7 +625,7 @@ namespace AutoTestSystem.Model
                                     else //wifi首次测试，此时没有fail或者pass文件夹
                                     {
 
-                                        logger.Info("xxxxxxxxxxx 当前路径:" + file);
+                                        loggerInfo("xxxxxxxxxxx 当前路径:" + file);
                                         if (file.ToLower().EndsWith("pass"))
                                         {
                                             zipPath = zipPathPass;
@@ -638,25 +638,25 @@ namespace AutoTestSystem.Model
                                         }
                                         else {
                                             //bt 会在对应软件log下面生成pass或者fail文件夹，本次snowbird wifi没有生成pass/fai文件夹
-                                            logger.Info("没有pass或者fail结尾,当做pass");
+                                            loggerInfo("没有pass或者fail结尾,当做pass");
                                             zipPath = zipPathPass;
 
                                         }
                                     }
                                 }
 
-                                logger.Info("CompressFile的最终路径：" + zipPath);
+                                loggerInfo("CompressFile的最终路径：" + zipPath);
 
                                 foreach (var file in files)
                                 {
                                     if (file.Contains(SN))
                                         return rReturn = CompressFile(file, zipPath);
                                 }
-                                logger.Debug($"No {SN} file found!");
+                                loggerDebug($"No {SN} file found!");
                             }
                             else
                             {
-                                logger.Debug("Directory is empty!");
+                                loggerDebug("Directory is empty!");
                             }
                         }
                         break;
@@ -674,7 +674,7 @@ namespace AutoTestSystem.Model
                                 else
                                 {
                                    
-                                    logger.Error("mesMsg:" + mesMsg);
+                                    loggerError("mesMsg:" + mesMsg);
                                     MainForm.f1.ShowLbl_FAIL_TEXT(mesMsg);
                                 }
                             }
@@ -696,7 +696,7 @@ namespace AutoTestSystem.Model
                             }
                             else
                             {
-                                logger.Error("mesMsg:" + mesMsg);
+                                loggerError("mesMsg:" + mesMsg);
                                 MainForm.f1.ShowLbl_FAIL_TEXT(mesMsg);
                                
                                 
@@ -721,7 +721,7 @@ namespace AutoTestSystem.Model
                                     testPhase.phase_details = error_details;
                                     testPhase.error_code = error_code;
                                 }
-                                logger.Error($"test fail,set error_code:{error_code},error_details:{error_details}");
+                                loggerError($"test fail,set error_code:{error_code},error_details:{error_details}");
                             }
                         }
                         break;
@@ -737,7 +737,7 @@ namespace AutoTestSystem.Model
                             }
                             else
                             {
-                                logger.Error("mesMsg:" + response);
+                                loggerError("mesMsg:" + response);
                                 if (response.Contains("recheck"))
                                 {
                                     error_code = ErrorList[0].Split(':')[0].Trim();
@@ -759,7 +759,7 @@ namespace AutoTestSystem.Model
                                     testPhase.phase_details = error_details;
                                     testPhase.error_code = error_code;
                                 }
-                                logger.Error($"test fail,set error_code:{error_code},error_details:{error_details}");
+                                loggerError($"test fail,set error_code:{error_code},error_details:{error_details}");
                             }
                         }
                         break;
@@ -771,11 +771,11 @@ namespace AutoTestSystem.Model
                                 getUrl = $@"http://{Global.MESIP}:{Global.MESPORT}/api/1/serial/{SN}";
                             else
                                 getUrl = item.ComdOrParam;
-                            logger.Debug($"Start get WorkOrder from MES, http url:{getUrl}");
+                            loggerDebug($"Start get WorkOrder from MES, http url:{getUrl}");
                             string response = HttpGet(getUrl);
                             response = Regex.Replace(response, "\"", "");
                             response = response.Trim();
-                            logger.Debug($"Get workOrder from Mes:{response}.");
+                            loggerDebug($"Get workOrder from Mes:{response}.");
                             if (!response.ToLower().Contains("fail") || !response.ToLower().Contains("error"))
                             {
                                 WorkOrder = response;
@@ -803,7 +803,7 @@ namespace AutoTestSystem.Model
                                 bool powercycle_ALL = true;
                                 for (int i = 0; i < int.Parse(item.ComdOrParam); i++)
                                 {
-                                    logger.Info($"--Times {i} ");
+                                    loggerInfo($"--Times {i} ");
                                     bool powercycle = PowerCycleOutlet(int.Parse(Global.POE_PORT));
                                     //Thread.Sleep(1000);
                                     powercycle_ALL &= powercycle;
@@ -831,7 +831,7 @@ namespace AutoTestSystem.Model
                             }
                             else
                             {
-                                logger.Error("mesMsg:" + mesMsg);
+                                loggerError("mesMsg:" + mesMsg);
                                 MainForm.f1.ShowLbl_FAIL_TEXT(mesMsg);
                             } 
                         }
@@ -846,13 +846,13 @@ namespace AutoTestSystem.Model
 
 
                             MesMac = "";
-                            // logger.Info("MesMac 置空");
+                            // loggerInfo("MesMac 置空");
                             if (mescheckroute.GetPcbaErroMessage(SN, out CSN, out MesMac, out string mesMsg))
                             {
-                                logger.Debug("CUSTOMER_SN:" + CSN + ", GetMesMac:" + MesMac);
+                                loggerDebug("CUSTOMER_SN:" + CSN + ", GetMesMac:" + MesMac);
                                 rReturn = true;
                             }
-                            logger.Debug("mesMsg:" + mesMsg);
+                            loggerDebug("mesMsg:" + mesMsg);
 
                         }
                         break;
@@ -860,11 +860,11 @@ namespace AutoTestSystem.Model
                     case "GetCsnErroMessage":
                         {
                             MesMac = "";
-                           // logger.Info("MesMac 置空");
+                           // loggerInfo("MesMac 置空");
                             if (mescheckroute.GetCsnErroMessage(SN, out CSN, out string IPSN, out MesMac, out string mesMsg))
                                 rReturn = true;
-                            logger.Debug("mesMsg:" + mesMsg);
-                            logger.Debug("Get MesMac:" + MesMac + ", sn:" + CSN + ", IPSN:" + IPSN);
+                            loggerDebug("mesMsg:" + mesMsg);
+                            loggerDebug("Get MesMac:" + MesMac + ", sn:" + CSN + ", IPSN:" + IPSN);
                             
                         }
                         break;
@@ -886,12 +886,12 @@ namespace AutoTestSystem.Model
                             if (mescheckroute.GETIP(SN, out DUTMesIP, out string mesMsg) && mesMsg.Contains("OK"))
                             {
                                 rReturn = true;
-                                logger.Debug("mesMsg:" + mesMsg);
-                                logger.Debug("sn:" + SN + ", MesIP:" + DUTMesIP);
+                                loggerDebug("mesMsg:" + mesMsg);
+                                loggerDebug("sn:" + SN + ", MesIP:" + DUTMesIP);
                             }
                             else {
-                                logger.Debug("fail sn:" + SN);
-                                logger.Debug("mesMsg:" + mesMsg);
+                                loggerDebug("fail sn:" + SN);
+                                loggerDebug("mesMsg:" + mesMsg);
                                
                             }
                             
@@ -974,7 +974,7 @@ namespace AutoTestSystem.Model
                                 }
                                 else
                                 {
-                                    logger.Warn($"Attention! FIXTUREFLAG == {Global.FIXTUREFLAG},and no ConfirmMessageBox. ");
+                                    loggerWarn($"Attention! FIXTUREFLAG == {Global.FIXTUREFLAG},and no ConfirmMessageBox. ");
                                     rReturn = true;
                                 }
                             }
@@ -1051,7 +1051,7 @@ namespace AutoTestSystem.Model
                                 }
                                 else
                                 {
-                                    logger.Warn($"Attention! FIXTUREFLAG == {Global.FIXTUREFLAG},and no ConfirmMessageBox. ");
+                                    loggerWarn($"Attention! FIXTUREFLAG == {Global.FIXTUREFLAG},and no ConfirmMessageBox. ");
                                     rReturn = true;
                                 }
                             }
@@ -1069,7 +1069,7 @@ namespace AutoTestSystem.Model
                             usbDialog.ShowTip();
                             usbDialog.ShowDialog();
 
-                            logger.Info("输入的值:" + value);
+                            loggerInfo("输入的值:" + value);
                             item.testValue = value.ToString();
                             rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
 
@@ -1139,7 +1139,7 @@ namespace AutoTestSystem.Model
 
                                    var res = DUTCOMM.SendCommand(item.ComdOrParam, ref revStr, item.ExpectStr, 5);
                                   
-                                   logger.Debug(res);
+                                   loggerDebug(res.ToString());
 
                                     var checkStr = item.CheckStr2 == "1" ? "OK!10" : "OK!11";
 
@@ -1238,7 +1238,7 @@ namespace AutoTestSystem.Model
 
                             if (rReturn == false)
                             {
-                                logger.Warn("WhiteLEDTest retry=" + retryTimes.ToString());
+                                loggerWarn("WhiteLEDTest retry=" + retryTimes.ToString());
                                 if (retryTimes == 6 || retryTimes == 3)
                                 {
 
@@ -1268,7 +1268,7 @@ namespace AutoTestSystem.Model
 
                     case "ClearInput":
                         {
-                            logger.Info("inPutValu 清空");
+                            loggerInfo("inPutValu 清空");
                             rReturn = true;
                         }
                         break;
@@ -1345,7 +1345,7 @@ namespace AutoTestSystem.Model
                     //            string[] temp = csvLines[i].Split(new char[] { ',' }, StringSplitOptions.None);
                     //            if (temp[0] == item.TestKeyword && temp[1] == item.SubStr1 && temp[3] == item.ComdOrParam)
                     //            {
-                    //                logger.Info($"find test result in csv line{i + 1}.testResult={temp[57]}");
+                    //                loggerInfo($"find test result in csv line{i + 1}.testResult={temp[57]}");
                     //                if (item.ItemName.ToLower().Contains("power"))
                     //                {
                     //                    item.testValue = temp[33];
@@ -1396,7 +1396,7 @@ namespace AutoTestSystem.Model
                     //                return rReturn;
                     //            }
                     //        }
-                    //        logger.Error($"Don't find test result in csv,test fail!");
+                    //        loggerError($"Don't find test result in csv,test fail!");
                     //    }
                     //    break;
 
@@ -1427,7 +1427,7 @@ namespace AutoTestSystem.Model
 
                                 if (temp[0] == item.TestKeyword && temp[1] == item.SubStr1 && temp[3] == item.ComdOrParam)
                                 {
-                                    logger.Info($"find test result in csv line{i + 1}.testResult={temp[57]}");
+                                    loggerInfo($"find test result in csv line{i + 1}.testResult={temp[57]}");
                                     if (item.ItemName.ToLower().Contains("power"))
                                     {
                                         item.testValue = temp[33];
@@ -1509,7 +1509,7 @@ namespace AutoTestSystem.Model
 
                                     if (temp[57] == "FAIL")
                                     {
-                                        logger.Error("zhubo csv 返回fail，所以为fail");
+                                        loggerError("zhubo csv 返回fail，所以为fail");
                                         rReturn = false;
 
                                     }
@@ -1529,7 +1529,7 @@ namespace AutoTestSystem.Model
                                     return rReturn;
                                 }
                             }
-                            logger.Error($"Don't find test result in csv,test fail!");
+                            loggerError($"Don't find test result in csv,test fail!");
                         }
                         break;
 
@@ -1542,7 +1542,7 @@ namespace AutoTestSystem.Model
 
                                 if (temp[0] == item.TestKeyword && temp[1] == item.SubStr1 && temp[4] == item.SubStr2 && temp[3] == item.ComdOrParam)
                                 {
-                                    logger.Info($"find test result in csv line{i + 1}.testResult={temp[15]}");
+                                    loggerInfo($"find test result in csv line{i + 1}.testResult={temp[15]}");
                                     rReturn = temp[15].ToLower() == "pass" ? true : false;
                                     if (!rReturn)
                                     {
@@ -1553,7 +1553,7 @@ namespace AutoTestSystem.Model
                                         }
                                         catch (Exception ex)
                                         {
-                                            logger.Error(ex.Message);
+                                            loggerError(ex.Message);
                                             ErrorList = item.error_code.Trim().Split(new string[] { "\n" }, 0);
                                             return rReturn;
                                         }
@@ -1598,7 +1598,7 @@ namespace AutoTestSystem.Model
                                         rReturn = temp[15].ToLower() == "pass" ? true : false;
                                     else
                                     {
-                                        logger.Info("MinVlaue:" + item.Limit_min + " MaxValue:" + item.Limit_max + " value:" + item.testValue);
+                                        loggerInfo("MinVlaue:" + item.Limit_min + " MaxValue:" + item.Limit_max + " value:" + item.testValue);
                                         rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
 
                                     }
@@ -1613,7 +1613,7 @@ namespace AutoTestSystem.Model
                                     return rReturn;
                                 }
                             }
-                            logger.Error($"Don't find test result in csv,test fail!");
+                            loggerError($"Don't find test result in csv,test fail!");
                         }
                         break;
 
@@ -1643,7 +1643,7 @@ namespace AutoTestSystem.Model
                                     if ((temp[0] == item.TestKeyword.Substring(0, 2) && temp[1] == item.SubStr1 && temp[4] == item.SubStr2 && temp[5].Trim() == item.ComdOrParam && temp[6].Trim() == item.ExpectStr)
                                     && (temp[21].Trim() == item.CheckStr1 || IsNullOrEmpty(item.CheckStr1)))
                                 {
-                                    logger.Info($"find test result in csv line{i + 1}.testResult={temp[46]}");
+                                    loggerInfo($"find test result in csv line{i + 1}.testResult={temp[46]}");
                                     rReturn = temp[46].ToLower() == "pass" ? true : false;
                                     if (!rReturn)
                                     {
@@ -1656,7 +1656,7 @@ namespace AutoTestSystem.Model
                                         }
                                         catch (Exception ex)
                                         {
-                                            logger.Error("~~~~~~~~~" + ex.ToString());
+                                            loggerError("~~~~~~~~~" + ex.ToString());
                                             ValidationFail = true;
                                             ErrorList = item.error_code.Trim().Split(new string[] { "\n" }, 0);
                                             // return rReturn;
@@ -2089,8 +2089,8 @@ namespace AutoTestSystem.Model
 
                                                         {
                                                             foundTempInfo = true;
-                                                            logger.Info("找到了GoldenSN 对应的数据");
-                                                            logger.Info($"goldenSN 信息：{ goldenTemp[0]},{ goldenTemp[1]},{goldenTemp[4]},{goldenTemp[5].Trim()},{goldenTemp[6].Trim()},{goldenTemp[21]}");
+                                                            loggerInfo("找到了GoldenSN 对应的数据");
+                                                            loggerInfo($"goldenSN 信息：{ goldenTemp[0]},{ goldenTemp[1]},{goldenTemp[4]},{goldenTemp[5].Trim()},{goldenTemp[6].Trim()},{goldenTemp[21]}");
 
                                                             var goldenValue = "";
                                                             if (item.ItemName.ToLower().Contains("user1"))
@@ -2111,7 +2111,7 @@ namespace AutoTestSystem.Model
                                                             var goldenValueDouble = double.Parse(goldenValue);
                                                             var itemValueDouble = double.Parse(item.testValue);
                                                             double sub = goldenValueDouble - itemValueDouble;
-                                                            logger.Info($"goldValue:{goldenValueDouble}, itemValue:{itemValueDouble}, Sub:{sub}");
+                                                            loggerInfo($"goldValue:{goldenValueDouble}, itemValue:{itemValueDouble}, Sub:{sub}");
                                                             double limit = double.Parse(Global.TXPowerLimit);
                                                             if ((sub <= limit) && (sub >= -limit))
                                                             {
@@ -2132,7 +2132,7 @@ namespace AutoTestSystem.Model
                                                     }
                                                     if (foundTempInfo == false)
                                                     {
-                                                        logger.Info("未找到GoldenSN 对应的数据，按照比对limit的方式进行");
+                                                        loggerInfo("未找到GoldenSN 对应的数据，按照比对limit的方式进行");
                                                         rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
                                                     }
 
@@ -2176,7 +2176,7 @@ namespace AutoTestSystem.Model
                                     return rReturn;
                                 }
                             }
-                            logger.Error($"Don't find test result in csv,test fail!");
+                            loggerError($"Don't find test result in csv,test fail!");
                         }
                         break;
 
@@ -2196,7 +2196,7 @@ namespace AutoTestSystem.Model
 
                                 if (temp[0] == item.TestKeyword.Substring(0, 2) && temp[1] == item.SubStr1 && temp[4] == item.SubStr2 && temp[5] == item.ComdOrParam)
                                 {
-                                    logger.Info($"find test result in csv line{i + 1}.testResult={temp[46]}");
+                                    loggerInfo($"find test result in csv line{i + 1}.testResult={temp[46]}");
 
 
                                     rReturn = temp[46].ToLower() == "pass" ? true : false;
@@ -2210,7 +2210,7 @@ namespace AutoTestSystem.Model
                                         }
                                         catch (Exception ex)
                                         {
-                                            logger.Error("~~~~~~~~~" + ex.ToString());
+                                            loggerError("~~~~~~~~~" + ex.ToString());
                                             ErrorList = item.error_code.Trim().Split(new string[] { "\n" }, 0);
                                             CalibrationFail = true;
                                             return rReturn;
@@ -2221,7 +2221,7 @@ namespace AutoTestSystem.Model
                                     return rReturn;
                                 }
                             }
-                            logger.Error($"Don't find test result in csv,test fail!");
+                            loggerError($"Don't find test result in csv,test fail!");
                         }
                         break;
 
@@ -2259,7 +2259,7 @@ namespace AutoTestSystem.Model
                     //            if ((temp[0] == item.TestKeyword.Substring(0, 2) && temp[1] == item.SubStr1 && temp[4] == item.SubStr2 && temp[5].Trim() == item.ComdOrParam && temp[6].Trim() == item.ExpectStr)
                     //                && (temp[21].Trim() == item.CheckStr1 || IsNullOrEmpty(item.CheckStr1)))
                     //            {
-                    //                logger.Info($"find test result in csv line{i + 1}.testResult={temp[46]}");
+                    //                loggerInfo($"find test result in csv line{i + 1}.testResult={temp[46]}");
                     //                rReturn = temp[46].ToLower() == "pass" ? true : false;
                     //                if (!rReturn)
                     //                {
@@ -2272,7 +2272,7 @@ namespace AutoTestSystem.Model
                     //                    }
                     //                    catch (Exception ex)
                     //                    {
-                    //                        logger.Error("~~~~~~~~~" + ex.ToString());
+                    //                        loggerError("~~~~~~~~~" + ex.ToString());
                     //                        ValidationFail = true;
                     //                        ErrorList = item.error_code.Trim().Split(new string[] { "\n" }, 0);
                     //                        return rReturn;
@@ -2449,8 +2449,8 @@ namespace AutoTestSystem.Model
 
                     //                                    {
                     //                                        foundTempInfo = true;
-                    //                                        logger.Info("找到了GoldenSN 对应的数据");
-                    //                                        logger.Info($"goldenSN 信息：{ goldenTemp[0]},{ goldenTemp[1]},{goldenTemp[4]},{goldenTemp[5].Trim()},{goldenTemp[6].Trim()},{goldenTemp[21]}");
+                    //                                        loggerInfo("找到了GoldenSN 对应的数据");
+                    //                                        loggerInfo($"goldenSN 信息：{ goldenTemp[0]},{ goldenTemp[1]},{goldenTemp[4]},{goldenTemp[5].Trim()},{goldenTemp[6].Trim()},{goldenTemp[21]}");
 
                     //                                        var goldenValue = "";
                     //                                        if (item.ItemName.ToLower().Contains("user1"))
@@ -2471,7 +2471,7 @@ namespace AutoTestSystem.Model
                     //                                        var goldenValueDouble = double.Parse(goldenValue);
                     //                                        var itemValueDouble = double.Parse(item.testValue);
                     //                                        double sub = goldenValueDouble - itemValueDouble;
-                    //                                        logger.Info($"goldValue:{goldenValueDouble}, itemValue:{itemValueDouble}, Sub:{sub}");
+                    //                                        loggerInfo($"goldValue:{goldenValueDouble}, itemValue:{itemValueDouble}, Sub:{sub}");
                     //                                        double limit = double.Parse(Global.TXPowerLimit);
                     //                                        if ((sub <= limit) && (sub >= -limit))
                     //                                        {
@@ -2492,7 +2492,7 @@ namespace AutoTestSystem.Model
                     //                                }
                     //                                if (foundTempInfo == false)
                     //                                {
-                    //                                    logger.Info("未找到GoldenSN 对应的数据，按照比对limit的方式进行");
+                    //                                    loggerInfo("未找到GoldenSN 对应的数据，按照比对limit的方式进行");
                     //                                    rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
                     //                                }
 
@@ -2536,7 +2536,7 @@ namespace AutoTestSystem.Model
                     //                return rReturn;
                     //            }
                     //        }
-                    //        logger.Error($"Don't find test result in csv,test fail!");
+                    //        loggerError($"Don't find test result in csv,test fail!");
                     //    }
                     //    break;
 
@@ -2598,8 +2598,8 @@ namespace AutoTestSystem.Model
                                 using (var read = new StreamReader(logFile))
                                 {
                                     revStr = read.ReadToEnd();
-                                    logger.Debug("logPath：" + logFile);
-                                    logger.Debug(revStr);
+                                    loggerDebug("logPath：" + logFile);
+                                    loggerDebug(revStr);
                                 }
 
                                 if (revStr.CheckStr(item.CheckStr1) && revStr.CheckStr(item.CheckStr2))
@@ -2612,7 +2612,7 @@ namespace AutoTestSystem.Model
                             }
                             catch (Exception ex)
                             {
-                                logger.Fatal(ex.Message);
+                                loggerFatal(ex.Message);
                                 //客户嫌等待5秒太长，改为等待2秒
                                 //Sleep(item.TimeOut);
                                 //Sleep(2);
@@ -2647,7 +2647,7 @@ namespace AutoTestSystem.Model
                                         else if (!string.IsNullOrEmpty(item.testValue) && item.testValue.EndsWith("M"))
                                             item.testValue = (double.Parse(item.testValue.Replace("M", "").Trim())).ToString();
                                         else
-                                            logger.Debug("Get Speed error!");
+                                            loggerDebug("Get Speed error!");
 
                                         rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
                                         break;
@@ -2665,12 +2665,12 @@ namespace AutoTestSystem.Model
                                 using (var read = new StreamReader($@"{System.Environment.CurrentDirectory}\{item.ComdOrParam}"))
                                 {
                                     revStr = read.ReadToEnd();
-                                    logger.Debug("RedirectedTextCheck Received:" + revStr);
+                                    loggerDebug("RedirectedTextCheck Received:" + revStr);
                                 }
                             }
                             catch (Exception ex)
                             {
-                                logger.Fatal(ex.Message);
+                                loggerFatal(ex.Message);
                                 
                                 Sleep(item.TimeOut);
                                 
@@ -2693,7 +2693,7 @@ namespace AutoTestSystem.Model
                                     else if (!string.IsNullOrEmpty(item.testValue) && item.testValue.EndsWith("M"))
                                         item.testValue = (double.Parse(item.testValue.Replace("M", "").Trim())).ToString();
                                     else
-                                        logger.Debug("Get Speed error!");
+                                        loggerDebug("Get Speed error!");
 
                                     rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
                                     break;
@@ -2705,10 +2705,10 @@ namespace AutoTestSystem.Model
                             //    //删除log 并 重新启动iperf3
                             //    try
                             //    {
-                            //        logger.Info("stationName=" + "RTT" + ", retry=2, restart iperf3");
-                            //        logger.Debug("start delete file " + $@"{System.Environment.CurrentDirectory}\{item.ComdOrParam}");
+                            //        loggerInfo("stationName=" + "RTT" + ", retry=2, restart iperf3");
+                            //        loggerDebug("start delete file " + $@"{System.Environment.CurrentDirectory}\{item.ComdOrParam}");
                             //        File.Delete($@"{System.Environment.CurrentDirectory}\{item.ComdOrParam}");
-                            //        logger.Debug("restart iperf3");
+                            //        loggerDebug("restart iperf3");
                             //        if (item.ComdOrParam == "WIFI2G_THROUGHPUT_parallel_Tx.txt")
                             //        {
                             //            dosCmd.SendCommand3("start /B iperf3 -c 192.168.1.2 -i1 -O2 -P10 -t10 -B 192.168.1.12 > WIFI2G_THROUGHPUT_parallel_Tx.txt  & exit");
@@ -2719,7 +2719,7 @@ namespace AutoTestSystem.Model
                                     
                             //    }
                             //    catch(Exception ex) {
-                            //        logger.Debug("Delete file action error:" + ex.Message.ToString());
+                            //        loggerDebug("Delete file action error:" + ex.Message.ToString());
                             //        retry = 0;//直接retry=0，不需要下次retry了
                             //    }
                                 
@@ -2739,12 +2739,12 @@ namespace AutoTestSystem.Model
                                     using (var read = new StreamReader($@"{System.Environment.CurrentDirectory}\{file}"))
                                     {
                                         revStr = read.ReadToEnd();
-                                        logger.Debug(revStr);
+                                        loggerDebug(revStr);
                                     }
                                 }
                                 catch (Exception ex)
                                 {
-                                    logger.Fatal(ex.Message);
+                                    loggerFatal(ex.Message);
                                     Sleep(item.TimeOut);
                                     return rReturn = false;
                                 }
@@ -2764,11 +2764,11 @@ namespace AutoTestSystem.Model
                                         else if (!string.IsNullOrEmpty(item.testValue) && item.testValue.EndsWith("M"))
                                             sum += (double.Parse(item.testValue.Replace("M", "").Trim()));
                                         else
-                                            logger.Debug("Get Speed error!");
+                                            loggerDebug("Get Speed error!");
                                     }
                                 }
                             }
-                            logger.Debug($"Get 5G total:{sum}M!");
+                            loggerDebug($"Get 5G total:{sum}M!");
                             item.testValue = sum.ToString();
                             rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
                         }
@@ -2807,7 +2807,7 @@ namespace AutoTestSystem.Model
                                     else if (!string.IsNullOrEmpty(item.testValue) && item.testValue.EndsWith("M"))
                                         item.testValue = (double.Parse(item.testValue.Replace("M", "").Trim())).ToString();
                                     else
-                                        logger.Debug("Get Speed error!");
+                                        loggerDebug("Get Speed error!");
 
                                     rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
                                     break;
@@ -2833,7 +2833,7 @@ namespace AutoTestSystem.Model
                     //        item.testValue = DataManager.ShareInstance.GetData("MBLTTxOrRxValue");
                     //        if (item.testValue == "")
                     //        {
-                    //            logger.Error("GetTXorRXValue is null ,fail");
+                    //            loggerError("GetTXorRXValue is null ,fail");
                     //            rReturn = false;
 
                     //        }
@@ -2877,7 +2877,7 @@ namespace AutoTestSystem.Model
                     //                else if (!string.IsNullOrEmpty(item.testValue) && item.testValue.EndsWith("M"))
                     //                    item.testValue = (double.Parse(item.testValue.Replace("M", "").Trim())).ToString();
                     //                else
-                    //                    logger.Debug("Get Speed error!");
+                    //                    loggerDebug("Get Speed error!");
 
                     //                rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
                     //                break;
@@ -2895,7 +2895,7 @@ namespace AutoTestSystem.Model
                     //                CurCheckStr2 = "receiver";
                     //            }
                     //            else {
-                    //                logger.Error("传递的CheckStr不对，fail");
+                    //                loggerError("传递的CheckStr不对，fail");
                     //                break;
                     //            }
                     //            var testValue = "";
@@ -2911,7 +2911,7 @@ namespace AutoTestSystem.Model
                     //                else if (!string.IsNullOrEmpty(item.testValue) && item.testValue.EndsWith("M"))
                     //                    testValue = (double.Parse(item.testValue.Replace("M", "").Trim())).ToString();
                     //                else {
-                    //                    logger.Debug("Get Speed error!");
+                    //                    loggerDebug("Get Speed error!");
                     //                }
 
                     //                DataManager.ShareInstance.SaveData("MBLTTxOrRxValue", testValue);
@@ -2940,7 +2940,7 @@ namespace AutoTestSystem.Model
                                 
                                 
                                 //item.TestValue = temp[1];
-                                logger.Debug($"Get tempSensorTest:{temp[0]},{temp[1]}");
+                                loggerDebug($"Get tempSensorTest:{temp[0]},{temp[1]}");
                                 // 需要比较Limit
                                 if (!String.IsNullOrEmpty(item.Limit_min) || !String.IsNullOrEmpty(item.Limit_max))
                                     rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
@@ -2956,7 +2956,7 @@ namespace AutoTestSystem.Model
                             {
                                 item.testValue = Math.Round(double.Parse(temp[1])).ToString();
                                 //item.TestValue = temp[1];
-                                logger.Debug($"Get tempSensorTest:{temp[0]},{temp[1]}");
+                                loggerDebug($"Get tempSensorTest:{temp[0]},{temp[1]}");
                                 // 需要比较Limit
                                 if (!String.IsNullOrEmpty(item.Limit_min) || !String.IsNullOrEmpty(item.Limit_max))
                                     rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
@@ -3075,11 +3075,11 @@ namespace AutoTestSystem.Model
 
                             if (DUTCOMM == null) {
 
-                                logger.Error("DUTCOM 为空");
+                                loggerError("DUTCOM 为空");
                                return rReturn = false;
                             }
 
-                            //logger.Warn($"Warning!!!,this is default DUT test-method, ErrorList.Length is {ErrorList.Length.ToString()}");
+                            //loggerWarn($"Warning!!!,this is default DUT test-method, ErrorList.Length is {ErrorList.Length.ToString()}");
                             var revStr = "";
                             inPutValue = "";
                             
@@ -3157,10 +3157,10 @@ namespace AutoTestSystem.Model
 
                                 if (item.TestKeyword.Contains("LED_CURRENT"))
                                 {
-                                    logger.Info("step .................... testValue=" + item.testValue);
+                                    loggerInfo("step .................... testValue=" + item.testValue);
                                     item.testValue = (Math.Round(double.Parse(item.testValue) / 10)).ToString(); //取整
 
-                                    logger.Info("step .................... testValue="+item.testValue);
+                                    loggerInfo("step .................... testValue="+item.testValue);
                                 }
 
 
@@ -3193,14 +3193,14 @@ namespace AutoTestSystem.Model
                                 }
 
                                
-                                logger.Debug("min:"+ item.Limit_min);
-                                logger.Debug("max:"+ item.Limit_max);
+                                loggerDebug("min:"+ item.Limit_min);
+                                loggerDebug("max:"+ item.Limit_max);
 
                                 // 需要比较Limit
                                 if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max)) {
                                     
                                     rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
-                                    logger.Debug("返回结果:" + (rReturn ? "True" : "False"));
+                                    loggerDebug("返回结果:" + (rReturn ? "True" : "False"));
                                 }
                                
 
@@ -3219,8 +3219,8 @@ namespace AutoTestSystem.Model
                                  
                                     if (DUTCOMM != null && DUTCOMM.GetType() == typeof(Telnet))
                                     {
-                                       logger.Info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                                       logger.Error("connet again");
+                                       loggerInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                                       loggerError("connet again");
                                        telnetInfo = new TelnetInfo { _Address = DUTCOMM.HostIP };
                                        DUTCOMM.Close();
                                        DUTCOMM = new Telnet(telnetInfo);
@@ -3244,14 +3244,14 @@ namespace AutoTestSystem.Model
             catch (ThreadAbortException ex)
             {
                 //abort线程忽略报错
-                logger.Warn(ex.Message);
+                loggerWarn(ex.Message);
                 rReturn = false;
                 HandleSpecialMethed(item, rReturn, "");
                 return rReturn;
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex.ToString());
+                loggerFatal(ex.ToString());
                 rReturn = false;
                 HandleSpecialMethed(item, rReturn, "");
                 return rReturn;
@@ -3264,9 +3264,9 @@ namespace AutoTestSystem.Model
                 if ((retryTimes == 0 && !rReturn) && (IsNullOrEmpty(error_code) && IsNullOrEmpty(error_details)))
                 {
                    
-                    logger.Debug($"ErrorList.length {ErrorList.Length}.");
+                    loggerDebug($"ErrorList.length {ErrorList.Length}.");
                     if (ErrorList.Length == 1) {
-                        logger.Debug("ErrorList = " + ErrorList[0]);
+                        loggerDebug("ErrorList = " + ErrorList[0]);
                     }
                     if (ErrorList.Length > 1 && info == "TooHigh") // TooHigh
                     {
@@ -3289,7 +3289,7 @@ namespace AutoTestSystem.Model
                         }
 
                         if (error_code == "" || error_details == "") {
-                            logger.Error("errorcode 异常:," + "error_code=" + error_code + ", errordetails=" + error_details);
+                            loggerError("errorcode 异常:," + "error_code=" + error_code + ", errordetails=" + error_details);
                         }
 
                         
@@ -3304,9 +3304,9 @@ namespace AutoTestSystem.Model
                     if (item.TestKeyword != "Wait" && item.TestKeyword != "ThreadSleep")
                     {
                         if (rReturn)
-                            logger.Info($"{item.ItemName} {(rReturn ? "PASS" : "FAIL")}!! ElapsedTime:{item.ElapsedTime},{error_code}:{error_details},Spec:{item.Spec},Min:{item.Limit_min},Value:{item.testValue},Max:{item.Limit_max}");
+                            loggerInfo($"{item.ItemName} {(rReturn ? "PASS" : "FAIL")}!! ElapsedTime:{item.ElapsedTime},{error_code}:{error_details},Spec:{item.Spec},Min:{item.Limit_min},Value:{item.testValue},Max:{item.Limit_max}");
                         else
-                            logger.Error($"{item.ItemName} {(rReturn ? "PASS" : "FAIL")}!! ElapsedTime:{item.ElapsedTime},{error_code}:{error_details},Spec:{item.Spec},Min:{item.Limit_min},Value:{item.testValue},Max:{item.Limit_max}");
+                            loggerError($"{item.ItemName} {(rReturn ? "PASS" : "FAIL")}!! ElapsedTime:{item.ElapsedTime},{error_code}:{error_details},Spec:{item.Spec},Min:{item.Limit_min},Value:{item.testValue},Max:{item.Limit_max}");
 
                         if (item.ItemName == "FIXTURE_CLOSE") {
                             MainForm.f1.FIXTURE_TIME = item.ElapsedTime;
@@ -3384,7 +3384,7 @@ namespace AutoTestSystem.Model
         private static void HandleSpecialMethed(Items item, bool rReturn, string revStr)
         {
 
-            //logger.Info("屏蔽特殊处理!!!");
+            //loggerInfo("屏蔽特殊处理!!!");
             return;
 
 
@@ -3398,7 +3398,7 @@ namespace AutoTestSystem.Model
                 
                 )
             {
-                //logger.Info(">>>>>>>>>>>> do it again");
+                //loggerInfo(">>>>>>>>>>>> do it again");
                 //MessageBox.Show("重新拔插U盘，完成后点击确定/Đặt lại đĩa flash USB, và nhắp vào OK khi xong\r\n");
                 USBConfirmDialog usbDialog = new USBConfirmDialog();
                 usbDialog.TextHandler = (str) => { };
@@ -3409,7 +3409,7 @@ namespace AutoTestSystem.Model
 
 
             
-            logger.Info("~~~~~~~~~~~~~~~~~~~~~~~~~~~StationName:" + Global.STATIONNAME + ",itemName:" + item.ItemName + ",eeroName:" + item.EeroName);
+            loggerInfo("~~~~~~~~~~~~~~~~~~~~~~~~~~~StationName:" + Global.STATIONNAME + ",itemName:" + item.ItemName + ",eeroName:" + item.EeroName);
 
             if (
 
@@ -3466,7 +3466,7 @@ namespace AutoTestSystem.Model
                               
                                 string name = "DUTPOE";
                                 NetshInterfaceDisEnable(name);
-                                logger.Debug("sleep 27 s");
+                                loggerDebug("sleep 27 s");
                                 Thread.Sleep(27000);
                                 NetshInterfaceEnable(name);
                                 
@@ -3475,13 +3475,13 @@ namespace AutoTestSystem.Model
                         }
                         else {
                             
-                            logger.Info("----------------->begin pop RJ45 fixture");
+                            loggerInfo("----------------->begin pop RJ45 fixture");
 
                             FixSerialPort.SendCommandToFix("AT+PORTEJECT%", ref recvStr, "OK", 10);
 
                             Sleep(500);
 
-                            logger.Info("----------------->begin push RJ45 fixture");
+                            loggerInfo("----------------->begin push RJ45 fixture");
 
                             FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
 
@@ -3491,7 +3491,7 @@ namespace AutoTestSystem.Model
 
                             if ((Global.STATIONNAME == "SFT" && (item.ItemName == "WaitingToStart") && item.EeroName == "ENTER_KERNEL") == false)
                             {
-                                logger.Info("-------------------> waiting for start");
+                                loggerInfo("-------------------> waiting for start");
                                 var rr = "";
                                 if (DUTCOMM != null)
                                 {
@@ -3559,7 +3559,7 @@ namespace AutoTestSystem.Model
             item.error_code = error_code;
             phaseItem.CopyFrom(specFlag, item, rReturn);
             stationObj.tests.Add(phaseItem);
-            logger.Debug($"{item.ItemName} add test item to station");
+            loggerDebug($"{item.ItemName} add test item to station");
  
 
 

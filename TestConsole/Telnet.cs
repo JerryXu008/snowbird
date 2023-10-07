@@ -106,13 +106,13 @@ namespace AutoTestSystem.DAL
 
         public override bool Open()
         {
-            logger.Debug("start login telnet...");
+            loggerDebug("start login telnet...");
             SessionLog.Clear();
             try
             {
                 if (!IPAddress.TryParse(HostIP, out ipAdd)) //确定一个字符串是否是有效的IP地址。
                 {
-                    logger.Error($"{HostIP} IP Address is invalid");
+                    loggerError($"{HostIP} IP Address is invalid");
                     return false;
                 }
                 //PingIP(HostIP, 5);
@@ -137,7 +137,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ex)
             {
-                logger.Fatal($"Telnet connection Exception... {ex.ToString()}");
+                loggerFatal($"Telnet connection Exception... {ex.ToString()}");
                 return false;
             }
         }
@@ -147,13 +147,13 @@ namespace AutoTestSystem.DAL
         /// </summary>
         public override bool Open(string exceptStr)
         {
-            logger.Debug("start login telnet...");
+            loggerDebug("start login telnet...");
             SessionLog.Clear();
             try
             {
                 if (!IPAddress.TryParse(HostIP, out ipAdd)) //确定一个字符串是否是有效的IP地址。
                 {
-                    logger.Debug($"{HostIP} IP Address is invalid");
+                    loggerDebug($"{HostIP} IP Address is invalid");
                     return false;
                 }
                 //PingIP(HostIP, 5);
@@ -174,7 +174,7 @@ namespace AutoTestSystem.DAL
                 //异步回调AsyncCallback recieveData = new AsyncCallback(OnRecievedData);
                 socket.BeginReceive(m_byBuff, 0, m_byBuff.Length, 0, new AsyncCallback(OnRecievedData), socket);
                 bool loginResult = WaitFor("TelnetLogin", exceptStr, 30);
-                logger.Debug(SessionLog.ToString());
+                loggerDebug(SessionLog.ToString());
                 SessionLog.Clear();
                 //InputEvent.Set();
                 if (loginResult)
@@ -187,7 +187,7 @@ namespace AutoTestSystem.DAL
             catch (Exception ex)
             {
                // InputEvent.Set();
-                logger.Fatal($"Telnet connection fails... {ex.ToString()}");
+                loggerFatal($"Telnet connection fails... {ex.ToString()}");
                 return false;
             }
         }
@@ -200,12 +200,12 @@ namespace AutoTestSystem.DAL
                 {
                     socket.Shutdown(SocketShutdown.Both);
                     socket.Close();
-                    logger.Debug("Close telnet connect succeed.");
+                    loggerDebug("Close telnet connect succeed.");
                 }
             }
             catch (Exception ex)
             {
-                logger.Debug("DisConnect telnet Exception:" + ex.ToString());
+                loggerDebug("DisConnect telnet Exception:" + ex.ToString());
                 throw;
             }
         }
@@ -268,7 +268,7 @@ namespace AutoTestSystem.DAL
                     if (mOutText != "")
                     {
                         mOutText = mOutText.Replace("\b", "");
-                        logger.Debug(mOutText);
+                        loggerDebug(mOutText);
                         strWorkingData = mOutText;
                        // if (InputEvent.WaitOne())
                         {
@@ -280,14 +280,14 @@ namespace AutoTestSystem.DAL
                 }
                 else// 如果没有接收到任何数据的话
                 {
-                    logger.Debug("OnRecievedData关闭连接,关闭socket!!!");
+                    loggerDebug("OnRecievedData关闭连接,关闭socket!!!");
                     sock.Shutdown(SocketShutdown.Both);
                     sock.Close();
                 }
             }
             catch (SocketException ex) //接收时telnet断连retry处理
             {
-                //logger.Debug($"{ex.Message} DisConnect telnet。");
+                //loggerDebug($"{ex.Message} DisConnect telnet。");
                 Close();
 
               
@@ -303,8 +303,8 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ex)
             {
-                logger.Debug(SessionLog.ToString());
-                logger.Fatal("接收数据时出现异常：" + ex.ToString());
+                loggerDebug(SessionLog.ToString());
+                loggerFatal("接收数据时出现异常：" + ex.ToString());
                 mOutText = "";
                 SessionLog.Clear();
                 //throw;
@@ -337,7 +337,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ers)
             {
-                logger.Fatal("出错了,在回发数据的时候 " + ers.ToString());
+                loggerFatal("出错了,在回发数据的时候 " + ers.ToString());
                 throw;
             }
         }
@@ -430,7 +430,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception eP)
             {
-                logger.Fatal("Telnet解析传入的字符串错误:" + eP.ToString());
+                loggerFatal("Telnet解析传入的字符串错误:" + eP.ToString());
                 throw;
                 //throw new Exception("解析传入的字符串错误:" + eP.ToString());
             }
@@ -558,7 +558,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception eeeee)
             {
-                logger.Fatal("解析参数时出错:" + eeeee.ToString());
+                loggerFatal("解析参数时出错:" + eeeee.ToString());
                 throw;
             }
         }
@@ -597,7 +597,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ers)
             {
-                logger.Fatal("Error!,When DispatchMessage:" + ers.ToString());
+                loggerFatal("Error!,When DispatchMessage:" + ers.ToString());
                 throw;
             }
         }
@@ -616,11 +616,11 @@ namespace AutoTestSystem.DAL
                       //  InputEvent.Reset();
                         if (SessionLog.ToString().Contains(dataToWaitFor))
                         {
-                            logger.Info($"Send command:{command},waiting for:{dataToWaitFor} success!");
+                            loggerInfo($"Send command:{command},waiting for:{dataToWaitFor} success!");
                             return true;
                         }
 
-                        logger.Error($"Send command:{command},waiting for:{dataToWaitFor},TimeOut({timeout}), FAIL!!!");
+                        loggerError($"Send command:{command},waiting for:{dataToWaitFor},TimeOut({timeout}), FAIL!!!");
                         PingIP(HostIP, 10);
                         strWorkingData = "";
                         return false;
@@ -628,7 +628,7 @@ namespace AutoTestSystem.DAL
                     Thread.Sleep(1); //垃圾回收，优化CPU占用率问题
                 }
                // InputEvent.Reset();
-                logger.Info($"waiting for:\"{dataToWaitFor}\" success.");
+                loggerInfo($"waiting for:\"{dataToWaitFor}\" success.");
                 strWorkingData = "";
                 return true;
             }
@@ -655,7 +655,7 @@ namespace AutoTestSystem.DAL
                 //Thread.Sleep(10); //连续发命令的间隔
                 recvStr = "";
                 cmd = cmd + "\n";
-                logger.Debug($"TelnetSendCommand-->{cmd}");
+                loggerDebug($"TelnetSendCommand-->{cmd}");
                 SessionLog.Clear();
                 strWorkingData = "";
                 DispatchMessage(cmd);
@@ -664,16 +664,16 @@ namespace AutoTestSystem.DAL
                
                 
                 
-              //  logger.Info("test tepm Received:  " + recvStr);
+              //  loggerInfo("test tepm Received:  " + recvStr);
                
                 
                 
                // InputEvent.Set();
                 if (!receiveResult)
                 {
-                    logger.Debug(recvStr);
+                    loggerDebug(recvStr);
                 }
-                //logger.Debug(recvStr);
+                //loggerDebug(recvStr);
                 //if (!receiveResult)
                 //{
                 //    PingIP(HostIP, 1);
@@ -681,8 +681,8 @@ namespace AutoTestSystem.DAL
                 //if (!receiveResult && retry < retryTimes)
                 //{
                 //    retry++;
-                //    logger.Debug(recvStr);
-                //    logger.Debug($"发送命令没得到期待提示符，retry发送第 {retry} 次：");
+                //    loggerDebug(recvStr);
+                //    loggerDebug($"发送命令没得到期待提示符，retry发送第 {retry} 次：");
                 //    receiveResult = TelnetSend(message, ref recvStr, waitforStr, timeout);
                 //}
                 //retry = 0;
@@ -692,7 +692,7 @@ namespace AutoTestSystem.DAL
             {
                 //socket.Shutdown(SocketShutdown.Both);
                 //socket.Close();
-                logger.Fatal($"SocketException ex:{ex.ToString()},Reconnect Telnet,Retry.....");
+                loggerFatal($"SocketException ex:{ex.ToString()},Reconnect Telnet,Retry.....");
                 Close();
                 if (Open("root@OpenWrt:/#"))
                 {
@@ -700,7 +700,7 @@ namespace AutoTestSystem.DAL
                 }
                 else
                 {
-                    logger.Error($"Reconnect the Telnet failed！！！");
+                    loggerError($"Reconnect the Telnet failed！！！");
                     return false;
                 }
             }
@@ -712,13 +712,13 @@ namespace AutoTestSystem.DAL
                 }
                 else
                 {
-                    logger.Error($"Reconnect the Telnet failed！！！");
+                    loggerError($"Reconnect the Telnet failed！！！");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                logger.Fatal($"{ex.ToString()}");
+                loggerFatal($"{ex.ToString()}");
                 recvStr = SessionLog.ToString();
                 return false;
             }

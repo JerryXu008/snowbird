@@ -9,7 +9,7 @@ namespace AutoTestSystem.DAL
     {
         public string SendCommand3(string cmd)
         {
-            logger.Debug("DOSCommand-->" + cmd);
+            loggerDebug("DOSCommand-->" + cmd);
             Process process = new Process();
             process.StartInfo.FileName = "cmd.exe";
             process.StartInfo.Arguments = "/c " + cmd;
@@ -22,12 +22,12 @@ namespace AutoTestSystem.DAL
             string net2 = "";
             //net2 = process.StandardOutput.ReadToEnd();
             //process.Close();
-           // logger.Debug(net2);
+           // loggerDebug(net2);
             return net2;
         }
         //public bool SendCommand2(string command, ref string strRecAll, string DataToWaitFor, int timeout = 10)
         //{
-        //    logger.Debug($"DosSendComd-->{command}");
+        //    loggerDebug($"DosSendComd-->{command}");
         //    bool rResult = false;
         //    using (Process process = new Process())
         //    {
@@ -80,17 +80,17 @@ namespace AutoTestSystem.DAL
         //                // Process completed. Check process.ExitCode here.
         //                if (output.ToString().Contains(DataToWaitFor) && string.IsNullOrEmpty(error.ToString()))
         //                {
-        //                    logger.Info($"Waiting for:{DataToWaitFor} succeed!!");
+        //                    loggerInfo($"Waiting for:{DataToWaitFor} succeed!!");
         //                    rResult = true;
         //                }
         //            }
         //            else
         //            {
         //                // Timed out.
-        //                logger.Error($"Waiting for:{DataToWaitFor} TimeOut({timeout}),FAIL!, Error:{error.ToString()}");
+        //                loggerError($"Waiting for:{DataToWaitFor} TimeOut({timeout}),FAIL!, Error:{error.ToString()}");
         //            }
         //            strRecAll = output.ToString();
-        //            logger.Debug(output.ToString());
+        //            loggerDebug(output.ToString());
         //        }
         //    }
         //    return rResult;
@@ -99,7 +99,7 @@ namespace AutoTestSystem.DAL
         public override bool SendCommand(string command, ref string strRecAll, string DataToWaitFor, int timeout = 3000)
         {
             bool rResult = false;
-            logger.Debug($"DosSendComd-->{command}");
+            loggerDebug($"DosSendComd-->{command}");
             //说明：不管命令是否成功均执行exit命令，否则当调用ReadToEnd()方法时，会处于假死状态
             using (var p = new Process())
             {
@@ -122,16 +122,16 @@ namespace AutoTestSystem.DAL
                 var output = p.StandardOutput.ReadToEnd();
                 p.WaitForExit(timeout*1000);
                 p.Close();
-                logger.Debug(output);
+                loggerDebug(output);
                 if (output.Contains(DataToWaitFor))
                 {
-                    logger.Info($"Waiting for:{DataToWaitFor} succeed!!");
+                    loggerInfo($"Waiting for:{DataToWaitFor} succeed!!");
                     rResult = true;
                 }
                 else
                 {
                     // Timed out.
-                    logger.Error($"Waiting for:{DataToWaitFor} TimeOut({timeout}),FAIL!, Error:{error.ToString()}");
+                    loggerError($"Waiting for:{DataToWaitFor} TimeOut({timeout}),FAIL!, Error:{error.ToString()}");
                 }
                 strRecAll = output;
             }

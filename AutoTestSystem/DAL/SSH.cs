@@ -39,7 +39,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ex)
             {
-                logger.Debug(ex.ToString());
+                loggerDebug(ex.ToString());
                 conResult = false;
             }
             return conResult;
@@ -59,7 +59,7 @@ namespace AutoTestSystem.DAL
         //    }
         //    catch (Exception ex)
         //    {
-        //        logger.Debug(ex.ToString());
+        //        loggerDebug(ex.ToString());
         //        conResult = false;
         //    }
         //    return conResult;
@@ -78,7 +78,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex.ToString());
+                loggerFatal(ex.ToString());
                 conResult = false;
             }
             return conResult;
@@ -93,7 +93,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex.ToString());
+                loggerFatal(ex.ToString());
                 //throw;
             }
         }
@@ -113,7 +113,7 @@ namespace AutoTestSystem.DAL
             StringBuilder sb = new StringBuilder();
             try
             {
-                logger.Debug($"SshSendCommand-->{comd}");
+                loggerDebug($"SshSendCommand-->{comd}");
                 // Send the command
                 stream.WriteLine(string.Format("{0} \n", comd));
                 // Read with a suitable timeout to avoid hanging
@@ -124,20 +124,20 @@ namespace AutoTestSystem.DAL
                     sb.Append(line.ToString() + "\n");
                     if (line.Contains(waitFor))
                     {
-                        logger.Debug($"Waiting for:{waitFor} succeed!!");
+                        loggerDebug($"Waiting for:{waitFor} succeed!!");
                         break;
                     }
                     // Thread.Sleep(1);
                 }
                 line = sb.ToString();
-                logger.Debug(line);
+                loggerDebug(line);
                 return true;
             }
             catch (Exception ex)
             {
                 line = sb.ToString();
-                logger.Debug(ex.ToString());
-                logger.Debug("发送命令失败！！！" + line);
+                loggerDebug(ex.ToString());
+                loggerDebug("发送命令失败！！！" + line);
                 return false;
             }
         }
@@ -158,7 +158,7 @@ namespace AutoTestSystem.DAL
             StringBuilder sb = new StringBuilder();
             try
             {
-                logger.Debug($"SshSendCommand-->{comd}");
+                loggerDebug($"SshSendCommand-->{comd}");
                 // Send the command
                 stream.WriteLine(string.Format("{0} \n", comd));
                 // Read with a suitable timeout to avoid hanging
@@ -169,20 +169,20 @@ namespace AutoTestSystem.DAL
                     sb.Append(line.ToString() + "\n");
                     if (line.Contains(waitFor))
                     {
-                        logger.Info($"Waiting for:{waitFor} succeed!!");
+                        loggerInfo($"Waiting for:{waitFor} succeed!!");
                         break;
                     }
                     // Thread.Sleep(1);
                 }
                 line = sb.ToString();
-                logger.Debug(line);
+                loggerDebug(line);
                 return true;
             }
             catch (Exception ex)
             {
                 line = sb.ToString();
-                logger.Debug("发送命令失败！！！" + line);
-                logger.Debug(ex.ToString());
+                loggerDebug("发送命令失败！！！" + line);
+                loggerDebug(ex.ToString());
                 return false;
             }
         }

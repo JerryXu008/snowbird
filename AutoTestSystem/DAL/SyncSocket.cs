@@ -28,13 +28,13 @@ namespace AutoTestSystem.DAL
                 if (socket.Connected)
                 {
                     socket.Close();
-                    logger.Debug("Close telnet connect succeed.");
+                    loggerDebug("Close telnet connect succeed.");
                     //socket.Dispose();
                 }
             }
             catch (Exception ex)
             {
-                logger.Debug("DisConnect telnet Exception:" + ex.ToString());
+                loggerDebug("DisConnect telnet Exception:" + ex.ToString());
                 throw;
             }
         }
@@ -50,7 +50,7 @@ namespace AutoTestSystem.DAL
             {
                 if (!IPAddress.TryParse(HostIP, out ipAdd)) //确定一个字符串是否是有效的IP地址。
                 {
-                    logger.Debug($"{HostIP} IP Address is invalid");
+                    loggerDebug($"{HostIP} IP Address is invalid");
                     return false;
                 }
                 PingIP(HostIP, 5);
@@ -62,7 +62,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ex)
             {
-                logger.Fatal($"Telnet connection fails... {ex.ToString()}");
+                loggerFatal($"Telnet connection fails... {ex.ToString()}");
                 throw;
             }
         }

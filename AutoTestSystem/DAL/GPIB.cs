@@ -50,16 +50,16 @@ namespace AutoTestSystem.DAL
                     //mbSession.Clear();
                     //mbSession.Write("*CLS\n"); //skip by Alice on 2018-9-21
                     //mbSession.Query("*IDN?\n");
-                    //logger.Debug(mbSession.Query("*IDN?\n"));
+                    //loggerDebug(mbSession.Query("*IDN?\n"));
                     rReturn = true;
                 }
                 catch (InvalidCastException)
                 {
-                    logger.Fatal("Resource selected must be a message-based session");
+                    loggerFatal("Resource selected must be a message-based session");
                 }
                 catch (Exception exp)
                 {
-                    logger.Fatal(exp.Message);
+                    loggerFatal(exp.Message);
                 }
                 return rReturn;
             }
@@ -70,12 +70,12 @@ namespace AutoTestSystem.DAL
             try
             {
                 string textToWrite = ReplaceCommonEscapeSequences(strCmd);
-                logger.Debug("VISAsendCommand-->" + textToWrite);
+                loggerDebug("VISAsendCommand-->" + textToWrite);
                 mbSession.RawIO.Write(textToWrite);
             }
             catch (Exception exp)
             {
-                logger.Debug(exp.Message);
+                loggerDebug(exp.Message);
             }
         }
 
@@ -88,11 +88,11 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception exp)
             {
-                logger.Debug(exp.Message);
+                loggerDebug(exp.Message);
             }
             finally
             {
-                logger.Debug("VISARead:" + ResponseContext);
+                loggerDebug("VISARead:" + ResponseContext);
             }
             return ResponseContext;
         }
@@ -109,7 +109,7 @@ namespace AutoTestSystem.DAL
                 long lngStart = DateTime.Now.AddSeconds(timeout).Ticks;
                 long lngCurTime = 0;
                 strRecAll = "";
-                logger.Debug($"VISASendComd-->{command}");
+                loggerDebug($"VISASendComd-->{command}");
                 Write(command);
                 sReceiveAll = Read();
                 while (sReceiveAll.ToLower().IndexOf(DataToWaitFor.ToLower()) == -1)
@@ -119,8 +119,8 @@ namespace AutoTestSystem.DAL
                     {
                         strRecAll = sReceiveAll;
                         sReceiveAll = "";
-                        logger.Debug(strRecAll);
-                        logger.Debug($"Waiting for:{DataToWaitFor} TimeOut({timeout}),FAIL!!!");
+                        loggerDebug(strRecAll);
+                        loggerDebug($"Waiting for:{DataToWaitFor} TimeOut({timeout}),FAIL!!!");
                         return false;
                     }
                     else
@@ -132,13 +132,13 @@ namespace AutoTestSystem.DAL
                 }
                 strRecAll = sReceiveAll;
                 sReceiveAll = "";
-                logger.Debug(strRecAll);
-                logger.Debug($"Waiting for:{DataToWaitFor} succeed!!");
+                loggerDebug(strRecAll);
+                loggerDebug($"Waiting for:{DataToWaitFor} succeed!!");
                 return true;
             }
             catch (Exception ex)
             {
-                logger.Debug(ex.ToString());
+                loggerDebug(ex.ToString());
                 return false;
                 throw;
             }

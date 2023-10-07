@@ -29,6 +29,12 @@ namespace AutoTestSystem.BLL
     {
         public static ILog logger = Log4NetHelper.GetLogger(typeof(Bd));
 
+        public  static string  TempCellLogPath = $@"{Global.LogPath}\Temp.txt";
+
+
+        
+
+
         /// <summary>
         ///     创建初始文件夹,如果不存在.
         /// </summary>
@@ -38,7 +44,7 @@ namespace AutoTestSystem.BLL
             {
                 if (Directory.Exists(path)) return;
                 Directory.CreateDirectory(path);
-                logger.Info($"Create Directory {path} succeed.");
+                loggerInfo($"Create Directory {path} succeed.");
             }
             catch (Exception ex)
             {
@@ -59,12 +65,12 @@ namespace AutoTestSystem.BLL
                     File.Delete(path);
                 }
                 File.Create(path);
-                logger.Info($"Create file {path} succeed.");
+                loggerInfo($"Create file {path} succeed.");
                 return true;
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex.ToString());
+                loggerFatal(ex.ToString());
                 throw;
             }
         }
@@ -93,13 +99,13 @@ namespace AutoTestSystem.BLL
             {
                 if (!string.IsNullOrEmpty(substr))
                 {
-                    logger.Info($"Check Contain substr:{substr} ,pass.");
+                    loggerInfo($"Check Contain substr:{substr} ,pass.");
                 }
                 return true;
             }
             else
             {
-                logger.Error($"Check Contain substr:{substr} ,fail..");
+                loggerError($"Check Contain substr:{substr} ,fail..");
                 return false;
             }
         }
@@ -117,6 +123,54 @@ namespace AutoTestSystem.BLL
                 throw new Exception(ex.Message);
             }
         }
+        public static void loggerDebug(string txt) { 
+            logger.Debug(txt);
+            SaveLog(txt);
+        }
+        public static void loggerInfo(string txt)
+        {
+            logger.Info(txt);
+            SaveLog(txt);
+        }
+        public static void loggerWarn(string txt)
+        {
+            logger.Warn(txt);
+            SaveLog(txt);
+        }
+        public static void loggerError(string txt)
+        {
+            logger.Error(txt);
+            SaveLog(txt);
+        }
+        public static void loggerFatal(string txt)
+        {
+            logger.Fatal(txt);
+            SaveLog(txt);
+        }
+
+        public static void SaveLog(string log, int type = 1)
+        {
+          
+            if (Global.STATIONNAME != "BURNIN") {
+                return;
+            }
+
+            try
+            { 
+                
+                    using (StreamWriter sw = new StreamWriter(TempCellLogPath, true, Encoding.Default))
+                    {
+                        sw.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {log}");
+                    }
+                
+            }
+            catch (Exception)
+            {
+                //throw ex;
+            }
+        }
+
+
 
         public static bool NoCheckStr(this string str, string substr)
         {
@@ -126,7 +180,7 @@ namespace AutoTestSystem.BLL
             {
                 if (str.Contains(substr))
                 {
-                    logger.Info($"Check NoContain substr:{substr} ,fail...");
+                    loggerInfo($"Check NoContain substr:{substr} ,fail...");
                     return false;
                 }
                 else
@@ -166,7 +220,7 @@ namespace AutoTestSystem.BLL
         /// <returns></returns>
         public static bool CompressFile(string filePath, string zipPath, bool deletedAfterCompress = false)
         {
-            logger.Debug($"zipPath:{zipPath}");
+            loggerDebug($"zipPath:{zipPath}");
             var rReturn = false;
             var compCommand = $@"{System.Environment.CurrentDirectory}\7z.exe a -tzip {zipPath} {filePath}"; //压缩DOS指令
             if (RunDosCmd(compCommand).Contains("Everything is Ok"))
@@ -190,7 +244,7 @@ namespace AutoTestSystem.BLL
                 var ss = arr[i];
                 if (ss.Contains("IPv4 地址") && ss.Contains(ip))
                 { //找到了
-                    logger.Debug(">>>>>>find NetInterface:" + ss);
+                    loggerDebug(">>>>>>find NetInterface:" + ss);
                     while (i >= 0)
                     {
                         i--;
@@ -211,7 +265,7 @@ namespace AutoTestSystem.BLL
             }
 
             if (ret == "") {
-                //logger.Info("ip地址:" + ip + " 没有找到,开始固定网口名称查找");
+                //loggerInfo("ip地址:" + ip + " 没有找到,开始固定网口名称查找");
                 ret = "0.10";
             }
             return ret;
@@ -255,7 +309,7 @@ namespace AutoTestSystem.BLL
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex.ToString());
+                loggerFatal(ex.ToString());
                 rReturn = false;
             }
             return rReturn;
@@ -287,13 +341,13 @@ namespace AutoTestSystem.BLL
                 // 返回目录中所有文件和子目录
                 if (dir.GetFileSystemInfos().Length > 0)
                 {
-                    logger.Debug($"find log number:{dir.GetFileSystemInfos().Length}.");
+                    loggerDebug($"find log number:{dir.GetFileSystemInfos().Length}.");
                     var files = Directory.GetFileSystemEntries(filepath);
                     foreach (var file in files)
                     {
                         if (file.Contains(str) && file.EndsWith(".csv"))
                         {
-                            logger.Debug($"find csv File:{file}");
+                            loggerDebug($"find csv File:{file}");
                             //Thread.Sleep(3000);
                             using (var sr = new StreamReader(file))
                             {
@@ -306,7 +360,7 @@ namespace AutoTestSystem.BLL
                 }
                 Thread.Sleep(1000);
             }
-            logger.Error($"Waiting csv log timeout{timeOut}.FAIL!!! ");
+            loggerError($"Waiting csv log timeout{timeOut}.FAIL!!! ");
             csvLines = null;
             return rReturn;
         }
@@ -324,13 +378,13 @@ namespace AutoTestSystem.BLL
                 // 返回目录中所有文件和子目录
                 if (dir.GetFileSystemInfos().Length > 0)
                 {
-                    logger.Debug($"find log number:{dir.GetFileSystemInfos().Length}.");
+                    loggerDebug($"find log number:{dir.GetFileSystemInfos().Length}.");
                     var files = Directory.GetFileSystemEntries(filepath);
                     foreach (var file in files)
                     {
                         if (file.Contains(str) && file.EndsWith(".csv"))
                         {
-                            logger.Debug($"find csv File:{file}");
+                            loggerDebug($"find csv File:{file}");
                             //Thread.Sleep(3000);
                             using (var sr = new StreamReader(file))
                             {
@@ -343,7 +397,7 @@ namespace AutoTestSystem.BLL
                 }
                 Thread.Sleep(1000);
             }
-            logger.Error($"Waiting csv log timeout{timeOut}.FAIL!!! ");
+            loggerError($"Waiting csv log timeout{timeOut}.FAIL!!! ");
             csvLines = null;
             return rReturn;
         }
@@ -363,7 +417,7 @@ namespace AutoTestSystem.BLL
             var retry = 0;
             try
             {
-                logger.Debug("Searching Blue-tooth......");
+                loggerDebug("Searching Blue-tooth......");
                 var bluetoothClient = new BluetoothClient();
                 BluetoothRadio.PrimaryRadio.Mode = RadioMode.Discoverable;
                 var Inquiry_Time = TimeSpan.FromSeconds(5);
@@ -374,21 +428,21 @@ namespace AutoTestSystem.BLL
                     //BluetoothDeviceInfo[] bluetoothDeviceInfo = bluetoothClient.DiscoverDevices(15, false, false, false, true);
                     var bluetoothDeviceInfo = bluetoothClient.DiscoverDevices(15);
 
-                    logger.Debug(
+                    loggerDebug(
                         $"Find {bluetoothDeviceInfo.Length} Bluetooth.Target Bluetooth is:{devName}, Bt_mac:{devAddress}.");
                     for (var i = 0; i < bluetoothDeviceInfo.Length; i++)
                     {
-                        logger.Debug($"this name of BT{i}: {bluetoothDeviceInfo[i].DeviceName}");
+                        loggerDebug($"this name of BT{i}: {bluetoothDeviceInfo[i].DeviceName}");
                         if (bluetoothDeviceInfo[i].DeviceName == devName
                             && bluetoothDeviceInfo[i].DeviceAddress == BluetoothAddress.Parse(devAddress))
                         {
-                            logger.Debug($"Target Bluetooth is founded: {devName},Ready to match.");
+                            loggerDebug($"Target Bluetooth is founded: {devName},Ready to match.");
                             var bdi = new BluetoothDeviceInfo(bluetoothDeviceInfo[i].DeviceAddress);
                             if (!bdi.Authenticated)
                             {
                                 //string pair = rd.Pin; /* PIN for your dongle */
                                 rReturn = BluetoothSecurity.PairRequest(bdi.DeviceAddress, "0000");
-                                logger.Debug($"Bluetooth pair {(rReturn ? "succeed" : "failed")}！");
+                                loggerDebug($"Bluetooth pair {(rReturn ? "succeed" : "failed")}！");
                                 if (rReturn) return true;
                             }
                         }
@@ -397,11 +451,11 @@ namespace AutoTestSystem.BLL
                     Thread.Sleep(10);
                 }
 
-                logger.Error($"Target Bluetooth not been founded：{devName}！");
+                loggerError($"Target Bluetooth not been founded：{devName}！");
             }
             catch (Exception ex)
             {
-                logger.Fatal("Search Bluetooth Exception:" + ex);
+                loggerFatal("Search Bluetooth Exception:" + ex);
                 //throw;
             }
             finally
@@ -409,9 +463,9 @@ namespace AutoTestSystem.BLL
                 if (rReturn)
                 {
                     if (BluetoothSecurity.RemoveDevice(BluetoothAddress.Parse(devAddress)))
-                        logger.Info("BT Remove Device Success !!");
+                        loggerInfo("BT Remove Device Success !!");
                     else
-                        logger.Error("BT Remove Device Fail !!");
+                        loggerError("BT Remove Device Fail !!");
                 }
                 //else
                 //{
@@ -494,7 +548,7 @@ namespace AutoTestSystem.BLL
 
                 if (printJson)
                 {
-                    logger.Debug(jsonClintContent);
+                    loggerDebug(jsonClintContent);
                 }
                 if (!string.IsNullOrEmpty(writeJsonPath))
                 {
@@ -505,7 +559,7 @@ namespace AutoTestSystem.BLL
             catch (Exception ex)
             {
                 result = false;
-                logger.Fatal(ex.ToString());
+                loggerFatal(ex.ToString());
             }
             JsonStr = jsonClintContent;
             return result;
@@ -532,12 +586,12 @@ namespace AutoTestSystem.BLL
                 {
                     if (!Directory.Exists(strToPath)) Directory.CreateDirectory(strToPath);
                     File.Copy(strFromPath, strToPath, true);
-                    logger.Info("Upload test log to logServer success.");
+                    loggerInfo("Upload test log to logServer success.");
                 }
             }
             catch (Exception ex)
             {
-                logger.Fatal("Upload test log to logServer fail:" + ex);
+                loggerFatal("Upload test log to logServer fail:" + ex);
             }
             finally
             {
@@ -571,13 +625,13 @@ namespace AutoTestSystem.BLL
                 var result = client.PostAsync(url, content).Result;
                 var response_content = result.Content.ReadAsByteArrayAsync().Result;
                 var responseStr = System.Text.Encoding.UTF8.GetString(response_content);
-                logger.Debug(result.StatusCode + ":" + responseStr);
+                loggerDebug(result.StatusCode + ":" + responseStr);
                 if (result.IsSuccessStatusCode && responseStr.Contains("\"error\":null"))
                     re = true;
             }
             catch (Exception ex)
             {
-                logger.Error(ex.Message);
+                loggerError(ex.Message);
                 re = false;
             }
             return re;
@@ -603,12 +657,12 @@ namespace AutoTestSystem.BLL
                     if (thisProc.CloseMainWindow()) {
                         continue;
                     }
-                  //  logger.Debug($"准备杀死程序 :{processName}...");
+                  //  loggerDebug($"准备杀死程序 :{processName}...");
                     thisProc.Kill();
-                    logger.Debug($"Kill process: {processName}...");
+                    loggerDebug($"Kill process: {processName}...");
                    
                     if (processName == "userspace_speedtest") {
-                        logger.Debug($"dos 命令再杀一次");
+                        loggerDebug($"dos 命令再杀一次");
                         RunDosCmd("taskkill /IM userspace_speedtest.exe /F");
                     }
                     
@@ -616,14 +670,14 @@ namespace AutoTestSystem.BLL
 
                 Thread.Sleep(500);
                 var myProc2 = Process.GetProcessesByName(processName); //获取所有进程
-               // logger.Info("进程:" + processName + " 没有了");
+               // loggerInfo("进程:" + processName + " 没有了");
                  return myProc2.Length == 0;
                 //return true;
             }
             catch (Exception ex)
             {
-               // logger.Error("杀死程序出现异常");
-                logger.Fatal(ex.ToString());
+               // loggerError("杀死程序出现异常");
+                loggerFatal(ex.ToString());
                // return true;
                 throw;
             }
@@ -632,7 +686,7 @@ namespace AutoTestSystem.BLL
 
         public static void KillProcessNoResForce(string processName)
         {
-            logger.Info("准备要杀死:" + processName);
+            loggerInfo("准备要杀死:" + processName);
 
              
             RunDosCmd("taskkill /IM " + processName + ".exe" + " /F");
@@ -649,7 +703,7 @@ namespace AutoTestSystem.BLL
 
         public static bool KillProcessNoRes(string processName)
         {
-            logger.Info("准备杀死:" + processName);
+            loggerInfo("准备杀死:" + processName);
             try
             {
                 //Process[] localAll = Process.GetProcesses();
@@ -661,18 +715,18 @@ namespace AutoTestSystem.BLL
                     {
                         continue;
                     }
-                    //  logger.Debug($"准备杀死程序 :{processName}...");
+                    //  loggerDebug($"准备杀死程序 :{processName}...");
                     thisProc.Kill();
-                    logger.Debug($"Kill process: {processName}...");
+                    loggerDebug($"Kill process: {processName}...");
 
                     if (processName == "userspace_speedtest")
                     {
-                        logger.Debug($"dos 命令再杀一次");
+                        loggerDebug($"dos 命令再杀一次");
                         RunDosCmd("taskkill /IM userspace_speedtest.exe /F");
                     }
 
                     if (Global.STATIONNAME == "SRF" || Global.STATIONNAME == "MBFT") {
-                        logger.Debug($"dos 命令再杀一次");
+                        loggerDebug($"dos 命令再杀一次");
                         RunDosCmd("taskkill /IM "+ processName+ ".exe" + " /F");
                     }
                     
@@ -681,14 +735,14 @@ namespace AutoTestSystem.BLL
 
                 Thread.Sleep(500);
                 var myProc2 = Process.GetProcessesByName(processName); //获取所有进程
-                                                                       // logger.Info("进程:" + processName + " 没有了");
+                                                                       // loggerInfo("进程:" + processName + " 没有了");
                // return myProc2.Length == 0;
                 return true;
             }
             catch (Exception ex)
             {
-                // logger.Error("杀死程序出现异常");
-                logger.Fatal(ex.ToString());
+                // loggerError("杀死程序出现异常");
+                loggerFatal(ex.ToString());
                 return true;
                // throw;
             }
@@ -696,7 +750,7 @@ namespace AutoTestSystem.BLL
 
         public static bool KillProcessHaveRes(string processName)
         {
-            logger.Info("准备杀死:" + processName);
+            loggerInfo("准备杀死:" + processName);
             try
             {
                 //Process[] localAll = Process.GetProcesses();
@@ -708,19 +762,19 @@ namespace AutoTestSystem.BLL
                     {
                         continue;
                     }
-                    //  logger.Debug($"准备杀死程序 :{processName}...");
+                    //  loggerDebug($"准备杀死程序 :{processName}...");
                     thisProc.Kill();
-                    logger.Debug($"Kill process: {processName}...");
+                    loggerDebug($"Kill process: {processName}...");
 
                     if (processName == "userspace_speedtest")
                     {
-                        logger.Debug($"dos 命令再杀一次");
+                        loggerDebug($"dos 命令再杀一次");
                         RunDosCmd("taskkill /IM userspace_speedtest.exe /F");
                     }
 
                     if (Global.STATIONNAME == "SRF" || Global.STATIONNAME == "MBFT")
                     {
-                        logger.Debug($"dos 命令再杀一次");
+                        loggerDebug($"dos 命令再杀一次");
                         RunDosCmd("taskkill /IM " + processName + ".exe" + " /F");
                     }
 
@@ -736,7 +790,7 @@ namespace AutoTestSystem.BLL
             catch (Exception ex)
             {
                 
-                logger.Fatal(ex.ToString());
+                loggerFatal(ex.ToString());
                 throw;
             }
         }
@@ -761,7 +815,7 @@ namespace AutoTestSystem.BLL
                 if (fileInfo.Directory != null)
                 {
                     var p = new Process { StartInfo = { WorkingDirectory = fileInfo.Directory.ToString(), FileName = fileInfo.Name } };
-                    logger.Debug(p.StartInfo.WorkingDirectory + "  " + p.StartInfo.FileName);
+                    loggerDebug(p.StartInfo.WorkingDirectory + "  " + p.StartInfo.FileName);
                     p.Start();
                 }
 
@@ -771,7 +825,7 @@ namespace AutoTestSystem.BLL
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex.ToString());
+                loggerFatal(ex.ToString());
                 throw;
             }
         }
@@ -813,20 +867,21 @@ namespace AutoTestSystem.BLL
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex.ToString());
-                throw;
+                loggerFatal(ex.ToString());
+                // throw;
+                return false;
             }
         }
 
         public static void Sleep(int millisecondsTimeout)
         {
-            logger.Debug($"Waiting {millisecondsTimeout}ms.....");
+            loggerDebug($"Waiting {millisecondsTimeout}ms.....");
             Thread.Sleep(millisecondsTimeout);
         }
 
         public static void Sleep(string secondsTimeout)
         {
-            logger.Debug($"Waiting {secondsTimeout}s.....");
+            loggerDebug($"Waiting {secondsTimeout}s.....");
             Thread.Sleep(TimeSpan.FromSeconds(int.Parse(secondsTimeout)));
         }
 
@@ -857,7 +912,7 @@ namespace AutoTestSystem.BLL
             }
             else
             {
-                logger.Warn("path not exist!");
+                loggerWarn("path not exist!");
                 rReturn = false;
             }
             return rReturn;
@@ -899,7 +954,7 @@ namespace AutoTestSystem.BLL
             }
             else
             {
-                logger.Warn("path not exist!");
+                loggerWarn("path not exist!");
                 rReturn = true;
             }
             return rReturn;
@@ -952,7 +1007,7 @@ namespace AutoTestSystem.BLL
                 if (myFieldInfo != null)
                 {
                     myFieldInfo.SetValue(_object, varNewValue);
-                    logger.Info($"Set variable:{varName}={varNewValue}");
+                    loggerInfo($"Set variable:{varName}={varNewValue}");
                 }
                 else
                 {
@@ -961,7 +1016,7 @@ namespace AutoTestSystem.BLL
             }
             catch (Exception ex)
             {
-                logger.Debug(ex.ToString());
+                loggerDebug(ex.ToString());
                 throw;
             }
         }
@@ -984,17 +1039,17 @@ namespace AutoTestSystem.BLL
                     if (myFieldInfo != null)
                     {
                         if (myFieldInfo.GetValue(_object) != null) varValue = myFieldInfo.GetValue(_object).ToString();
-                        logger.Debug($"Get Reflect variable:{varName}={varValue}");
+                        loggerDebug($"Get Reflect variable:{varName}={varValue}");
                     }
                     else
                     {
-                        logger.Debug($"Get Reflect variable value Fail:{varName} does't exist!");
+                        loggerDebug($"Get Reflect variable value Fail:{varName} does't exist!");
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger.Debug(ex.ToString());
+                loggerDebug(ex.ToString());
                 //throw;
             }
 
@@ -1033,7 +1088,7 @@ namespace AutoTestSystem.BLL
 
         public static string RunDosCmd(string command, int timeout = 0)
         {
-            logger.Debug($"DosSendComd-->{command}");
+            loggerDebug($"DosSendComd-->{command}");
             using (var p = new Process())
             {
                 p.StartInfo.FileName = "cmd.exe";
@@ -1050,13 +1105,13 @@ namespace AutoTestSystem.BLL
                 var output = p.StandardOutput.ReadToEnd();
                 p.WaitForExit(timeout * 1000);
                 p.Close();
-                logger.Debug(output + error);
+                loggerDebug(output + error);
                 return output + error;
             }
         }
         public static string RunDosCmd2(string command, int timeout = 0)
         {
-            logger.Debug($"DosSendComd-->{command}");
+            loggerDebug($"DosSendComd-->{command}");
             using (var p = new Process())
             {
                 p.StartInfo.FileName = "cmd.exe";
@@ -1075,7 +1130,7 @@ namespace AutoTestSystem.BLL
         // 发送命令后不管
         public static void SendDosCmd(string cmd)
         {
-            logger.Debug($"DOSCommand-->{cmd}");
+            loggerDebug($"DOSCommand-->{cmd}");
             var process = new Process
             {
                 StartInfo =
@@ -1101,7 +1156,7 @@ namespace AutoTestSystem.BLL
         /// <returns></returns>
         public static string RunDosCmd(string cmd, out string errors, int timeout = 3000) //, string directoryPath = @"C:\Windows\System32")
         {
-            logger.Debug($"DOSCommand-->{cmd}");
+            loggerDebug($"DOSCommand-->{cmd}");
             using (var process = new Process())
             {
                 process.StartInfo.FileName = "cmd.exe";
@@ -1141,11 +1196,11 @@ namespace AutoTestSystem.BLL
                     if (process.WaitForExit(timeout) && outputWaitHandle.WaitOne(timeout) &&
                         errorWaitHandle.WaitOne(timeout))
                         // Process completed. Check process.ExitCode here.
-                        logger.Debug("Process completed");
+                        loggerDebug("Process completed");
                     else
                         // Timed out.
-                        logger.Debug("RunDOSCmd output--> Timeout..." + error);
-                    logger.Debug("RunDOSCmd output-->" + output);
+                        loggerDebug("RunDOSCmd output--> Timeout..." + error);
+                    loggerDebug("RunDOSCmd output-->" + output);
                     errors = error.ToString();
                     return output.ToString();
                 }
@@ -1202,16 +1257,16 @@ namespace AutoTestSystem.BLL
                 var pingReply = Ping(address);
                 if (pingReply.Status == 0)
                 {
-                    logger.Debug(
+                    loggerDebug(
                         $"Reply from {pingReply.Address}：bytes={pingReply.Buffer.Length} time={pingReply.RoundtripTime} TTL={pingReply.Options.Ttl} {pingReply.Status}");
                     rResult = true;
                     break;
                 }
 
-                logger.Debug($"ping {address} ：{pingReply.Status}");
+                loggerDebug($"ping {address} ：{pingReply.Status}");
                 if (i == 1)
                 {
-                    logger.Debug($"ping {address} ：Fail！！！！！");
+                    loggerDebug($"ping {address} ：Fail！！！！！");
                     //RunDosCmd("ping 192.168.1.101 -S 192.168.1.100");
                     rResult = false;
                 }
@@ -1232,7 +1287,7 @@ namespace AutoTestSystem.BLL
             }
             catch (PingException ex)
             {
-                if (ex.InnerException != null) logger.Debug(ex.InnerException.ToString());
+                if (ex.InnerException != null) loggerDebug(ex.InnerException.ToString());
                 return Ping(address);
             }
             finally
@@ -1291,7 +1346,7 @@ namespace AutoTestSystem.BLL
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex.ToString());
+                loggerFatal(ex.ToString());
                 //throw ex;
             }
             return result;
@@ -1388,9 +1443,9 @@ namespace AutoTestSystem.BLL
             {
                 TestValue = GetSubStringOfMid(revStr, SubStr1, SubStr2);
                 if (string.IsNullOrEmpty(TestValue))
-                    logger.Debug("Error! Get TestValue IsNullOrEmpty.");
+                    loggerDebug("Error! Get TestValue IsNullOrEmpty.");
                 else
-                    logger.Debug($"GetTestValue:{TestValue}");
+                    loggerDebug($"GetTestValue:{TestValue}");
             }
 
             return TestValue;
@@ -1414,11 +1469,11 @@ namespace AutoTestSystem.BLL
                 testValue = GetSubStringOfMid(revStr, SubStr1, SubStr2);
                 if (string.IsNullOrEmpty(testValue))
                 {
-                    logger.Debug("Error! Get TestValue IsNullOrEmpty.");
+                    loggerDebug("Error! Get TestValue IsNullOrEmpty.");
                 }
                 else
                 {
-                    logger.Debug($"GetTestValue: {testValue}{(Round ? ",need integer" : "")}");
+                    loggerDebug($"GetTestValue: {testValue}{(Round ? ",need integer" : "")}");
                     temp = Round ? Math.Round(double.Parse(testValue)) : double.Parse(testValue);
                 }
             }
@@ -1445,7 +1500,7 @@ namespace AutoTestSystem.BLL
 
             if (value == "NA") {
                 info = "";
-                logger.Error("value is NA,no need compare,false");
+                loggerError("value is NA,no need compare,false");
                 return false;
             }
 
@@ -1467,29 +1522,29 @@ namespace AutoTestSystem.BLL
             if (string.IsNullOrEmpty(limitMin) && !string.IsNullOrEmpty(limitMax)) //只需比较最大值
             {
                 rReturn = temp <= double.Parse(limitMax);
-                logger.Debug("Compare Limit_max...");
+                loggerDebug("Compare Limit_max...");
             }
 
             if (!string.IsNullOrEmpty(limitMin) && string.IsNullOrEmpty(limitMax)) //只需比较最小值
             {
                 rReturn = temp >= double.Parse(limitMin);
-                logger.Debug("Compare Limit_min...");
+                loggerDebug("Compare Limit_min...");
             }
 
             if (!string.IsNullOrEmpty(limitMin) && !string.IsNullOrEmpty(limitMax)) //需要比较最小值和最大值
             {
-                logger.Debug("Compare Limit_min and Limit_max...");
+                loggerDebug("Compare Limit_min and Limit_max...");
                 var rReturn1 = temp >= double.Parse(limitMin);
-               // logger.Info("return1:" + rReturn1);
+               // loggerInfo("return1:" + rReturn1);
                 var rReturn2 = temp <= double.Parse(limitMax);
-              //  logger.Info("return2:" + rReturn2);
+              //  loggerInfo("return2:" + rReturn2);
                 rReturn = rReturn1 & rReturn2;
-               // logger.Info("总结过:" + rReturn);
+               // loggerInfo("总结过:" + rReturn);
                 if (!rReturn) infoTemp = temp < double.Parse(limitMin) ? "TooLow" : "TooHigh";
             }
 
             info = infoTemp;
-           // logger.Info("总结过2:" + info);
+           // loggerInfo("总结过2:" + info);
             return rReturn;
         }
 
@@ -1509,13 +1564,13 @@ namespace AutoTestSystem.BLL
                 // Spec值有多种情况，属于包含关系
                 if (spec.Contains("|") && spec.Contains(testValue))
                 {
-                    logger.Debug("check Spec contain pass");
+                    loggerDebug("check Spec contain pass");
                     rReturn = true;
                 }
                 else if (testValue == spec)
                 {
                     // Spec值只有一种，检查==
-                    logger.Debug("check Spec == pass");
+                    loggerDebug("check Spec == pass");
                     rReturn = true;
                 }
             }
@@ -1611,7 +1666,7 @@ namespace AutoTestSystem.BLL
             }
             else
             {
-                //logger.Debug($"csv file have been created:{csvFilePath}");
+                //loggerDebug($"csv file have been created:{csvFilePath}");
             }
         }
 
@@ -1630,7 +1685,7 @@ namespace AutoTestSystem.BLL
             }
             else
             {
-                logger.Debug($"the File:{filePathName} does not exist！");
+                loggerDebug($"the File:{filePathName} does not exist！");
             }
         }
 
@@ -1696,11 +1751,11 @@ namespace AutoTestSystem.BLL
                 }
 
                 sw.Close();
-                logger.Debug($"Export test result to {csvPath} succeed");
+                loggerDebug($"Export test result to {csvPath} succeed");
             }
             catch (Exception ex)
             {
-                logger.Debug($"Export test result to{csvPath} error!:{ex.Message} ");
+                loggerDebug($"Export test result to{csvPath} error!:{ex.Message} ");
                 if (ReadCSV(csvPath).Count >= 65535)
                 {
                     var renamePath = csvPath.Insert(csvPath.LastIndexOf("."), DateTime.Now.ToString("yyyy-MM-dd-HHmm"));
@@ -1765,7 +1820,7 @@ namespace AutoTestSystem.BLL
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex.ToString());
+                loggerFatal(ex.ToString());
             }
         }
 
@@ -1865,7 +1920,7 @@ namespace AutoTestSystem.BLL
             {
                 throw new Exception($"Failed to post requests.Response code: {result.StatusCode}");
             }
-            logger.Debug(result.StatusCode + ":" + responseBody);
+            loggerDebug(result.StatusCode + ":" + responseBody);
             statusCode = result.StatusCode.ToString();
             return responseBody;
         }

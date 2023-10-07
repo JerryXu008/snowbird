@@ -360,7 +360,7 @@ namespace AutoTestSystem.BLL
                 request.Credentials = new NetworkCredential(ftpUser, ftpPassWord);
                 using (var resp = (FtpWebResponse)request.GetResponse())
                 {
-                    logger.Debug(resp.StatusCode);
+                    loggerDebug(resp.StatusCode.ToString());
                 }
             }
             catch (Exception)

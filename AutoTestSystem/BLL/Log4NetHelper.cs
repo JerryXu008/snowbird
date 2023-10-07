@@ -115,6 +115,8 @@ namespace AutoTestSystem.BLL
             }
 
             BasicConfigurator.Configure(_RollingFileAppender, _RichTextBoxAppender);
+           
+            
             _Ilogger = LogManager.GetLogger(type);
             return _Ilogger;
         }

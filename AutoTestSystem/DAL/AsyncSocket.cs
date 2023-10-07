@@ -34,13 +34,13 @@ namespace AutoTestSystem.DAL
 
         public override bool Open()
         {
-            logger.Debug("start connect socket...");
+            loggerDebug("start connect socket...");
             SessionLog.Clear();
             try
             {
                 if (!IPAddress.TryParse(HostIP, out ipAdd)) //确定一个字符串是否是有效的IP地址。
                 {
-                    logger.Error($"{HostIP} IP Address is invalid");
+                    loggerError($"{HostIP} IP Address is invalid");
                     return false;
                 }
                 PingIP(HostIP, 5);
@@ -59,7 +59,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ex)
             {
-                logger.Fatal($"socket connection Exception... {ex.StackTrace}");
+                loggerFatal($"socket connection Exception... {ex.StackTrace}");
                 return false;
             }
         }
@@ -71,13 +71,13 @@ namespace AutoTestSystem.DAL
                 if (socket.Connected)
                 {
                     socket.Close();
-                    logger.Debug("Close connect succeed.");
+                    loggerDebug("Close connect succeed.");
                     //socket.Dispose();
                 }
             }
             catch (Exception ex)
             {
-                logger.Fatal("DisConnect Exception:" + ex);
+                loggerFatal("DisConnect Exception:" + ex);
                 throw;
             }
         }
@@ -135,23 +135,23 @@ namespace AutoTestSystem.DAL
                     {
                         //Console.Write(mOutText);
                         mOutText = mOutText.Replace("\b", "");
-                        logger.Debug(mOutText);
+                        loggerDebug(mOutText);
                         SessionLog.Append(mOutText);
                         strWorkingData = mOutText;
                     }
                 }
                 else// 如果没有接收到任何数据的话
                 {
-                    logger.Debug("OnRecievedData close,disconnect socket!!!");
+                    loggerDebug("OnRecievedData close,disconnect socket!!!");
                     sock.Shutdown(SocketShutdown.Both);
                     sock.Close();
                 }
             }
             catch (SocketException ex) //接收时telnet断连retry处理
             {
-                //logger.Debug($"{ex.Message} DisConnect telnet。");
+                //loggerDebug($"{ex.Message} DisConnect telnet。");
                 Close();
-                logger.Fatal($"接收数据时出现异常:{ex.ToString()}");
+                loggerFatal($"接收数据时出现异常:{ex.ToString()}");
                 //Console.WriteLine($"{ex.ToString()} 重新连接Telnet,Retry.....");
                 mOutText = "";
                 SessionLog.Clear();
@@ -163,8 +163,8 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ex)
             {
-                logger.Fatal(SessionLog.ToString());
-                logger.Fatal("接收数据时出现异常：" + ex.ToString());
+                loggerFatal(SessionLog.ToString());
+                loggerFatal("接收数据时出现异常：" + ex.ToString());
                 mOutText = "";
                 SessionLog.Clear();
                 //throw;
@@ -207,7 +207,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ers)
             {
-                logger.Fatal("Error!,When DispatchMessage:" + ers.ToString());
+                loggerFatal("Error!,When DispatchMessage:" + ers.ToString());
                 throw;
             }
         }
@@ -224,7 +224,7 @@ namespace AutoTestSystem.DAL
                     lngCurTime = DateTime.Now.Ticks;
                     if (lngCurTime > lngStart)
                     {
-                        logger.Error($"Send command:{command},waiting for:{DataToWaitFor},TimeOut({timeout}), FAIL!!! ");
+                        loggerError($"Send command:{command},waiting for:{DataToWaitFor},TimeOut({timeout}), FAIL!!! ");
                         strWorkingData = "";
                         return false;
                     }
@@ -258,14 +258,14 @@ namespace AutoTestSystem.DAL
             {
                 //Thread.Sleep(10); //连续发命令的间隔
                 // message = message + "\r\n";
-                logger.Debug($"SendCommand-->{cmd}");
+                loggerDebug($"SendCommand-->{cmd}");
                 recvStr = "";
                 SessionLog.Clear();
                 DispatchMessage(cmd);
                 DispatchMessage("\n");
                 bool receiveResult = WaitFor(cmd, waitforStr, timeout);
                 recvStr = SessionLog.ToString();
-                //logger.Debug(recvStr);
+                //loggerDebug(recvStr);
                 if (!receiveResult)
                 {
                     PingIP(HostIP, 5);
@@ -273,8 +273,8 @@ namespace AutoTestSystem.DAL
                 //if (!receiveResult && retry < retryTimes)
                 //{
                 //    retry++;
-                //    logger.Debug(recvStr);
-                //    logger.Debug($"发送命令没得到期待提示符，retry发送第 {retry} 次：");
+                //    loggerDebug(recvStr);
+                //    loggerDebug($"发送命令没得到期待提示符，retry发送第 {retry} 次：");
                 //    receiveResult = TelnetSend(message, ref recvStr, waitforStr, timeout);
                 //}
                 //retry = 0;
@@ -284,7 +284,7 @@ namespace AutoTestSystem.DAL
             {
                 //socket.Shutdown(SocketShutdown.Both);
                 //socket.Close();
-                logger.Fatal($"SocketException ex:{ex.ToString()},Reconnect ,Retry.....");
+                loggerFatal($"SocketException ex:{ex.ToString()},Reconnect ,Retry.....");
                 Close();
                 if (Open())
                 {
@@ -292,7 +292,7 @@ namespace AutoTestSystem.DAL
                 }
                 else
                 {
-                    logger.Error($"Reconnect failed！！！");
+                    loggerError($"Reconnect failed！！！");
                     return false;
                 }
             }
@@ -304,13 +304,13 @@ namespace AutoTestSystem.DAL
                 }
                 else
                 {
-                    logger.Error($"Reconnect failed！！！");
+                    loggerError($"Reconnect failed！！！");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                logger.Fatal($"{ex.ToString()}");
+                loggerFatal($"{ex.ToString()}");
                 recvStr = SessionLog.ToString();
                 return false;
             }

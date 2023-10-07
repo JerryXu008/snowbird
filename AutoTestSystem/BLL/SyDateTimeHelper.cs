@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using static AutoTestSystem.BLL.Bd;
 namespace AutoTestSystem.BLL
 {
 
@@ -137,19 +137,19 @@ namespace AutoTestSystem.BLL
             //  MessageBox.Show("ddd:" + time.Hour);
 
 
-            //logger.Info("执行DOS命令:" + string.Format(" date {0}-{1}-{2} & time {3}:{4}:{5}", time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second));
+            //loggerInfo("执行DOS命令:" + string.Format(" date {0}-{1}-{2} & time {3}:{4}:{5}", time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second));
             //RunDosCmd(string.Format(" date {0}-{1}-{2} & time {3}:{4}:{5}", time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second));
             ////获取本地时间
             //if (DateTime.Now.ToLongDateString().Contains("2021")) { //没成功，换别的方法
-            //    logger.Info("修改没成功，换别的方法");
+            //    loggerInfo("修改没成功，换别的方法");
             //    var dateTime = SyDateTimeHelper.GetNetDateTime(DateTime.Now);
             //   bool result = SetLocalDateTime222(dateTime);
             //    if (result)
             //    {
-            //        logger.Info("更新成功");
+            //        loggerInfo("更新成功");
             //    }
             //    else {
-            //        logger.Info("更新失败");
+            //        loggerInfo("更新失败");
             //    }
             //}
 
@@ -157,11 +157,11 @@ namespace AutoTestSystem.BLL
             bool result = SetLocalDateTime222(dateTime);
             if (result)
             {
-                logger.Info("时间更新成功,时间:" + DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToShortTimeString());
+                loggerInfo("时间更新成功,时间:" + DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToShortTimeString());
             }
             else
             {
-                logger.Info("时间更新失败,时间:" + DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToShortTimeString());
+                loggerInfo("时间更新失败,时间:" + DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToShortTimeString());
             }
 
 
@@ -179,17 +179,17 @@ namespace AutoTestSystem.BLL
                 bool result = SetLocalDateTime222(dateTime);
                 if (result)
                 {
-                    logger.Info("时间更新成功,时间:" + DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToShortTimeString());
+                    loggerInfo("时间更新成功,时间:" + DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToShortTimeString());
                 }
                 else
                 {
-                    logger.Info("时间更新失败,时间:" + DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToShortTimeString());
+                    loggerInfo("时间更新失败,时间:" + DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToShortTimeString());
                 }
 
             }
             catch (Exception ex)
             {
-                logger.Debug(ex.Message.ToString());
+                loggerDebug(ex.Message.ToString());
             }
 
 
@@ -262,10 +262,10 @@ namespace AutoTestSystem.BLL
                         datetime = headerCollection[h];
 
                         RunDosCmd("tzutil /s \"UTC_dstoff\"");// 设置电脑时区为UTC
-                        logger.Debug("更改为UTC时区");
+                        loggerDebug("更改为UTC时区");
 
                         var dt = DateTime.Parse(datetime);
-                        logger.Debug("得到最新的UTC时间:" + datetime);
+                        loggerDebug("得到最新的UTC时间:" + datetime);
 
                         return dt;
                     }
