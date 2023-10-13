@@ -1109,7 +1109,7 @@ namespace AutoTestSystem.BLL
                 if (i == 1)
                 {
                     loggerDebug($"ping {address} ：Fail！！！！！");
-                    //RunDosCmd("ping 192.168.1.101 -S 192.168.1.100");
+                    //RunDosCmd("ping 192.168.1.1 -S 192.168.1.100");
                     rResult = false;
                 }
 

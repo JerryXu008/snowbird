@@ -1,6 +1,8 @@
 ﻿using AutoTestSystem.BLL;
 using AutoTestSystem.DAL;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -795,7 +797,115 @@ namespace AutoTestSystem.Model
                             rReturn = PoeConfigSetting(Global.POE_PORT, item.ComdOrParam);
                         }
                         break;
+                    case "POEReadConsumption":
+                        {
+                            //Random r = new Random();
+                            //int num = r.Next(1, 101);
+                            var cookies = new CookieContainer();
+                            var client = GetClient(cookies, "admin", "admin123");
+                            string url = $@"http://169.254.100.101/api/v1/service";
+                            string data = $"{{\"method\":\"poe.status.interface.get\",\"params\":[],\"id\":138}}";
+                            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+                            var result = client.PostAsync(url, content).Result;
+                            var response_content = result.Content.ReadAsByteArrayAsync().Result;
+                            var responseStr = System.Text.Encoding.UTF8.GetString(response_content);
+                            logger.Debug(result.StatusCode + ":" + responseStr);
 
+                            Root root = JsonConvert.DeserializeObject<Root>(responseStr);
+
+                            if (root != null && root.result != null && root.result.Count > 0)
+                            {
+                                logger.Debug("~~~~~~~~~~~~~~~~~~:" + Global.POE_PORT);
+                                logger.Info(">>>>>>>>>>>Consumption=" + root.result[int.Parse(Global.POE_PORT) - 1].val.PowerConsumption);
+
+                                double number = (double)(root.result[int.Parse(Global.POE_PORT) - 1].val.PowerConsumption) / 10;
+                                item.testValue = number.ToString("F2");
+                                rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+
+                            }
+                            else
+                            {
+                                logger.Error("POE信息解析失败!!!");
+                            }
+
+                        }
+                        break;
+
+                    case "ChagePOERate":
+                        {
+                            var cookies = new CookieContainer();
+                            var client = GetClient(cookies, "admin", "admin123");
+                            string url = $@"http://169.254.100.101/api/v1/service";
+
+
+                            var dict = new Dictionary<string, object>();
+
+
+                            //var type = "force2G5ModeFdx"; // "force2G5ModeFdx"   "force1GModeFdx"  "force100ModeFdx" "force100ModeHdx"
+
+                            var type = item.ComdOrParam;
+
+
+                            dict.Add("method", "port.config.set");
+                            dict.Add("id", 240);
+                            List<object> list = new List<object>();
+                            dict.Add("params", list);
+                            list.Add($"2.5G 1/{Global.POE_PORT}");
+                            var dict2 = new Dictionary<string, object>();
+                            list.Add(dict2);
+
+                            dict2.Add("ExcessiveRestart", false);
+                            dict2.Add("FC", "off");
+                            dict2.Add("FrameLengthCheck", false);
+                            dict2.Add("GeneratePause", false);
+                            dict2.Add("MTU", 9018);
+                            dict2.Add("MediaType", "rj45");
+                            dict2.Add("ObeyPause", false);
+                            dict2.Add("PFC", 0);
+                            dict2.Add("Shutdown", false);
+                            dict2.Add("Speed", type);
+                            if (type == "force2G5ModeFdx")
+                            {
+                                dict2.Add("AdvertiseDisabled", 969);
+
+                            }
+                            else if (type == "force1GModeFdx")
+                            {
+                                dict2.Add("AdvertiseDisabled", 977);
+                            }
+                            else if (type == "force100ModeFdx")
+                            {
+                                dict2.Add("AdvertiseDisabled", 969);
+                            }
+                            else if (type == "force100ModeHdx")
+                            {
+                                dict2.Add("AdvertiseDisabled", 921);
+                            }
+
+
+
+                            string data = JsonConvert.SerializeObject(dict);
+
+                            logger.Info(data);
+
+                            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+                            var result = client.PostAsync(url, content).Result;
+                            var response_content = result.Content.ReadAsByteArrayAsync().Result;
+                            var responseStr = System.Text.Encoding.UTF8.GetString(response_content);
+
+                            if (result.IsSuccessStatusCode && responseStr.Contains("\"error\":null"))
+                            {
+                                logger.Info("set success:" + responseStr);
+                                rReturn = true;
+                            }
+                            else
+                            {
+                                logger.Error("set fail:" + responseStr);
+                            }
+                           
+
+                        }
+                        break;
                     case "PowerCycleTest":
                         {
                
@@ -1076,6 +1186,33 @@ namespace AutoTestSystem.Model
                             int ii = 0;
                         }
                         break;
+
+                    case "CheckLED_Manual":
+                        {
+                            LEDSHow usbDialog = new LEDSHow();
+                            var value ="";
+                            usbDialog.TextHandler = (str) => {
+
+                                value = str;
+                            };
+                            usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                            usbDialog.ShowTip(item.ComdOrParam);
+                            usbDialog.ShowDialog();
+
+                            loggerInfo("点击:" + value);
+                            item.testValue = value.ToString();
+                            if (value == "yes")
+                            {
+                                rReturn = true;
+                            }
+                            else { 
+                            
+                            }
+                        }
+                        break;
+                        
+
+
                     case "ShowFixtureTip": {
                             ShowFixtureTip usbDialog = new ShowFixtureTip();
                             usbDialog.TextHandler = (str) => { };
@@ -3066,8 +3203,12 @@ namespace AutoTestSystem.Model
                           
                         }
                         break;
-                   
-                    
+
+                    case "test1":
+                        {
+                            rReturn = true;
+                        }
+                        break;
                     
                     default:
                         {
@@ -3511,7 +3652,7 @@ namespace AutoTestSystem.Model
 
                                         DUTCOMM.SendCommand("modprobe qca_nss_netlink", ref rr, "root@OpenWrt:/#", 10);
 
-                                        DUTCOMM.SendCommand("ifconfig br-lan down && brctl delbr br-lan && ifconfig eth0 192.168.1.101 up && ifconfig eth1 192.168.0.101 up", ref rr, "root@OpenWrt:/#", 10);
+                                        DUTCOMM.SendCommand("ifconfig br-lan down && brctl delbr br-lan && ifconfig eth0 192.168.1.1 up && ifconfig eth1 192.168.0.101 up", ref rr, "root@OpenWrt:/#", 10);
 
 
                                     }

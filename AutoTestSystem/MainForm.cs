@@ -898,12 +898,14 @@ namespace AutoTestSystem
 
         private void TextBox1_KeyDown(object sender, KeyEventArgs e)
         {
+           
+
+                // e=null时候，不执行&&后面的
+             if ( e != null && e.KeyCode != Keys.Enter) {
+                return;
+            } 
+
             
-
-            // e=null时候，不执行&&后面的
-            if (e != null && e.KeyCode != Keys.Enter) return;
-
-
 
        
 
@@ -1224,7 +1226,9 @@ namespace AutoTestSystem
 
         public void GetPoePort()
         {
-            if (Global.FIXTUREFLAG == "0" || Global.STATIONNAME != "MBLT") { return; }
+            if (Global.FIXTUREFLAG == "0" || (Global.STATIONNAME != "MBLT" && Global.STATIONNAME != "SRF"))
+            { return; }
+
             try
             {
                 string recvStr = "";
@@ -1563,14 +1567,8 @@ namespace AutoTestSystem
 
                                     FixSerialPort.OpenCOM();
                                     var recvStr = "";
-                                    //FixSerialPort.SendCommandToFix("AT+TESTEND%", ref recvStr, "OK", 10);
-
-                                    //if (Cycle_Count > 0)
-                                    //{ //开启了loop
-                                    //    loggerDebug("loop test，sleep 5s");
-                                    //    Thread.Sleep(5000);
-
-                                    //}
+                                  
+                                 
                                     FixSerialPort.SendCommandToFix("AT+VBUS_OFF%", ref recvStr, "OK", 5);
 
                                 };
@@ -1796,6 +1794,16 @@ namespace AutoTestSystem
                             StartScanFlag = true;
                        
                             isFirstRun = false;
+
+                            if (Global.AUTOTESTNOFIXUTRE == "1") { 
+                            
+                               Thread.Sleep(1000);
+                                this.Invoke(new Action(() => {
+                                    this.textBox1.Text = SN;
+                                }));
+                              
+                                TextBox1_KeyDown(null, null);
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -2310,7 +2318,7 @@ namespace AutoTestSystem
                                                             }
                                                         }
                                                         DUTCOMM.SendCommand("modprobe qca_nss_netlink", ref rr, "root@OpenWrt:/#", 10);
-                                                        DUTCOMM.SendCommand("ifconfig br-lan down && brctl delbr br-lan && ifconfig eth0 192.168.1.101 up && ifconfig eth1 192.168.0.101 up", ref rr, "root@OpenWrt:/#", 10);
+                                                        DUTCOMM.SendCommand("ifconfig br-lan down && brctl delbr br-lan && ifconfig eth0 192.168.1.101 up && ifconfig eth1 192.168.0.1 up", ref rr, "root@OpenWrt:/#", 10);
 
                                                     }
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
@@ -2715,6 +2723,11 @@ namespace AutoTestSystem
 
                                         StartScanFlag = true;
                                         saveTestResult();
+
+
+
+
+                                         
                                     }
                                     Thread.Sleep(10);
                                 }
@@ -2914,9 +2927,7 @@ namespace AutoTestSystem
                 }
             }
 
-            //if (startFlag || !IsDebug)
-            //    return;
-
+        
 
             if (startFlag == false)
             {
@@ -2996,10 +3007,7 @@ namespace AutoTestSystem
             try
             {
 
-                //if (Global.CYCLE_COUNT != "" && Global.CYCLE_COUNT != "0")
-                //{
-                //    Cycle_Count = int.Parse(Global.CYCLE_COUNT);
-                //}
+               
 
                 //// 创建测试主线程
                 if (!testThread.IsAlive)
@@ -3606,7 +3614,7 @@ namespace AutoTestSystem
                 SetButtonPro(buttonBegin, Properties.Resources.start);
                 SetButtonPro(buttonExit, Properties.Resources.close);
                 var headerArr = new string[] {
-                      "AT-ScanTimeSpan",  "Product", "Station Name", "Site", "LINE_ID", "Station ID", "DUT_POSITION", "SerialNumber", "FW_VERSION",  "HW_REVISION", "SW_VERSION",  "StartTime", "EndTime", "TEST_DURATION","Test Pass/Fail Status", "FIRST_FAIL", "ERROR_CODE", "TIME_ZONE", "TEST_DEBUG", "JSON_UPLOAD", "MES_UPLOAD",
+                      "AT-ScanTimeSpan",  "Product", "Station Name", "Site", "LINE_ID", "Station ID", "DUT_POSITION", "SerialNumber", "FW_VERSION",  "HW_REVISION", "SW_VERSION",  "StartTime", "EndTime", "TEST_DURATION","Test Pass/Fail Status", "FIRST_FAIL", "Fail Message", "TIME_ZONE", "TEST_DEBUG", "JSON_UPLOAD", "MES_UPLOAD",
                     };
                 ArrayListCsvHeader.InsertRange(0, headerArr);
 

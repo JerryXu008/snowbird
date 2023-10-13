@@ -54,6 +54,7 @@ namespace AutoTestSystem.Model
         public static string TXPowerLimit;              //TX power 和golden的差值
         public static string IsDownloadPathloss;        // 是否在线下载pathloss
         public static string SweepVersion;
+        public static string AUTOTESTNOFIXUTRE;
         ///**************************ini配置文件DUT全局配置变量**********************/
         public static string DUTIP;
         public static string SSH_PORT;
@@ -327,11 +328,13 @@ namespace AutoTestSystem.Model
                 PopFixture = iniConfig.Readini("Station", "PopFixture").Trim().ToLower() == "true" ? true : false;
                 SweepVersion = iniConfig.Readini("Station", "SweepVersion").Trim();
 
-                
+                AUTOTESTNOFIXUTRE = iniConfig.Readini("Station", "AUTOTESTNOFIXUTRE").Trim();
+
+
 
 #if DEBUG
-               // FIXTUREFLAG = "0";
-                 FIXTUREFLAG = iniConfig.Readini("Station", "FIXTUREFLAG").Trim();
+                // FIXTUREFLAG = "0";
+                FIXTUREFLAG = iniConfig.Readini("Station", "FIXTUREFLAG").Trim();
 #else
                 FIXTUREFLAG = iniConfig.Readini("Station", "FIXTUREFLAG").Trim();
 #endif

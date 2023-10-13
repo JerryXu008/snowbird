@@ -186,6 +186,12 @@
     <Compile Include="InutMEASPOP.Designer.cs">
       <DependentUpon>InutMEASPOP.cs</DependentUpon>
     </Compile>
+    <Compile Include="LEDShow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LEDShow.Designer.cs">
+      <DependentUpon>LEDShow.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -241,7 +247,12 @@
     <Content Include="PLINK.EXE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\blueled.jpg" />
+    <None Include="Resources\greenled.jpg" />
+    <None Include="Resources\offled.jpg" />
+    <None Include="Resources\redled.jpg" />
     <Content Include="Resources\Upan.png" />
+    <None Include="Resources\whiteled.jpg" />
     <Content Include="Scan_Barcode_C03.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -279,6 +290,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InutMEASPOP.resx">
       <DependentUpon>InutMEASPOP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LEDShow.resx">
+      <DependentUpon>LEDShow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="USBConfirmDialog.resx">
       <DependentUpon>USBConfirmDialog.cs</DependentUpon>

@@ -30,7 +30,11 @@ namespace AutoTestSystem
 
         }
 
+        public void ShowTip()
+        {
+            label1.Text = "Vui lòng cắm cáp nguồn và cáp mạng rồi nhấn OK/请插入电源和网线，然后点击确定";
 
+        }
 
 
         private void label1_Click(object sender, EventArgs e)

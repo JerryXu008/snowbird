@@ -363,6 +363,100 @@ namespace TestConsole
             //var ff = SendCommand("iperf3 -c 192.168.0.20 -i1 -t10 -O2 -P8 -R", ref rec, "iperf Done", 20000);
             //int ii = 0;
         }
+
+      static  void POESwtichPortSpeed() {
+            var cookies = new CookieContainer();
+            var client = GetClient(cookies, "admin", "admin123");
+            string url = $@"http://169.254.100.101/api/v1/service";
+            //string data = $"{{\"method\":\"poe.status.powerin.get\",\"params\":[],\"id\":80}}";
+
+            //string data = $"{{\"method\":\"poe.status.interface.get\",\"params\":[],\"id\":138}}";
+
+            var dict = new Dictionary<string, object>();
+            /*
+             
+             {
+  "method": "port.config.set",
+  "params": [
+    "2.5G 1/1",
+    {
+      "AdvertiseDisabled": 977,
+      "ExcessiveRestart": false,
+      "FC": "off",
+      "FrameLengthCheck": false,
+      "GeneratePause": false,
+      "MTU": 9018,
+      "MediaType": "rj45",
+      "ObeyPause": false,
+      "PFC": 0,
+      "Shutdown": false,
+      "Speed": "force1GModeFdx"
+    }
+  ],
+  "id": 29
+}
+             
+             */
+
+            var type = "force1GModeFdx"; // "force2G5ModeFdx"   "force1GModeFdx"  "force100ModeFdx" "force100ModeHdx"
+
+            dict.Add("method", "port.config.set");
+            dict.Add("id",240);
+            List<object> list = new List<object>();
+            dict.Add("params", list);
+            list.Add("2.5G 1/9");
+            var dict2 = new Dictionary<string, object>();
+            list.Add(dict2);
+            
+            dict2.Add("ExcessiveRestart", false);
+            dict2.Add("FC", "off");
+            dict2.Add("FrameLengthCheck", false);
+            dict2.Add("GeneratePause", false);
+            dict2.Add("MTU", 9018);
+            dict2.Add("MediaType", "rj45");
+            dict2.Add("ObeyPause", false);
+            dict2.Add("PFC", 0);
+            dict2.Add("Shutdown", false);
+            dict2.Add("Speed", type);
+            if (type == "force2G5ModeFdx") {
+                dict2.Add("AdvertiseDisabled", 969);
+               
+            }
+            else if (type == "force1GModeFdx") {
+                dict2.Add("AdvertiseDisabled", 977);
+            }
+            else if (type == "force100ModeFdx")
+            {
+                dict2.Add("AdvertiseDisabled", 969);
+            }
+            else if (type == "force100ModeHdx")
+            {
+                dict2.Add("AdvertiseDisabled", 921);
+            }
+
+          
+
+                string data = JsonConvert.SerializeObject(dict);
+
+
+
+
+
+            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            var result = client.PostAsync(url, content).Result;
+            var response_content = result.Content.ReadAsByteArrayAsync().Result;
+            var responseStr = System.Text.Encoding.UTF8.GetString(response_content);
+
+            if (result.IsSuccessStatusCode && responseStr.Contains("\"error\":null"))
+            {
+                Console.WriteLine("set success:" + responseStr);
+            }
+            else { 
+              Console.WriteLine("set fail:" + responseStr);
+            }
+
+            Console.WriteLine("");
+        }
         public static HttpClient GetClient(CookieContainer cookies, string username, string password)
         {
             var handler = new HttpClientHandler() { CookieContainer = cookies, UseCookies = false };
@@ -420,9 +514,10 @@ namespace TestConsole
 
 
 
-            CreateCSVDataMerciAndSnowBirdMBFT();
+            //CreateCSVDataMerciAndSnowBirdMBFT();
 
             //  CreateCSVDataSnowbirdSRF();
+            POESwtichPortSpeed();
             Console.WriteLine("生成完毕!!!");
 
 

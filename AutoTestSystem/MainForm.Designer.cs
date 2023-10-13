@@ -730,12 +730,20 @@ namespace AutoTestSystem
             // contextMenuStripRightKey
             // 
             this.contextMenuStripRightKey.ImageScalingSize = new System.Drawing.Size(20, 20);
+            
+            
+            
             this.contextMenuStripRightKey.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
                   this.ConsumbleMenuItem,
         this.OneStepTestMenuItem,
         this.CycleToolStripMenuItem,
         this.全不选ToolStripMenuItem,
         this.全选ToolStripMenuItem});
+
+
+
+
+
             this.contextMenuStripRightKey.Name = "contextMenuStripRightKey";
             this.contextMenuStripRightKey.Size = new System.Drawing.Size(125, 92);
 
