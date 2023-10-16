@@ -616,7 +616,7 @@ namespace AutoTestSystem
             testThread.Start();
 
 
-           textBox1.Text = "GGC3530132850155";
+           textBox1.Text = "GGC3530132850621";
         }
 
         private void ScanManager_ScanFinished(string sn)
