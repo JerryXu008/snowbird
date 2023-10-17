@@ -1606,7 +1606,7 @@ namespace AutoTestSystem
                                 KillProcessNoRes("QPSTConfig"); //MBFT
                                 KillProcessNoRes("QPSTServer");//MBFT
                             }
-                                
+
 
 
                             //// loggerInfo("把窗体放在最上层2");
@@ -1621,21 +1621,21 @@ namespace AutoTestSystem
 #if DEBUG
 #else
 
-                            //Thread thread2 = new Thread(() =>
-                            //{
-                            //    UploadLogToSftp();
-                            //});
-                            //thread2.IsBackground = true;
-                            //thread2.Start();
+                            Thread thread2 = new Thread(() =>
+                            {
+                                UploadLogToSftp();
+                            });
+                            thread2.IsBackground = true;
+                            thread2.Start();
 #endif
-                           
-                            
-                            
-                            
-                            
-                            
-                            
-                            
+
+
+
+
+
+
+
+
                             break;
 
                         default:

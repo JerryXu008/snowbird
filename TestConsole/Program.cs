@@ -517,7 +517,11 @@ namespace TestConsole
             //CreateCSVDataMerciAndSnowBirdMBFT();
 
             //  CreateCSVDataSnowbirdSRF();
-            POESwtichPortSpeed();
+            // POESwtichPortSpeed();
+
+            TestPort();
+
+
             Console.WriteLine("生成完毕!!!");
 
 
@@ -589,19 +593,22 @@ namespace TestConsole
 
         static void TestPort() {
 
-               var  DUTCOMinfo = new SerialConnetInfo { PortName = "COM8", BaudRate = 115200 };
+             //  var  DUTCOMinfo = new SerialConnetInfo { PortName = "COM1", BaudRate = 115200 };
               
-               var DUTCOMM = new Comport(DUTCOMinfo);
-               DUTCOMM.Open();
+             //  var DUTCOMM = new Comport(DUTCOMinfo);
+             //  DUTCOMM.Open();
 
-               var revStr = "";
-             DUTCOMM.SendCommand("dmesg | grep rtl8251 | cut -d: -f 3", ref revStr, "root@OpenWrt:/#", 120);
-             var Value = GetValue(revStr, "qca-ssdk register", "!");
+             //  var revStr = "";
+             //DUTCOMM.SendCommand("AT+CC_DET%", ref revStr, "%END", 120);
+             //Console.WriteLine(">>>>>>>>>>>>>>>:"+revStr);
 
             //DUTCOMM.SendCommand("dmesg | grep 'mmcblk0' | head -1 | awk '{print $5}'", ref revStr, "root@OpenWrt:/#", 120);
             //var Value =  GetValue(revStr, "'{print $5}'", "root");
 
+             var revStr = @"TP56=0.095
+%END";
 
+            Console.WriteLine("最终取值:" + GetValue(revStr, "T56=", "%END"));
 
 
 
