@@ -493,9 +493,9 @@ namespace AutoTestSystem
                     }
                    
                 }
-                RestartProcess("QUTSStatusApp", @"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp.exe");
+               
                 
-
+               
 
             }
             else if (Global.STATIONNAME == "SRF") {
@@ -508,7 +508,7 @@ namespace AutoTestSystem
                     }
                        
                 }
-                RestartProcess("QUTSStatusApp", @"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp.exe");
+               
             }
 
             
@@ -616,7 +616,7 @@ namespace AutoTestSystem
             testThread.Start();
 
 
-           textBox1.Text = "GGC3530132850621";
+          // textBox1.Text = "GGC3530132850621";
         }
 
         private void ScanManager_ScanFinished(string sn)
@@ -903,11 +903,13 @@ namespace AutoTestSystem
                 // e=null时候，不执行&&后面的
              if ( e != null && e.KeyCode != Keys.Enter) {
                 return;
-            } 
+            }
 
-            
+            if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF") {
+                RestartProcess("QUTSStatusApp", @"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp.exe");
+            }
 
-       
+         
 
 
             StartScanFlag = false;
@@ -1569,7 +1571,7 @@ namespace AutoTestSystem
                                     var recvStr = "";
                                   
                                  
-                                    FixSerialPort.SendCommandToFix("AT+VBUS_OFF%", ref recvStr, "OK", 5);
+                                  //  FixSerialPort.SendCommandToFix("AT+VBUS_OFF%", ref recvStr, "OK", 5);
 
                                 };
 
@@ -1593,6 +1595,7 @@ namespace AutoTestSystem
 
                             if (Global.STATIONNAME == "SRF")
                             {
+                                KillProcessNoRes("QUTSStatusApp");
                                 KillProcessNoRes("QCATestSuite"); //SRF
                                 KillProcessNoRes("QPSTConfig"); //SRF
                                 KillProcessNoRes("BTTestSuite");//SRF
@@ -1601,6 +1604,9 @@ namespace AutoTestSystem
                             }
 
                             if (Global.STATIONNAME == "MBFT") {
+
+                                KillProcessNoRes("QUTSStatusApp");//MBFT
+
                                 KillProcessNoRes("ATSuite"); //MBFT
                                 KillProcessNoRes("BTTestSuiteRD");//MBFT
                                 KillProcessNoRes("QPSTConfig"); //MBFT
@@ -1621,12 +1627,12 @@ namespace AutoTestSystem
 #if DEBUG
 #else
 
-                            Thread thread2 = new Thread(() =>
-                            {
-                                UploadLogToSftp();
-                            });
-                            thread2.IsBackground = true;
-                            thread2.Start();
+                            //Thread thread2 = new Thread(() =>
+                            //{
+                            //    UploadLogToSftp();
+                            //});
+                            //thread2.IsBackground = true;
+                            //thread2.Start();
 #endif
 
 

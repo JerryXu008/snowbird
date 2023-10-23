@@ -100,7 +100,10 @@ namespace AutoTestSystem.Model
                 (item.TestKeyword.Contains("GetIpaddrEnv")
                 || item.TestKeyword.Contains("CheckEeroTest") || item.TestKeyword.Contains("Checkroute")
                 || item.TestKeyword.Contains("CheckEeroABA")
-                || item.TestKeyword.Contains("GetWorkOrder")))
+                || item.TestKeyword.Contains("GetWorkOrder")
+                 || item.TestKeyword.Contains("SetDHCP")
+
+                ))
             {
                 loggerWarn("This is debug mode.Skip this step.");
                 testPhase.phase_details = "This is debug mode.";
@@ -108,12 +111,7 @@ namespace AutoTestSystem.Model
             }
 
 
-            if (item.TestKeyword.Contains("SetDHCP"))
-            {
-                loggerWarn("This is debug mode.Skip this step2.");
-                testPhase.phase_details = "This is debug mode.";
-                rReturn = true;
-            }
+            
 
             // 发送的命令中有变量
             while (!String.IsNullOrEmpty(item.ComdOrParam) && item.ComdOrParam.Contains("<") && item.ComdOrParam.Contains(">"))
@@ -131,7 +129,8 @@ namespace AutoTestSystem.Model
                 else
                     specFlag = true;
 #if DEBUG
-                MesMac = "9c:a5:70:00:39:60";
+                //MesMac = "9c:a5:70:00:39:60";
+                MesMac = "11:22:33:44:55:66";
 #endif
 
 #if DEBUG
@@ -1371,7 +1370,7 @@ namespace AutoTestSystem.Model
 
 
                             }
-
+                            
 
                             if (rReturn == false)
                             {
@@ -1397,10 +1396,6 @@ namespace AutoTestSystem.Model
 
 
                         break;
-
-
-
-
 
 
                     case "ClearInput":
@@ -1536,16 +1531,6 @@ namespace AutoTestSystem.Model
                     //        loggerError($"Don't find test result in csv,test fail!");
                     //    }
                     //    break;
-
-
-
-
-
-
-
-
-
-
 
 
 

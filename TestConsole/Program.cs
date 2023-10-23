@@ -498,7 +498,7 @@ namespace TestConsole
          
     static void Main(string[] args)
         {
-            //ControlPOE();
+            ControlPOE();
 
             //Console.WriteLine("sleep 10s");
             //Thread.Sleep(10000);
@@ -514,12 +514,12 @@ namespace TestConsole
 
 
 
-            //CreateCSVDataMerciAndSnowBirdMBFT();
+           // CreateCSVDataMerciAndSnowBirdMBFT();
 
             //  CreateCSVDataSnowbirdSRF();
             // POESwtichPortSpeed();
 
-            TestPort();
+          //  TestPort();
 
 
             Console.WriteLine("生成完毕!!!");

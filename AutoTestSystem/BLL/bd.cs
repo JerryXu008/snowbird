@@ -621,6 +621,9 @@ namespace AutoTestSystem.BLL
                 var client = GetClient(cookies, "admin", "admin123");
                 string url = $@"http://169.254.100.101/api/v1/service";
                 string data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{peo_Port}\",{{\"Mode\":\"{cmd}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":164}}";
+
+                logger.Debug("请求参数:" + data);
+                
                 StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
                 var result = client.PostAsync(url, content).Result;
                 var response_content = result.Content.ReadAsByteArrayAsync().Result;

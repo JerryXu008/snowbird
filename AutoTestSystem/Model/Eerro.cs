@@ -328,6 +328,32 @@ namespace AutoTestSystem.Model
         public string V_TP55_STBY_VDD3_3= null;
         public string V_TP503_VDD1_8_NAPA= null;
         public string V_TP504_VDD1_05_NAPA= null;
+
+
+        public string V_TP1025_POE_5V;
+ public string V_TP535_DVDD5;
+        public string V_TP573_DVDD3_3;
+        public string V_TP577_AVDD3_3_2G;
+ public string V_TP578_VDD1V95_PMU;
+        public string V_TP579_VDD_CX;
+        
+ 
+ public string V_TP576_VDD_LDO_2P5_VPP;
+        public string V_TP574_VDD_DDR;
+        public string V_TP27_VDD_SOC_CX;
+        public string V_TP29_VDD_SOC_MX;
+        public string V_TP36_VAA_1P2;
+        public string V_TP28_VAA_0P8;
+        public string V_TP30_VDD_PCIE_1P8;
+        public string V_TP34_VDD_PCIE_0P925;
+        public string V_TP569_VDD_XPA;
+
+
+
+
+
+
+
         /// <summary>
         /// 测试参数上传
         /// </summary>
@@ -461,23 +487,19 @@ namespace AutoTestSystem.Model
         public string ENTER_UBOOT;
 
         
-        public string V_TP27_VDD_SOC_CX;
-        public string V_TP28_VAA_0P8;
-        public string V_TP29_VDD_SOC_MX;
-        public string V_TP30_VDD_PCIE_1P8;
+      
+      
         public string V_TP31_VDD_1V8_PX3;
-        public string V_TP34_VDD_PCIE_0P925;
-        public string V_TP36_VAA_1P2;
+         
+      
         public string V_TP38_USBC_VBUS;
         public string V_TP503_VDD1_8_PHY;
 public string V_TP535_USBC_VBUS_SWITCHED; 
 public string V_TP569_VDD_XPA_Qorvo;
-        public string V_TP573_DVDD3_3;
-        public string V_TP574_VDD_DDR;
-        public string V_TP576_VDD_LDO_2P5_VPP;
-        public string V_TP577_AVDD3_3_2G;
-public string V_TP578_VDD1V95_PMU;
-        public string V_TP579_VDD_CX;
+        
+        
+         
+      
         public string V_TP581_VDD3_3_PHY;
 public string V_TP582_VAA_1P8;
         public string V_TP583_VDD0_95_PHY;
