@@ -55,6 +55,7 @@ namespace AutoTestSystem.DAL
                 SerialPort.Open();
                 SerialPort.DataReceived += ComPort_DataReceived;
                 loggerInfo($"{SerialPort.PortName} serialPort.Open()!!");
+              
                 return true;
             }
             catch (Exception ex)
@@ -115,9 +116,12 @@ namespace AutoTestSystem.DAL
         {
             SerialPort.WriteLine(sendstr);
         }
-          
+        public override bool SendCommand(string cmd, ref string recvStr, string waitforStr, int timeout = 10)
+        {
+            return SendCommand(cmd, ref recvStr, waitforStr, (double)timeout);
+        }
 
-        public override bool SendCommand(string command, ref string strRecAll, string DataToWaitFor, int timeout = 10)
+        public override bool SendCommand(string command, ref string strRecAll, string DataToWaitFor, double timeout = 10)
         {
             try
             {
@@ -129,7 +133,7 @@ namespace AutoTestSystem.DAL
                     command = command + "\n";
                 }
                 loggerDebug($"{SerialPort.PortName.ToUpper()}SendComd-->{command}");
-                SerialPort.ReadTimeout = (timeout + 1) * 1000;
+                SerialPort.ReadTimeout = ((int)timeout + 1) * 1000;
                 sReceiveAll = "";
                 SerialPort.DiscardInBuffer();
                 SerialPort.DiscardOutBuffer();

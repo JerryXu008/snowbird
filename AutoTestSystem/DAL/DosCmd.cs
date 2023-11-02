@@ -95,7 +95,11 @@ namespace AutoTestSystem.DAL
         //    }
         //    return rResult;
         //}
+        public override bool SendCommand(string comd, ref string line, string waitFor = "XXXXXXXX", double timeout = 3000)
+        {
 
+            return SendCommand(comd, ref line, waitFor, (int)(timeout));
+        }
         public override bool SendCommand(string command, ref string strRecAll, string DataToWaitFor, int timeout = 3000)
         {
             bool rResult = false;

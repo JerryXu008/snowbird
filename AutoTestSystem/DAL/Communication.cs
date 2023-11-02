@@ -48,7 +48,7 @@ namespace AutoTestSystem.DAL
         /// <param name="timeout">超时时间</param>
         /// <returns></returns>
         public abstract bool SendCommand(string command, ref string strRecAll, string DataToWaitFor, int timeout = 10);
-
+        public abstract bool SendCommand(string command, ref string strRecAll, string DataToWaitFor, double timeout = 10);
         // 父类虚方法，子类可重写可不重写，重写用override关键字。virtual方法必须有方法主体。
         public virtual bool Open(string Expstr) { return false; }
 

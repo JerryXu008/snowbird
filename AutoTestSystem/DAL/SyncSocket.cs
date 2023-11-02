@@ -121,7 +121,11 @@ namespace AutoTestSystem.DAL
         {
             throw new NotImplementedException();
         }
+        public override bool SendCommand(string comd, ref string line, string waitFor = "XXXXXXXX", double timeout = 10)
+        {
 
+            return SendCommand(comd, ref line, waitFor, (int)(timeout));
+        }
         public override void Write(string message)
         {
             try

@@ -881,7 +881,7 @@ namespace AutoTestSystem.Model
                                 dict2.Add("AdvertiseDisabled", 921);
                             }
 
-
+                         
 
                             string data = JsonConvert.SerializeObject(dict);
 
@@ -905,6 +905,41 @@ namespace AutoTestSystem.Model
 
                         }
                         break;
+
+                    case "HardwareReset": {
+
+                            loggerInfo($"-----HardWareReboot------");
+                            rReturn = PowerCycleOutlet(int.Parse(Global.POE_PORT));
+                        }
+                        break;
+
+                    case "SoftwareReset":
+                        {  
+
+                            loggerInfo($"-----SoftWareReboot------");
+                            var recvStr = "";
+                            DUTCOMM.SendCommand("reboot", ref recvStr, "", 10);
+
+                            bool notShutDown = true;
+                            for (var i = 0; i < 10; i++) {
+                                bool r = PingIP(Global.DUTIP, 1);
+                                if (r == false) {
+                                    notShutDown = false;
+                                    break;
+                                }
+                                Thread.Sleep(1000);
+                            }
+
+                            rReturn = !notShutDown;
+                                            
+
+                        }
+                        break;
+
+
+
+
+
                     case "PowerCycleTest":
                         {
                
@@ -912,9 +947,13 @@ namespace AutoTestSystem.Model
                                 bool powercycle_ALL = true;
                                 for (int i = 0; i < int.Parse(item.ComdOrParam); i++)
                                 {
-                                    loggerInfo($"--Times {i} ");
+                                    loggerInfo($"-------------------{i+1} Power cycle test -----------------");
+                                   
                                     bool powercycle = PowerCycleOutlet(int.Parse(Global.POE_PORT));
-                                    //Thread.Sleep(1000);
+                                  
+                                
+                                
+                                   //Thread.Sleep(1000);
                                     powercycle_ALL &= powercycle;
                                     if (!powercycle)
                                     {
@@ -929,7 +968,7 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
-
+                      
 
 
                     case "CheckEeroABA":
@@ -950,6 +989,10 @@ namespace AutoTestSystem.Model
                         {
 
                             //  rReturn = true;
+
+
+
+                           // return rReturn;
 
 
 
@@ -1213,11 +1256,17 @@ namespace AutoTestSystem.Model
 
 
                     case "ShowFixtureTip": {
-                            ShowFixtureTip usbDialog = new ShowFixtureTip();
-                            usbDialog.TextHandler = (str) => { };
-                            usbDialog.StartPosition = FormStartPosition.CenterScreen;
-                            usbDialog.ShowTip();
-                            usbDialog.ShowDialog();
+                          
+                            
+                            
+                            //ShowFixtureTip usbDialog = new ShowFixtureTip();
+                            //usbDialog.TextHandler = (str) => { };
+                            //usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                            //usbDialog.ShowTip();
+                            //usbDialog.ShowDialog();
+                           
+                            
+                            
                             rReturn = true;
                         }
                         break;
@@ -1258,9 +1307,10 @@ namespace AutoTestSystem.Model
                             usbDialog.TextHandler = (str) => { };
                             usbDialog.StartPosition = FormStartPosition.CenterScreen;
                             usbDialog.ShowTip(item.CheckStr2);
+                            usbDialog.TopMost = true;
 
-
-                            Task.Factory.StartNew(() => {
+                            Task.Factory.StartNew(() =>
+                            {
 
                                 FixSerialPort.OpenCOM();
                                 var revStr = "";
@@ -1271,11 +1321,11 @@ namespace AutoTestSystem.Model
                                 {
 
                                     lngCurTime = DateTime.Now.Ticks;
-                                    
 
-                                   var res = DUTCOMM.SendCommand(item.ComdOrParam, ref revStr, item.ExpectStr, 5);
-                                  
-                                   loggerDebug(res.ToString());
+
+                                    var res = DUTCOMM.SendCommand(item.ComdOrParam, ref revStr, item.ExpectStr, 5);
+
+                                    loggerDebug(res.ToString());
 
                                     var checkStr = item.CheckStr2 == "1" ? "OK!10" : "OK!11";
 
@@ -1290,19 +1340,23 @@ namespace AutoTestSystem.Model
 
                                 }
 
-                                usbDialog.Invoke((MethodInvoker)delegate {
+                                usbDialog.Invoke((MethodInvoker)delegate
+                                {
                                     usbDialog.CloseDia();
                                     usbDialog.Focus();
-                                   
+
                                 });
-                               
+
 
                             });
 
+                            // 设置窗体为无边框样式
+                            usbDialog.FormBorderStyle = FormBorderStyle.None;
+                           // 最大化窗体
+                           usbDialog.WindowState = FormWindowState.Maximized;
 
 
-
-                         usbDialog.ShowDialog();
+                           usbDialog.ShowDialog();
 
 
 
@@ -1400,6 +1454,8 @@ namespace AutoTestSystem.Model
 
                     case "ClearInput":
                         {
+
+                            inPutValue = "";
                             loggerInfo("inPutValu 清空");
                             rReturn = true;
                         }
@@ -3219,8 +3275,8 @@ namespace AutoTestSystem.Model
                                 rReturn = true;
                             }
 
-
-                            else if (DUTCOMM.SendCommand(item.ComdOrParam, ref revStr, item.ExpectStr, short.Parse(item.TimeOut))
+                             
+                            else if (DUTCOMM.SendCommand(item.ComdOrParam, ref revStr, item.ExpectStr, double.Parse(item.TimeOut))
                                 && revStr.CheckStr(item.CheckStr1) && revStr.CheckStr(item.CheckStr2) && revStr.NoCheckStr(item.NoContain))
                             {
                                 rReturn = true;
@@ -3339,22 +3395,37 @@ namespace AutoTestSystem.Model
                             }
                             else {  //
                                  
-                                if (Global.STATIONNAME == "SFT" || Global.STATIONNAME == "MBFT"
-                                     || Global.STATIONNAME == "RTT" || Global.STATIONNAME == "SRF"){
+
+
+
+
+                                //****************************P1阶段先屏蔽掉**********************************//
+
+
+                                //if (Global.STATIONNAME == "SFT" || Global.STATIONNAME == "MBFT"
+                                //     || Global.STATIONNAME == "RTT" || Global.STATIONNAME == "SRF"){
 
                                  
-                                    if (DUTCOMM != null && DUTCOMM.GetType() == typeof(Telnet))
-                                    {
-                                       loggerInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                                       loggerError("connet again");
-                                       telnetInfo = new TelnetInfo { _Address = DUTCOMM.HostIP };
-                                       DUTCOMM.Close();
-                                       DUTCOMM = new Telnet(telnetInfo);
-                                       DUTCOMM.Open(Global.PROMPT);
-                                    }
+                                //    if (DUTCOMM != null && DUTCOMM.GetType() == typeof(Telnet))
+                                //    {
+                                //       loggerInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                                //       loggerError("connet again");
+                                //       telnetInfo = new TelnetInfo { _Address = DUTCOMM.HostIP };
+                                //       DUTCOMM.Close();
+                                //       DUTCOMM = new Telnet(telnetInfo);
+                                //       DUTCOMM.Open(Global.PROMPT);
+                                //    }
                                    
 
-                                }
+                                //}
+
+
+
+
+
+
+
+
 
                                HandleSpecialMethed(item, rReturn, revStr);
 

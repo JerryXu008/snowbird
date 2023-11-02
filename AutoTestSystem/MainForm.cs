@@ -1578,6 +1578,14 @@ namespace AutoTestSystem
                             }
 
 
+                            if (Global.STATIONNAME != "BURNIN") {
+                                logger.Info("关闭poe");
+                                Bd.PoeConfigSetting(Global.POE_PORT, "disable");
+
+                            }
+
+
+
                             //Thread thread = new Thread(() =>
                             //{
                             //    try
@@ -1638,10 +1646,6 @@ namespace AutoTestSystem
 
 
 
-
-
-
-
                             break;
 
                         default:
@@ -1690,16 +1694,20 @@ namespace AutoTestSystem
                             loggerInfo("final path:" + cellLogPath);
 
                             if (Global.STATIONNAME == "BURNIN") {
-                                var newPath = Path.GetDirectoryName(Bd.TempCellLogPath) + "\\" + $@"{finalTestResult}_{SN}_{error_details_firstfail}_{DateTime.Now.ToString("hh-mm-ss")}.txt";
-                                FileInfo fi = new FileInfo(Bd.TempCellLogPath);
+                               
+                                FileInfo fi = new FileInfo( Global.LogPath  + "\\" + Bd.TempCellLogPath);
+
+                                var newPath = Global.LogPath + "\\" + $@"{finalTestResult}_{SN}_{error_details_firstfail}_{DateTime.Now.ToString("hh-mm-ss")}.txt";
+
+
+                                loggerInfo(">>>>>>>>>>>>>From:" + Global.LogPath + "\\" + Bd.TempCellLogPath);
+
+
+                                loggerInfo(">>>>>>>>>>>>>To:" + newPath);
+
                                 fi.MoveTo(newPath);
                             }
                           
-
-
-
-
-
 
 
                             if (Global.STATIONNAME == "SRF" || Global.STATIONNAME == "MBFT") {
@@ -2118,17 +2126,50 @@ namespace AutoTestSystem
                                 bool result = false;
 
                                 //为了应对SFT 网口通信断开的问题，把retry==0 的 改为retry==1
-                                if ( (Global.STATIONNAME == "SFT" || Global.STATIONNAME == "MBFT" 
-                                    || Global.STATIONNAME == "RTT" || Global.STATIONNAME == "SRF")
+                               
+                                
+                                
+
+
+
+
+
+
+
+
+                                //这个地方P1阶段要屏蔽
+
+
+
+
+
+                                
+                                //if ( (Global.STATIONNAME == "SFT" || Global.STATIONNAME == "MBFT" 
+                                //    || Global.STATIONNAME == "RTT" || Global.STATIONNAME == "SRF")
                                     
                                     
-                                    && retryTimes == 0 && tempItem.TestKeyword == "default"
+                                //    && retryTimes == 0 && tempItem.TestKeyword == "default"
                                     
-                                    )
-                                {
-                                    loggerInfo(Global.STATIONNAME +" net problem，add retryTimes=1");
-                                    retryTimes = 1;
-                                }
+                                //    )
+                                //{
+                                //    loggerInfo(Global.STATIONNAME +" net problem，add retryTimes=1");
+                                //    retryTimes = 1;
+                                //}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
                                 for (retry = retryTimes; retry > -1; retry--)
@@ -2281,8 +2322,6 @@ namespace AutoTestSystem
                                         }
                                     }
 
-                                
-
 
                                 }
                                 // 循环测试处理
@@ -2291,271 +2330,271 @@ namespace AutoTestSystem
                                     // 测试fail停止测试,生成结果or fail继续测试。
                                     if (!tempItem.tResult && !fail_continue)
                                     {
-                                        if (Global.STATIONNAME == "SFT")
-                                        {
-                                            if (tempItem.ItemName == "ETH0_SPEED_TX_Special"
-                                                ||
-                                               tempItem.ItemName == "ETH0_SPEED_RX_Special"
-                                               ||
-                                               tempItem.ItemName == "ETH1_SPEED_TX_Special"
-                                               ||
-                                               tempItem.ItemName == "ETH1_SPEED_RX_Special"
-                                                )
-                                            {
+                                        //if (Global.STATIONNAME == "SFT")
+                                        //{
+                                        //    if (tempItem.ItemName == "ETH0_SPEED_TX_Special"
+                                        //        ||
+                                        //       tempItem.ItemName == "ETH0_SPEED_RX_Special"
+                                        //       ||
+                                        //       tempItem.ItemName == "ETH1_SPEED_TX_Special"
+                                        //       ||
+                                        //       tempItem.ItemName == "ETH1_SPEED_RX_Special"
+                                        //        )
+                                        //    {
 
-                                                SFT_TXRX_RETRY--;
-                                                if (SFT_TXRX_RETRY >= 0)
-                                                {
+                                        //        SFT_TXRX_RETRY--;
+                                        //        if (SFT_TXRX_RETRY >= 0)
+                                        //        {
 
-                                                    FixSerialPort.OpenCOM();
-                                                    var recvStr = "";
-                                                    FixSerialPort.SendCommandToFix("AT+PORTEJECT%", ref recvStr, "OK", 10);
-                                                    Sleep(500);
-                                                    FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
-                                                    var rr = "";
-                                                    if (DUTCOMM != null)
-                                                    {
-                                                        if (DUTCOMM.SendCommand("", ref rr, "luxshare SW Version :", 120))
-                                                        {
+                                        //            FixSerialPort.OpenCOM();
+                                        //            var recvStr = "";
+                                        //            FixSerialPort.SendCommandToFix("AT+PORTEJECT%", ref recvStr, "OK", 10);
+                                        //            Sleep(500);
+                                        //            FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
+                                        //            var rr = "";
+                                        //            if (DUTCOMM != null)
+                                        //            {
+                                        //                if (DUTCOMM.SendCommand("", ref rr, "luxshare SW Version :", 120))
+                                        //                {
 
-                                                            if (DUTCOMM.SendCommand(" \r\n", ref rr, "root@OpenWrt:/#", 1))
-                                                            {
+                                        //                    if (DUTCOMM.SendCommand(" \r\n", ref rr, "root@OpenWrt:/#", 1))
+                                        //                    {
 
-                                                            }
-                                                        }
-                                                        DUTCOMM.SendCommand("modprobe qca_nss_netlink", ref rr, "root@OpenWrt:/#", 10);
-                                                        DUTCOMM.SendCommand("ifconfig br-lan down && brctl delbr br-lan && ifconfig eth0 192.168.1.101 up && ifconfig eth1 192.168.0.1 up", ref rr, "root@OpenWrt:/#", 10);
+                                        //                    }
+                                        //                }
+                                        //                DUTCOMM.SendCommand("modprobe qca_nss_netlink", ref rr, "root@OpenWrt:/#", 10);
+                                        //                DUTCOMM.SendCommand("ifconfig br-lan down && brctl delbr br-lan && ifconfig eth0 192.168.1.101 up && ifconfig eth1 192.168.0.1 up", ref rr, "root@OpenWrt:/#", 10);
 
-                                                    }
-                                                    sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
-                                                    seqNo = 8;
-                                                    itemsNo = 0;
-                                                    ResetData();
+                                        //            }
+                                        //            sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
+                                        //            seqNo = 8;
+                                        //            itemsNo = 0;
+                                        //            ResetData();
 
-                                                    Thread.Sleep(2000);
-                                                    goto TX_RX_RETRY;
+                                        //            Thread.Sleep(2000);
+                                        //            goto TX_RX_RETRY;
 
-                                                }
+                                        //        }
 
-                                            }
-                                        }
+                                        //    }
+                                        //}
 
 
                                         // if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF")
-                                       else  if (Global.STATIONNAME == "MBFT")
-                                        {
-                                            if (
-                                                tempItem.ErrorCode == "1.4.1.1: Equipment.DUT.Initiate"
-                                                 || 
-                                                tempItem.ErrorCode.Contains("1.4.3.8:")
-                                                ) //这种类型的错误要重新开始测试
-                                              {
-                                                if (
-                                                    Global.STATIONNAME == "SRF"
-                                                    ||
-                                                    (
-                                                      Global.STATIONNAME == "MBFT" &&
-                                                      (
-                                                        tempItem.ItemName == "Calibration_0_5180"
-                                                        ||
-                                                        tempItem.ItemName == "Calibration_1_5180"
-                                                        ||
-                                                        tempItem.ItemName == "Calibration_0_5320"
-                                                         ||
-                                                        tempItem.ItemName == "Calibration_1_5320"
-                                                         ||
-                                                        tempItem.ItemName == "Calibration_0_5500"
-                                                         ||
-                                                        tempItem.ItemName == "Calibration_1_5500"
-                                                         ||
-                                                        tempItem.ItemName == "Calibration_0_5745"
-                                                         ||
-                                                        tempItem.ItemName == "Calibration_1_5745"
-                                                         ||
-                                                        tempItem.ItemName == "WIFI_5G_TX_CAL"
-                                                         ||
-                                                        tempItem.ItemName == "WIFI_5G_RX_CAL"
-                                                         ||
-                                                        tempItem.ItemName == "WIFI_2G_RX_CAL"
-                                                    ||
-                                                        tempItem.ItemName == "WIFI_RX_PER_F2412_BW20_MCS0_P-91_C0"
-                                                    ||
-                                                        tempItem.ItemName == "WIFI_RX_PER_F2412_BW20_MCS0_P-91_C1"
-                                                    ||
-                                                        tempItem.ItemName == "WIFI_RX_PER_F2437_BW20_MCS0_P-91_C0"
-                                                    ||
-                                                        tempItem.ItemName == "WIFI_RX_PER_F2437_BW20_MCS0_P-91_C1"
+                                       //else  if (Global.STATIONNAME == "MBFT")
+                                       // {
+                                       //     if (
+                                       //         tempItem.ErrorCode == "1.4.1.1: Equipment.DUT.Initiate"
+                                       //          || 
+                                       //         tempItem.ErrorCode.Contains("1.4.3.8:")
+                                       //         ) //这种类型的错误要重新开始测试
+                                       //       {
+                                       //         if (
+                                       //             Global.STATIONNAME == "SRF"
+                                       //             ||
+                                       //             (
+                                       //               Global.STATIONNAME == "MBFT" &&
+                                       //               (
+                                       //                 tempItem.ItemName == "Calibration_0_5180"
+                                       //                 ||
+                                       //                 tempItem.ItemName == "Calibration_1_5180"
+                                       //                 ||
+                                       //                 tempItem.ItemName == "Calibration_0_5320"
+                                       //                  ||
+                                       //                 tempItem.ItemName == "Calibration_1_5320"
+                                       //                  ||
+                                       //                 tempItem.ItemName == "Calibration_0_5500"
+                                       //                  ||
+                                       //                 tempItem.ItemName == "Calibration_1_5500"
+                                       //                  ||
+                                       //                 tempItem.ItemName == "Calibration_0_5745"
+                                       //                  ||
+                                       //                 tempItem.ItemName == "Calibration_1_5745"
+                                       //                  ||
+                                       //                 tempItem.ItemName == "WIFI_5G_TX_CAL"
+                                       //                  ||
+                                       //                 tempItem.ItemName == "WIFI_5G_RX_CAL"
+                                       //                  ||
+                                       //                 tempItem.ItemName == "WIFI_2G_RX_CAL"
+                                       //             ||
+                                       //                 tempItem.ItemName == "WIFI_RX_PER_F2412_BW20_MCS0_P-91_C0"
+                                       //             ||
+                                       //                 tempItem.ItemName == "WIFI_RX_PER_F2412_BW20_MCS0_P-91_C1"
+                                       //             ||
+                                       //                 tempItem.ItemName == "WIFI_RX_PER_F2437_BW20_MCS0_P-91_C0"
+                                       //             ||
+                                       //                 tempItem.ItemName == "WIFI_RX_PER_F2437_BW20_MCS0_P-91_C1"
 
-                                                       ||            
-                                                        tempItem.ItemName == "BLE_TX_POWER_F2402"
+                                       //                ||            
+                                       //                 tempItem.ItemName == "BLE_TX_POWER_F2402"
                                                        
-                                                      )
+                                       //               )
                                                     
 
-                                                    )
-                                                    ) { 
+                                       //             )
+                                       //             ) { 
                                                
 
-                                                SRF_POP_RETRY--;
-                                                if (SRF_POP_RETRY >= 0)
-                                                {
+                                       //         SRF_POP_RETRY--;
+                                       //         if (SRF_POP_RETRY >= 0)
+                                       //         {
 
 
-                                                    sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
-                                                    seqNo = 0;
-                                                    itemsNo = 0;
+                                       //             sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
+                                       //             seqNo = 0;
+                                       //             itemsNo = 0;
 
 
-                                                    ResetData();
+                                       //             ResetData();
 
 
-                                                    if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF") {
-                                                        //插拔重启
-                                                        var recvStr = "";
+                                       //             if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF") {
+                                       //                 //插拔重启
+                                       //                 var recvStr = "";
                                                          
 
-                                                        FixSerialPort.SendCommandToFix("AT+PORTEJECT%", ref recvStr, "OK", 10);
+                                       //                 FixSerialPort.SendCommandToFix("AT+PORTEJECT%", ref recvStr, "OK", 10);
 
-                                                        Sleep(500);
-                                                        FixSerialPort.SendCommandToFix("AT+PRESSUP%", ref recvStr, "OK", 10);
-                                                        Sleep(500);
-                                                        FixSerialPort.SendCommandToFix("AT+PRESSDOWN%", ref recvStr, "OK", 10);
-                                                        Sleep(500);
-                                                        FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
-                                                    }
+                                       //                 Sleep(500);
+                                       //                 FixSerialPort.SendCommandToFix("AT+PRESSUP%", ref recvStr, "OK", 10);
+                                       //                 Sleep(500);
+                                       //                 FixSerialPort.SendCommandToFix("AT+PRESSDOWN%", ref recvStr, "OK", 10);
+                                       //                 Sleep(500);
+                                       //                 FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
+                                       //             }
                                                   
 
 
-                                                    if (Global.STATIONNAME == "SRF")
-                                                    {
-                                                        KillProcessNoResForce("QCATestSuite"); //SRF
-                                                        KillProcessNoResForce("QPSTConfig"); //SRF
-                                                        KillProcessNoResForce("BTTestSuite");//SRF
-                                                    }
+                                       //             if (Global.STATIONNAME == "SRF")
+                                       //             {
+                                       //                 KillProcessNoResForce("QCATestSuite"); //SRF
+                                       //                 KillProcessNoResForce("QPSTConfig"); //SRF
+                                       //                 KillProcessNoResForce("BTTestSuite");//SRF
+                                       //             }
 
-                                                    if (Global.STATIONNAME == "MBFT")
-                                                    {
-                                                        KillProcessNoResForce("ATSuite"); //MBFT
-                                                        KillProcessNoResForce("BTTestSuiteRD");//MBFT
-                                                        KillProcessNoResForce("QPSTConfig"); //MBFT
-                                                    }
+                                       //             if (Global.STATIONNAME == "MBFT")
+                                       //             {
+                                       //                 KillProcessNoResForce("ATSuite"); //MBFT
+                                       //                 KillProcessNoResForce("BTTestSuiteRD");//MBFT
+                                       //                 KillProcessNoResForce("QPSTConfig"); //MBFT
+                                       //             }
 
-                                                    Thread.Sleep(2000);
-                                                    goto TX_RX_RETRY;
-                                                }
-                                                }
-                                            }
+                                       //             Thread.Sleep(2000);
+                                       //             goto TX_RX_RETRY;
+                                       //         }
+                                       //         }
+                                       //     }
 
-                                        }
+                                       // }
                                       
                                         
                                         
                                         
-                                        else if (Global.STATIONNAME == "RTT")
-                                        {
+                                        //else if (Global.STATIONNAME == "RTT")
+                                        //{
 
-                                            if (tempItem.ItemName == "5GWiFiPing50" || tempItem.ItemName == "2GWiFiPing2" || tempItem.ItemName == "WiFiPing5")
-                                            {
-
-
-                                                SRF_POP_RETRY--;
-                                                if (SRF_POP_RETRY >= 0)
-                                                {
-                                                    sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
-                                                    seqNo = 0;
-                                                    itemsNo = 0;
+                                        //    if (tempItem.ItemName == "5GWiFiPing50" || tempItem.ItemName == "2GWiFiPing2" || tempItem.ItemName == "WiFiPing5")
+                                        //    {
 
 
-                                                    ResetData();
-
-                                                    //插拔重启
-                                                    var recvStr = "";
-                                                    loggerInfo("----------------->begin pop RJ45 fixture");
-
-                                                    FixSerialPort.SendCommandToFix("AT+PORTEJECT%", ref recvStr, "OK", 10);
-
-                                                    Sleep(500);
-
-                                                    loggerInfo("----------------->begin push RJ45 fixture");
-
-                                                    FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
-
-                                                    Thread.Sleep(2000);
-                                                    goto TX_RX_RETRY;
+                                        //        SRF_POP_RETRY--;
+                                        //        if (SRF_POP_RETRY >= 0)
+                                        //        {
+                                        //            sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
+                                        //            seqNo = 0;
+                                        //            itemsNo = 0;
 
 
+                                        //            ResetData();
 
-                                                }
+                                        //            //插拔重启
+                                        //            var recvStr = "";
+                                        //            loggerInfo("----------------->begin pop RJ45 fixture");
 
-                                            }
-                                        }
+                                        //            FixSerialPort.SendCommandToFix("AT+PORTEJECT%", ref recvStr, "OK", 10);
+
+                                        //            Sleep(500);
+
+                                        //            loggerInfo("----------------->begin push RJ45 fixture");
+
+                                        //            FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
+
+                                        //            Thread.Sleep(2000);
+                                        //            goto TX_RX_RETRY;
 
 
-                                        //UBOOT fail 之后 发送LED，保存到CSV
-                                        if (tempItem.ItemName == "ENTER_UBOOT") {
 
-                                            FixSerialPort.OpenCOM();
-                                            for (var i = 0; i < 5; i++) {
+                                        //        }
+
+                                        //    }
+                                        //}
+
+
+                                        ////UBOOT fail 之后 发送LED，保存到CSV
+                                        //if (tempItem.ItemName == "ENTER_UBOOT") {
+
+                                        //    FixSerialPort.OpenCOM();
+                                        //    for (var i = 0; i < 5; i++) {
                                                 
-                                                string recvStr = "";
-                                                loggerDebug("ENTER_UBOOT Fail,Send LED_W cmd");
-                                                if (FixSerialPort.SendCommandToFix("AT+LEDSTATUS%", ref recvStr, "%END", 5))
-                                                {
-                                                    recvStr = Regex.Replace(recvStr, "\r", "");
-                                                    recvStr = Regex.Replace(recvStr, "\n", "");
-                                                    if (i == 0)
-                                                    {
-                                                        UBOOT_LED_W_ReMSG1 = recvStr;
-                                                    }
-                                                    else if (i == 1) {
-                                                        UBOOT_LED_W_ReMSG2 = recvStr;
-                                                    }
-                                                    else if (i == 2)
-                                                    {
-                                                        UBOOT_LED_W_ReMSG3 = recvStr;
-                                                    }
-                                                    else if (i == 3)
-                                                    {
-                                                        UBOOT_LED_W_ReMSG4 = recvStr;
-                                                    }
-                                                    else if (i == 4)
-                                                    {
-                                                        UBOOT_LED_W_ReMSG5 = recvStr;
-                                                    }
+                                        //        string recvStr = "";
+                                        //        loggerDebug("ENTER_UBOOT Fail,Send LED_W cmd");
+                                        //        if (FixSerialPort.SendCommandToFix("AT+LEDSTATUS%", ref recvStr, "%END", 5))
+                                        //        {
+                                        //            recvStr = Regex.Replace(recvStr, "\r", "");
+                                        //            recvStr = Regex.Replace(recvStr, "\n", "");
+                                        //            if (i == 0)
+                                        //            {
+                                        //                UBOOT_LED_W_ReMSG1 = recvStr;
+                                        //            }
+                                        //            else if (i == 1) {
+                                        //                UBOOT_LED_W_ReMSG2 = recvStr;
+                                        //            }
+                                        //            else if (i == 2)
+                                        //            {
+                                        //                UBOOT_LED_W_ReMSG3 = recvStr;
+                                        //            }
+                                        //            else if (i == 3)
+                                        //            {
+                                        //                UBOOT_LED_W_ReMSG4 = recvStr;
+                                        //            }
+                                        //            else if (i == 4)
+                                        //            {
+                                        //                UBOOT_LED_W_ReMSG5 = recvStr;
+                                        //            }
                                                     
-                                                }
-                                                Thread.Sleep(1000);
-                                            }
+                                        //        }
+                                        //        Thread.Sleep(1000);
+                                        //    }
                                             
 
  
-                                        }
+                                        //}
 
-                                        if(Global.STATIONNAME=="SFT" && tempItem.ItemName== "ETH0_SPEED_TX")
-                                        {
-                                            //查看userspace进程
-                                            loggerInfo("查看userspace进程:");
-                                            RunDosCmd("tasklist | findstr /i \"userspace_speedtest.exe\""); 
+                                        //if(Global.STATIONNAME=="SFT" && tempItem.ItemName== "ETH0_SPEED_TX")
+                                        //{
+                                        //    //查看userspace进程
+                                        //    loggerInfo("查看userspace进程:");
+                                        //    RunDosCmd("tasklist | findstr /i \"userspace_speedtest.exe\""); 
 
-                                            string rr = "";
-                                            loggerInfo("开始连续ping 10次");
-                                            if (DUTCOMM.SendCommand("ping -c 10 -I eth0 192.168.1.10", ref rr, "root@OpenWrt:/#", 30)) { 
+                                        //    string rr = "";
+                                        //    loggerInfo("开始连续ping 10次");
+                                        //    if (DUTCOMM.SendCommand("ping -c 10 -I eth0 192.168.1.10", ref rr, "root@OpenWrt:/#", 30)) { 
                                             
-                                            }
+                                        //    }
 
-                                        }
-                                        else if (Global.STATIONNAME == "SFT" && tempItem.ItemName == "ETH1_SPEED_TX")
-                                        {
-                                            loggerInfo("查看userspace进程:");
-                                            RunDosCmd("tasklist | findstr /i \"userspace_speedtest.exe\"");
-                                            string rr = "";
-                                            loggerInfo("开始连续ping 10次");
-                                            if (DUTCOMM.SendCommand("ping -c 10 -I eth1 192.168.0.10", ref rr, "root@OpenWrt:/#", 30))
-                                            {
+                                        //}
+                                        //else if (Global.STATIONNAME == "SFT" && tempItem.ItemName == "ETH1_SPEED_TX")
+                                        //{
+                                        //    loggerInfo("查看userspace进程:");
+                                        //    RunDosCmd("tasklist | findstr /i \"userspace_speedtest.exe\"");
+                                        //    string rr = "";
+                                        //    loggerInfo("开始连续ping 10次");
+                                        //    if (DUTCOMM.SendCommand("ping -c 10 -I eth1 192.168.0.10", ref rr, "root@OpenWrt:/#", 30))
+                                        //    {
 
-                                            }
+                                        //    }
 
-                                        }
+                                        //}
 
 
                                         // sequence结束时间.

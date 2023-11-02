@@ -243,7 +243,9 @@ namespace AutoTestSystem.DAL
                 throw;
             }
         }
-
+        public override bool SendCommand(string cmd, ref string recvStr, string waitforStr, double timeout = 10) { 
+         return  SendCommand(cmd, ref recvStr, waitforStr, (int)timeout);
+        }
         /// <summary>
         /// 发送命令，在timeout时间内接收到期待的字符串，并返回全部接收的字符串。
         /// </summary>

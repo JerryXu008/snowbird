@@ -96,7 +96,10 @@ namespace AutoTestSystem.DAL
             }
             return ResponseContext;
         }
-
+        public override bool SendCommand(string command, ref string strRecAll, string DataToWaitFor, double timeout = 10) { 
+        
+            return SendCommand(command, ref strRecAll, DataToWaitFor, (int)timeout);
+        }
         /// <summary>
         /// 发命令给仪器并读取响应
         /// </summary>

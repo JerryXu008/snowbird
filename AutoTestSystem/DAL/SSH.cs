@@ -141,7 +141,10 @@ namespace AutoTestSystem.DAL
                 return false;
             }
         }
-
+        public override bool SendCommand(string comd, ref string line, string waitFor = "XXXXXXXX", double timeout = 3) { 
+        
+            return SendCommand(comd, ref line, waitFor, (int)(timeout));
+        }
         /// <summary>
         /// 用于连续发送命令
         /// </summary>

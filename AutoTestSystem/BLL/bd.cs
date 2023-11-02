@@ -29,7 +29,7 @@ namespace AutoTestSystem.BLL
     {
         public static ILog logger = Log4NetHelper.GetLogger(typeof(Bd));
 
-        public  static string  TempCellLogPath = $@"{Global.LogPath}\Temp.txt";
+        public  static string  TempCellLogPath = "\\Temp.txt";
 
 
         
@@ -158,7 +158,7 @@ namespace AutoTestSystem.BLL
             try
             { 
                 
-                    using (StreamWriter sw = new StreamWriter(TempCellLogPath, true, Encoding.Default))
+                    using (StreamWriter sw = new StreamWriter( Global.LogPath + "\\" + TempCellLogPath, true, Encoding.Default))
                     {
                         sw.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {log}");
                     }
@@ -603,12 +603,24 @@ namespace AutoTestSystem.BLL
                 bool rReturn = false;
             
                 bool rReturnoff = PoeConfigSetting(index.ToString(), "disable");
-                Thread.Sleep(1000);
-                bool rReturnon = PoeConfigSetting(index.ToString(), "poeDot3af");
-                Thread.Sleep(10000);
-                rReturn = rReturnoff && rReturnon;
-            
-            return rReturn;
+                Thread.Sleep(3000);
+
+             
+
+             bool rReturnon = PoeConfigSetting(index.ToString(), "poeDot3af");
+
+
+            if (!PingIP(Global.DUTIP, 2))
+            {
+                 Sleep(10000);
+                 rReturn = rReturnoff && rReturnon;
+                 return rReturn;
+            }
+            else {
+                loggerError("断电后再上电，不应该能马上ping通，所以失败!!!");
+                return rReturn = false;
+            }
+ 
         }
 
         public  static  bool PoeConfigSetting(string peo_Port, string cmd)

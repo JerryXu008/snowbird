@@ -495,10 +495,56 @@ namespace TestConsole
 
            // Console.WriteLine(responseStr);
         }
-         
-    static void Main(string[] args)
+
+        static void EnablePOE()
         {
-            ControlPOE();
+            var cookies = new CookieContainer();
+            var client = GetClient(cookies, "admin", "admin123");
+            string url = $@"http://169.254.100.101/api/v1/service";
+            //string data = $"{{\"method\":\"poe.status.powerin.get\",\"params\":[],\"id\":80}}";
+
+            
+
+            string data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{8}\",{{\"Mode\":\"{"poeDot3af"}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":164}}";
+
+
+
+            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            var result = client.PostAsync(url, content).Result;
+            var response_content = result.Content.ReadAsByteArrayAsync().Result;
+            var responseStr = System.Text.Encoding.UTF8.GetString(response_content);
+
+           
+
+            Console.WriteLine("");
+
+            // Console.WriteLine(responseStr);
+        }
+
+       static void TestDiGui(ref int ii) {
+            try
+            {
+
+
+                if (ii == 5000)
+                {
+                    return;
+                }
+                ii++;
+                //  Console.WriteLine("当前：" + ii);
+                TestDiGui(ref ii);
+            }
+            catch (Exception e) { 
+            
+            }
+        }
+        static void Main(string[] args)
+        {
+
+            
+
+
+           // ControlPOE();
 
             //Console.WriteLine("sleep 10s");
             //Thread.Sleep(10000);
@@ -514,12 +560,12 @@ namespace TestConsole
 
 
 
-           // CreateCSVDataMerciAndSnowBirdMBFT();
+            // CreateCSVDataMerciAndSnowBirdMBFT();
 
             //  CreateCSVDataSnowbirdSRF();
             // POESwtichPortSpeed();
 
-          //  TestPort();
+            //  TestPort();
 
 
             Console.WriteLine("生成完毕!!!");
