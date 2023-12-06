@@ -35,6 +35,29 @@ namespace AutoTestSystem.BLL
             sftp = new SftpClient(ip, Int32.Parse(port), user, pwd);
         }
 
+
+        public void CreateDir(string dir)
+        {
+            try
+            {
+
+                Connect();
+                bool isexist = sftp.Exists(dir);
+                if (!isexist)
+                {
+                    sftp.CreateDirectory(dir);
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                // TxtLog.WriteTxt(CommonMethod.GetProgramName(), string.Format("连接SFTP失败，原因：{0}", ex.Message));
+                throw new Exception(string.Format("Create SFTP Directory failed，cause：{0}", ex.Message));
+            }
+        }
+
+
         #endregion 构造
 
         #region 连接SFTP
@@ -101,6 +124,25 @@ namespace AutoTestSystem.BLL
                     Connect();
                     sftp.UploadFile(file, remotePath);
                     Disconnect();
+                }
+            }
+            catch (Exception ex)
+            {
+                // TxtLog.WriteTxt(CommonMethod.GetProgramName(), string.Format("SFTP文件上传失败，原因：{0}", ex.Message));
+                throw new Exception(string.Format("SFTP file upload failed，cause：{0}", ex.Message));
+            }
+        }
+
+
+        public void PutNoClose(string localPath, string remotePath)
+        {
+            try
+            {
+                using (var file = File.OpenRead(localPath))
+                {
+                    Connect();
+                    sftp.UploadFile(file, remotePath);
+
                 }
             }
             catch (Exception ex)

@@ -11,39 +11,21 @@ using System.Windows.Forms;
 
 namespace AutoTestSystem
 {
-    public partial class InutMEASPOP : Form
+    public partial class ReadyToTest : Form
     {
         public delegate void TextEventHandler(string strText);
 
         public TextEventHandler TextHandler;
 
 
-        public InutMEASPOP()
+        public ReadyToTest()
         {
             InitializeComponent();
-            textBox1.Text = "";
-            textBox1.Width = 200;
-            textBox1.Height = 40;
+         
 
-            textBox1.KeyDown += TextBox1_KeyDown1;
+ 
 
 
-
-            Thread thread = new Thread(() => {
-               Thread.Sleep(1000);
-                Action updateTitle = () => {
-                    textBox1.Focus();
-                };
-                this.Invoke(updateTitle);
-
-                
-              
-
-            });
-            thread.IsBackground = true;
-            thread.Start();
-
-            
         }
 
         private void TextBox1_KeyDown1(object sender, KeyEventArgs e)
@@ -54,10 +36,10 @@ namespace AutoTestSystem
             确定_Click(null, null);
         }
 
-         
-            private void InutMEASPOP_Shown(object sender, System.EventArgs e)
+
+        private void InutMEASPOP_Shown(object sender, System.EventArgs e)
         {
-            textBox1.Focus();
+            
         }
 
         private void USBConfirmDialog_Load(object sender, EventArgs e)
@@ -80,7 +62,7 @@ namespace AutoTestSystem
 
         public void ShowTip()
         {
-            label1.Text = "请输入阻抗值\r\nVui lòng nhập giá trị trở kháng:";
+            label1.Text = "确定开始/Được rồi để bắt đầu";
 
         }
         private void label1_Click(object sender, EventArgs e)
@@ -112,27 +94,16 @@ namespace AutoTestSystem
 
         private void 确定_Click(object sender, EventArgs e)
         {
-            if (null != TextHandler)
-            {
+             
+               
 
 
-                var input = textBox1.Text;
-
-           
-                double doubleValue;
-
-                if (double.TryParse(input, out doubleValue))
-                {
-                    TextHandler.Invoke(input);
+               
                     DialogResult = DialogResult.OK;
-                }
-                else
-                {
-                    Console.WriteLine(input + " 不是一个数字");
-                }
+              
 
-                
-            }
+
+            
         }
     }
 }

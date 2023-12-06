@@ -7,21 +7,22 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-
+using static AutoTestSystem.BLL.Bd;
 namespace AutoTestSystem.DAL
 {
-    public class DLIOutletClient : AutoTestSystem.ISavelog
+    public class DLIOutletClient
     {
         WebSwitchConInfo connectionInfo;
         CookieContainer cookies { get; set; }
         public string logPath { get; set; }
         public HttpClient client { get; set; }
-        public DLIOutletClient(WebSwitchConInfo connectionInfo, string _logPath)
+        public DLIOutletClient(WebSwitchConInfo connectionInf)
         {
-            this.connectionInfo = connectionInfo;
+            this.connectionInfo = connectionInf;
             cookies = new CookieContainer();
-            logPath = _logPath;
+
             client = GetClient(cookies);
         }
 
@@ -43,120 +44,112 @@ namespace AutoTestSystem.DAL
             return client;
         }
 
-        public async Task<bool> GetSwitchInfo(int outletIndex)
-        {
-            var url = GetUrl(connectionInfo, string.Format(CultureInfo.InvariantCulture, URLs.CycleN, outletIndex.ToString()));
-            var body = await client.GetStringSafeAsync(url);
-            return body.Contains("true") ? true : false;
-        }
+        //public async Task<bool> GetSwitchInfo(int outletIndex)
+        //{
+        //    var url = GetUrl(connectionInfo, string.Format(CultureInfo.InvariantCulture, URLs.CycleN, outletIndex.ToString()));
+        //    var body = await GetStringSafeAsync(url);
+        //    return body.Contains("true") ? true : false;
+        //}
 
         public async Task<bool> CycleOutlet(int outletIndex)
         {
-            // var client = GetClient(cookies);
-
             var url = GetUrl(connectionInfo, string.Format(CultureInfo.InvariantCulture, URLs.CycleN, outletIndex.ToString()));
 
-            var body = await client.GetStringSafeAsync(url);
+            var body = await GetStringSafeAsync(url);
 
             if (body.Contains("URL=/index.htm"))
             {
-                SaveLog($"PowerCycle Outlet {outletIndex} PASS!");
+                logger.Info($"PowerCycle Outlet {outletIndex} PASS!");
                 return true;
             }
             else
             {
-                SaveLog($"PowerCycle Outlet {outletIndex} FAIL!");
-                SaveLog("CycleOutlet body:" + body);
+                logger.Info($"PowerCycle Outlet {outletIndex} FAIL!");
+                logger.Info("CycleOutlet body:" + body);
                 return false;
             }
         }
 
         public async Task<bool> SetOutlet(int outletIndex, bool desiredState)
         {
-            // var client = GetClient(cookies);
-
             var url = GetUrl(connectionInfo, string.Format(CultureInfo.InvariantCulture, URLs.OutletNToState, outletIndex.ToString(), desiredState ? "ON" : "OFF"));
 
-            var body = await client.GetStringSafeAsync(url);
+            var body = await GetStringSafeAsync(url);
             if (body.Contains("URL=/index.htm"))
             {
-                SaveLog($"Set Outlet {outletIndex} {(desiredState ? "ON" : "OFF")} PASS!");
+                logger.Info($"Set Outlet {outletIndex} {(desiredState ? "ON" : "OFF")} PASS!");
                 return true;
             }
             else
             {
-                SaveLog($"Set Outlet {outletIndex} {(desiredState ? "ON" : "OFF")} FAIL!");
-                SaveLog("SetOutlet body:" + body);
+                logger.Info($"Set Outlet {outletIndex} {(desiredState ? "ON" : "OFF")} FAIL!");
+                logger.Info("SetOutlet body:" + body);
                 return false;
             }
         }
 
-        public async Task<SwitchInfo> ConnectAndGetSwitchInfoAsync()
-        {
-            await ConnectAsync();
-            SaveLog("WebSwitchPower connect!");
-            return await GetSwitchInfo();
-        }
+        //public async Task<SwitchInfo> ConnectAndGetSwitchInfoAsync()
+        //{
+        //    //await ConnectAsync();
+        //    logger.Info("WebSwitchPower connect!");
+        //    return await GetSwitchInfo();
+        //}
 
 
-        public async Task ConnectAsync()
-        {
-            var client = GetClient(cookies);
+        //public async Task ConnectAsync()
+        //{
+        //    var client = GetClient(cookies);
 
-            Uri loginUrl = null;
-            try
-            {
-                var body = await client.GetStringSafeAsync(GetUrl(connectionInfo));
-                var h = new HtmlDocument();
-                h.LoadHtml(body);
+        //    Uri loginUrl = null;
+        //    try
+        //    {
+        //        var body = await GetStringSafeAsync(GetUrl(connectionInfo));
+        //        var h = new HtmlDocument();
+        //        h.LoadHtml(body);
 
-                var challengeNode = FindNode(h.DocumentNode, "name", "Challenge");
-                var challenge = challengeNode.Attributes["value"].Value;
+        //        var challengeNode = FindNode(h.DocumentNode, "name", "Challenge");
+        //        var challenge = challengeNode.Attributes["value"].Value;
 
-                var username = connectionInfo.Username;
-                var password = challenge + connectionInfo.Username + connectionInfo.Password + challenge;
+        //        var username = connectionInfo.Username;
+        //        var password = challenge + connectionInfo.Username + connectionInfo.Password + challenge;
 
-                var md5 = System.Security.Cryptography.MD5.Create();
-                var hash = md5.ComputeHash(password.ToByteArray());
+        //        var md5 = System.Security.Cryptography.MD5.Create();
+        //        var hash = md5.ComputeHash(password.ToByteArray());
 
-                var sb = new StringBuilder();
-                for (int x = 0; x < 16; x++)
-                {
-                    sb.Append(hash[x].ToString("x2"));
-                }
-                password = sb.ToString();
+        //        var sb = new StringBuilder();
+        //        for (int x = 0; x < 16; x++)
+        //        {
+        //            sb.Append(hash[x].ToString("x2"));
+        //        }
+        //        password = sb.ToString();
 
-                var content = new FormUrlEncodedContent(new[]
-                {
-                   new KeyValuePair<string, string>("Username", username),
-                   new KeyValuePair<string, string>("Password", password),
-                });
+        //        var content = new FormUrlEncodedContent(new[]
+        //        {
+        //           new KeyValuePair<string, string>("Username", username),
+        //           new KeyValuePair<string, string>("Password", password),
+        //        });
 
+        //        loginUrl = GetUrl(connectionInfo, URLs.Login);
+        //        //logger.Info("WebPsLoginUrl:"+ loginUrl+",content:"+ content);
+        //        var result = await client.PostAsync(loginUrl, content);
 
-                loginUrl = GetUrl(connectionInfo, URLs.Login);
-                //SaveLog("WebPsLoginUrl:"+ loginUrl+",content:"+ content);
-                var result = await client.PostAsync(loginUrl, content);
+        //        if (!result.IsSuccessStatusCode)
+        //        {
+        //            var responseBody = await result.Content.GetStringSafeAsync();
+        //            logger.Info(responseBody);
+        //            throw new Exception($"Failed to connect WebPowerSwitch.Response code: {result.StatusCode}");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.Info(ex.ToString());
+        //        //throw;
+        //    }
+        //}
 
-                if (!result.IsSuccessStatusCode)
-                {
-                    var responseBody = await result.Content.GetStringSafeAsync();
-                    SaveLog(responseBody);
-                    throw new Exception($"Failed to connect WebPowerSwitch.Response code: {result.StatusCode}");
-                }
-
-            }
-            catch (Exception ex)
-            {
-                SaveLog(ex.ToString());
-                throw;
-            }
-        }
-      
         public async Task<SwitchInfo> GetSwitchInfo()
         {
-            // var client = GetClient(cookies);
-
-            var responseBody = await client.GetStringSafeAsync(GetUrl(connectionInfo, URLs.Index));
+            var responseBody = await GetStringSafeAsync(GetUrl(connectionInfo, URLs.Index));
 
             try
             {
@@ -173,12 +166,11 @@ namespace AutoTestSystem.DAL
                 {
                     switchInfo.Outlets[index++] = new OutletInfo() { Index = item.Index, Name = item.Name, IsOn = item.IsOn };
                 }
-
                 return switchInfo;
             }
             catch (Exception ex)
             {
-                SaveLog(ex.ToString());
+                logger.Info(ex.ToString());
             }
             return null;
         }
@@ -204,7 +196,7 @@ namespace AutoTestSystem.DAL
                         outletState = d.DocumentNode.SelectSingleNode(string.Format("/html/body/font/table/tr/td[2]/table[2]/tr[{0}]/td[3]/b/font", x + 3));
                         if (outletName == null || outletState == null)
                         {
-                            SaveLog("ParseRelayName:刷新失败，XPath节点InnerText为空");
+                            logger.Info("ParseRelayName:刷新失败，XPath节点InnerText为空");
                         }
                     }
 
@@ -218,7 +210,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ex)
             {
-                SaveLog("ParseRelayName:" + ex.ToString());
+                logger.Info("ParseRelayName:" + ex.ToString());
                 throw;
             }
         }
@@ -254,17 +246,17 @@ namespace AutoTestSystem.DAL
             return !innerText.Contains("OFF");
         }
 
-        private Uri GetUrl(WebSwitchConInfo connectionInfo)
-        {
-            if (connectionInfo.Port != 0)
-            {
-                return GetUrl(string.Format("{0}:{1}", connectionInfo.IPAddress, connectionInfo.Port), string.Empty);
-            }
-            else
-            {
-                return GetUrl(connectionInfo.IPAddress, string.Empty);
-            }
-        }
+        //private Uri GetUrl(WebSwitchConInfo connectionInfo)
+        //{
+        //    if (connectionInfo.Port != 0)
+        //    {
+        //        return GetUrl(string.Format("{0}:{1}", connectionInfo.IPAddress, connectionInfo.Port), string.Empty);
+        //    }
+        //    else
+        //    {
+        //        return GetUrl(connectionInfo.IPAddress, string.Empty);
+        //    }
+        //}
 
         private Uri GetUrl(WebSwitchConInfo connectionInfo, string uri)
         {
@@ -279,10 +271,10 @@ namespace AutoTestSystem.DAL
         }
 
 
-        private Uri GetUrl(string ip)
-        {
-            return GetUrl(ip, string.Empty);
-        }
+        //private Uri GetUrl(string ip)
+        //{
+        //    return GetUrl(ip, string.Empty);
+        //}
 
         private Uri GetUrl(string ip, string uri)
         {
@@ -309,30 +301,36 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ex)
             {
-                SaveLog(ex.ToString());
-                throw;
+                logger.Info(ex.ToString());
+                //throw;
             }
             return null;
         }
 
-        public void SaveLog(string log, int type = 1)
+        public async Task<string> GetStringSafeAsync(Uri uri)
         {
-            try
+            int retry = 0;
+            var str = "";
+
+            while (retry < 10)
             {
-                lock (wLock)
+                try
                 {
-                    using (StreamWriter sw = new StreamWriter(this.logPath, true, Encoding.Default))
-                    {
-                        sw.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} - {log}");
-                    }
+                    retry++;
+                    var bytes = await client.GetByteArrayAsync(uri);
+                    str = System.Text.Encoding.UTF8.GetString(bytes);
+                    return str;
+                }
+                catch (Exception ex)
+                {
+                    logger.Info($"HttpClient请求异常次数{retry},Retey. {ex.ToString()}");
+                    Thread.Sleep(2000);
                 }
             }
-            catch (Exception ex)
-            {
-                //Global.SaveLog(ex.ToString());
-                //throw;
-            }
+            return str;
         }
+
+
     }
 
     public class OutletInfo

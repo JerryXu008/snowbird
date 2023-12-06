@@ -1,6 +1,6 @@
 ﻿namespace AutoTestSystem
 {
-    partial class InutMEASPOP
+    partial class ReadyToTest
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,6 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -54,23 +53,15 @@
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.确定_Click);
             // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(257, 200);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(369, 35);
-            this.textBox1.TabIndex = 3;
-            // 
-            // InutMEASPOP
+            // ReadyToTest
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(908, 484);
-            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.label1);
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "InutMEASPOP";
+            this.Name = "ReadyToTest";
             this.Text = "Tip";
             this.Load += new System.EventHandler(this.USBConfirmDialog_Load);
             this.ResumeLayout(false);
@@ -78,13 +69,12 @@
 
         }
 
-        
+
 
 
 
         #endregion
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.TextBox textBox1;
     }
 }

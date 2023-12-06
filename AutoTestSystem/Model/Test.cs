@@ -1,6 +1,7 @@
 ﻿using AutoTestSystem.BLL;
 using AutoTestSystem.DAL;
 using Newtonsoft.Json;
+using PDUSPAPI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -102,7 +103,7 @@ namespace AutoTestSystem.Model
                 || item.TestKeyword.Contains("CheckEeroABA")
                 || item.TestKeyword.Contains("GetWorkOrder")
                  || item.TestKeyword.Contains("SetDHCP")
-
+                 || item.TestKeyword.Contains("CKCustom")
                 ))
             {
                 loggerWarn("This is debug mode.Skip this step.");
@@ -325,7 +326,42 @@ namespace AutoTestSystem.Model
                     case "MessageBoxShow":
                         rReturn = ConfirmMessageBox(item.ComdOrParam, item.ExpectStr, item.TimeOut == "0" ? MessageBoxButtons.OK : MessageBoxButtons.YesNo);
                         break;
+                    case "CKCustom":
+                        {
 
+                            var url = $"http://172.23.241.211:9000/stationprocess/passstationcheck/{SN}";
+                            loggerDebug(url);
+
+                            var ret = "";
+                            try
+                            {
+                                ret = HttpGet(url);
+
+                                var dict = JsonToDictionary(ret);
+                                loggerInfo(">>>>:" + ret);
+                                if (dict != null && dict["isexist"].ToString() == "1")
+                                {
+                                    rReturn = false;
+                                    loggerInfo(">>>>:" + $"SN:{SN} 在Burnin站已存在pass记录");
+                                }
+                                else
+                                {
+                                    rReturn = true;
+                                }
+
+                            }
+                            catch
+                            {
+
+                                loggerInfo("异常:>>>>:" + ret);
+                                rReturn = false;
+                            }
+
+
+
+
+                        }
+                        break;
 
                     case "GetCsnErroMessage_CCT":
                         {
@@ -361,10 +397,29 @@ namespace AutoTestSystem.Model
                         break;
 
                
-
+                    case "PowerPingDUT":
+ 
                     case "PingDUT":
                         try
                         {
+                           
+
+
+                            if (Global.STATIONNAME == "BURNIN") {
+                                if (item.TestKeyword == "PingDUT") {
+                                    Regex regex = new Regex(@"_(\d+)$");
+                                    Match match = regex.Match(item.ItemName);
+                                    if (match.Success)
+                                    {
+                                        var loopNum = match.Groups[1].Value;
+                                        loggerInfo($"--------------------------------------LoopIndex:{loopNum}-------------------------------------");
+                                    }
+                                }
+                               
+                            }
+
+
+
                             rReturn = PingIP(!IsNullOrEmpty(item.ComdOrParam) ? item.ComdOrParam : DUTIP, int.Parse(item.TimeOut));
                             if (retryTimes > 0)
                             {
@@ -913,6 +968,53 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
+
+                    case "HardwareResetWPS":
+                        {
+                            //#if DEBUG
+                            //                            return rReturn = true;
+                            //#endif
+                            Sleep(1000);
+
+                            if (DUTCOMM != null && DUTCOMM.GetType() == typeof(Telnet))
+                            {
+                                DUTCOMM.Close();
+                            }
+
+
+                            PowerCycleOutletWPS(int.Parse(Global.WPSPortNum));
+
+                            Sleep(3000);
+                            loggerInfo("开始pingdutip:" + Global.WPSDUTIP);
+                            if (!PingIP(Global.WPSDUTIP, 2))
+                            {
+                                Sleep(item.TimeOut);
+                                return rReturn = true;
+                            }
+
+                            if (!rReturn)
+                            {
+                                loggerInfo("不成功重新断电上电");
+                                Power_OnOff_WPS(int.Parse(Global.WPSPortNum), false);
+                                Sleep(3000);
+                                Power_OnOff_WPS(int.Parse(Global.WPSPortNum), true);
+                                if (!PingIP(Global.WPSDUTIP, 2))
+                                {
+                                    Sleep(item.TimeOut);
+                                    return rReturn = true;
+                                }
+                            }
+                        }
+                        break;
+
+
+
+
+
+
+
+
+
                     case "SoftwareReset":
                         {  
 
@@ -937,8 +1039,27 @@ namespace AutoTestSystem.Model
                         break;
 
 
+                    case "PowerOFFTest":
+                        {
 
 
+
+                            Regex regex = new Regex(@"_(\d+)$");
+                            Match match = regex.Match(item.ItemName);
+                            if (match.Success)
+                            {
+                                var loopNum = match.Groups[1].Value;
+                                loggerInfo($"-------------------{loopNum } Power cycle test -----------------");
+                            }
+
+
+                            bool powercycle = PowerCycleOutlet(int.Parse(Global.POE_PORT));
+
+                            rReturn = powercycle;
+                          
+                         
+                        }
+                        break;
 
                     case "PowerCycleTest":
                         {
@@ -949,10 +1070,8 @@ namespace AutoTestSystem.Model
                                 {
                                     loggerInfo($"-------------------{i+1} Power cycle test -----------------");
                                    
-                                    bool powercycle = PowerCycleOutlet(int.Parse(Global.POE_PORT));
-                                  
-                                
-                                
+                                    bool powercycle = PowerCycleOutletWPS(int.Parse(Global.POE_PORT));
+                                                               
                                    //Thread.Sleep(1000);
                                     powercycle_ALL &= powercycle;
                                     if (!powercycle)
@@ -1229,6 +1348,12 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
+
+
+
+
+
+
                     case "CheckLED_Manual":
                         {
                             LEDSHow usbDialog = new LEDSHow();
@@ -1293,6 +1418,35 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
+                    case "ReadyToTest":
+                        {
+
+
+
+
+
+                            ReadyToTest usbDialog = new ReadyToTest();
+                          
+                            usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                            usbDialog.ShowTip();
+
+
+
+
+                            //// 设置窗体为无边框样式
+                            usbDialog.FormBorderStyle = FormBorderStyle.None;
+                            // 最大化窗体
+                            usbDialog.WindowState = FormWindowState.Maximized;
+
+
+                            usbDialog.ShowDialog();
+
+                            rReturn=true;
+
+
+
+                        }
+                        break;
 
                     case "PressOrReleaseButtonShowNoRes":
                         {
@@ -3250,7 +3404,24 @@ namespace AutoTestSystem.Model
                             rReturn = true;
                         }
                         break;
-                    
+
+                    case "IdentifyWPS":
+                        {
+                            try
+                            {
+                                if (!Power_OnOff_WPS(int.Parse(Global.WPSPortNum), false))
+                                    Global.WPS = "0";
+                            }
+                            catch (Exception)
+                            {
+                                Global.WPS = "0";
+                            }
+                            loggerInfo($"Identify WPS type is:{(Global.WPS == "0" ? "old" : "new")}");
+                            rReturn = true;
+                        }
+                        break;
+
+                    case "PowerONTest":
                     default:
                         {
 
@@ -3286,10 +3457,17 @@ namespace AutoTestSystem.Model
                                 {
                                     item.testValue = GetValue(revStr, item.SubStr1, item.SubStr2);
 
-                                    if (item.testValue == "") { 
+                                    if (item.testValue == "" || item.testValue==null) { 
                                         rReturn = false;
 
                                       
+                                    }
+
+                                    if (item.ItemName == "Read_MAC_DHCP") {
+
+                                        loggerDebug("读取到板子mac地址:" + item.testValue);
+
+                                        MesMac = item.testValue;
                                     }
                                    
 
@@ -3354,10 +3532,12 @@ namespace AutoTestSystem.Model
                                 // 需要比较Spec
                                 if (!string.IsNullOrEmpty(item.Spec) && string.IsNullOrEmpty(item.Limit_min) && string.IsNullOrEmpty(item.Limit_max))
                                 {
-                                    rReturn = CheckSpec(item.Spec, item.testValue);
+                                    loggerInfo("比较spec开始: Spec=" + item.Spec + " Value=" + item.testValue);
 
-                                     
-                                   
+                                    rReturn = CheckSpec(item.Spec, item.testValue);
+                                    loggerDebug(">>>>>>>>:" + rReturn);
+
+
                                     //特殊处理MBLT MMC_MODEL，因为有时候会返回一些干扰信息，rd认为是对的
                                     if (!rReturn && Global.STATIONNAME == "MBLT" && item.ItemName == "MMC_MODEL") {
                                         // 8GTF4R | DG4008 | S40004
@@ -3377,6 +3557,8 @@ namespace AutoTestSystem.Model
                                
                                 loggerDebug("min:"+ item.Limit_min);
                                 loggerDebug("max:"+ item.Limit_max);
+                                loggerDebug("Spec:" + item.Spec);
+                                loggerDebug("Value:" + item.testValue);
 
                                 // 需要比较Limit
                                 if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max)) {
@@ -3419,21 +3601,31 @@ namespace AutoTestSystem.Model
 
                                 //}
 
-
-
-
-
-
-
-
-
                                HandleSpecialMethed(item, rReturn, revStr);
+
+
+
+                                loggerInfo("最终测试结果:" + rReturn);
 
                             }
 
 
                             if (item.TestKeyword == "QorvoBLEPeripheral")
                                 BtDevAddress = item.testValue.Trim();
+
+
+                            if (item.TestKeyword == "PowerONTest") {
+                                if (rReturn == true)
+                                {
+                                    loggerInfo(">>>>>>>>>>PowerON OK");
+
+                                }
+                                else {
+                                    loggerInfo(">>>>>>>>>>PowerON Fail");
+                                }
+                               
+                            }
+
                         }
                         break;
                 }
@@ -3491,6 +3683,20 @@ namespace AutoTestSystem.Model
 
                         
                     }
+
+                    //防止rf测试项 errocode 不对的问题
+                    if ((error_details.Trim() == "Equipment.DUT.Initiate" && error_code.Trim() == "1.4.1.1") || error_code.Trim() == "" || error_details.Trim() == "")
+                    {
+
+                        loggerInfo("errocde=1.4.1.1或者空,特殊处理错误类型");
+
+                        error_code = item.EeroName;
+                        error_details = item.EeroName;
+                    }
+
+
+
+
                     testPhase.phase_details = error_details;
                     testPhase.error_code = error_code;
                 }
@@ -3576,6 +3782,125 @@ namespace AutoTestSystem.Model
             }
             return rReturn;
         }
+
+
+
+
+
+
+
+
+        #region  WPS 上下电
+
+        public bool PowerCycleOutletWPS(int index)
+        {
+            if (Global.WPS == "1")
+            {
+                if (Power_OnOff_WPS(index, false))
+                {
+                    Thread.Sleep(200);
+                    Power_OnOff_WPS(index, true);
+                }
+                else
+                    return false;
+                Thread.Sleep(1000);
+                if (PDUSnmp.GetStatus(Global.WebPsIp, index) == 1)
+                    return true;
+                else
+                {
+                    Power_OnOff_WPS(index, true);
+                    Thread.Sleep(1000);
+                    if (PDUSnmp.GetStatus(Global.WebPsIp, index) == 1)
+                        return true;
+                    else
+                    {
+                        Power_OnOff_WPS(index, true);
+                        Thread.Sleep(1000);
+                        if (PDUSnmp.GetStatus(Global.WebPsIp, index) == 1)
+                            return true;
+                        else
+                        {
+                            loggerInfo($"PowerCycleOutlet fail in GetStatus !");
+                            return false;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                bool rReturn;
+                if (GetStatusWPS(index).GetAwaiter().GetResult())
+                {
+                    rReturn = C.CycleOutlet(index).GetAwaiter().GetResult();
+                    Thread.Sleep(1000);
+                }
+                else
+                {
+                    bool rReturnoff = C.SetOutlet(index, false).GetAwaiter().GetResult();
+                    Thread.Sleep(100);
+                    bool rReturnon = C.SetOutlet(index, true).GetAwaiter().GetResult();
+                    Thread.Sleep(1000);
+                    rReturn = rReturnoff && rReturnon;
+                }
+                return rReturn;
+            }
+        }
+
+        public async Task<bool> GetStatusWPS(int index)
+        {
+            try
+            {
+                var switchInfo = await C.GetSwitchInfo();
+                if (switchInfo == null || switchInfo.Outlets.Length == 0)
+                {
+                    loggerInfo($"Get Outlet {index} Status FAIL! ");
+                    return false;
+                }
+                loggerInfo($"Get Outlet {index} Status: " + switchInfo.Outlets[index - 1].ToDetailsString());
+                return switchInfo.Outlets[index - 1].IsOn;
+            }
+            catch (Exception ex)
+            {
+                loggerInfo($"Get Outlet {index} Status Exception! {ex.Message}");
+                return false;
+            }
+        }
+        private   bool Power_OnOff_WPS(int index, bool desiredState)
+        {
+
+
+
+            if (Global.WPS == "1")
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    if (PDUSnmp.TurnOnOff(Global.WPSDUTIP, index, desiredState) == 0)
+                    {
+                        loggerInfo($"Power {(desiredState ? "On " : "Off")} {index}-: success-{i}!");
+                        return true;
+                    }
+                    Thread.Sleep(200);
+                }
+                loggerInfo($"Power {(desiredState ? "On " : "Off")} {index}-: fail!");
+                return false;
+            }
+            else
+            {
+                return C.SetOutlet(index, desiredState).GetAwaiter().GetResult();
+            }
+        }
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
 
 
         private static void HandleSpecialMethed(Items item, bool rReturn, string revStr)

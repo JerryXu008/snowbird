@@ -538,13 +538,23 @@ namespace TestConsole
             
             }
         }
+
+       static void TestTailDiGui(int n) {
+            Console.WriteLine(n);
+            if (n == 50000) {
+                return;
+               
+            }
+            TestTailDiGui(++n);
+        }
+
+
         static void Main(string[] args)
         {
+         
 
-            
 
-
-           // ControlPOE();
+            // ControlPOE();
 
             //Console.WriteLine("sleep 10s");
             //Thread.Sleep(10000);

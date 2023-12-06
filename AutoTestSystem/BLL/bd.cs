@@ -4,6 +4,7 @@ using InTheHand.Net.Bluetooth;
 using InTheHand.Net.Sockets;
 using log4net;
 using Newtonsoft.Json;
+using PDUSPAPI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,6 +20,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -598,21 +600,48 @@ namespace AutoTestSystem.BLL
                 RunDosCmd($"net use {mapDrive}: /del /y"); // 删除盘符
             }
         }
+
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
         public static bool PowerCycleOutlet(int index)
         {
                 bool rReturn = false;
-            
+
+                loggerInfo("Start Power OFF");
                 bool rReturnoff = PoeConfigSetting(index.ToString(), "disable");
                 Thread.Sleep(3000);
 
-             
 
-             bool rReturnon = PoeConfigSetting(index.ToString(), "poeDot3af");
+               loggerInfo("Start Power ON");
+               bool rReturnon = PoeConfigSetting(index.ToString(), "poeDot3af");
 
 
             if (!PingIP(Global.DUTIP, 2))
             {
-                 Sleep(10000);
+
+                loggerInfo("Cannot Ping Successfully");
+                loggerInfo(">>>>>>>>>> PowerOFF OK");
+              //  Sleep(10000);     
+                 
                  rReturn = rReturnoff && rReturnon;
                  return rReturn;
             }
@@ -634,7 +663,7 @@ namespace AutoTestSystem.BLL
                 string url = $@"http://169.254.100.101/api/v1/service";
                 string data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{peo_Port}\",{{\"Mode\":\"{cmd}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":164}}";
 
-                logger.Debug("请求参数:" + data);
+                loggerDebug("请求参数:" + data);
                 
                 StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
                 var result = client.PostAsync(url, content).Result;
@@ -1070,7 +1099,27 @@ namespace AutoTestSystem.BLL
 
             return varValue;
         }
+        public static Dictionary<string, string> ConvertToDictionary(object myClass)
+        {
+            var dictionary = new Dictionary<string, string>();
+            foreach (var property in myClass.GetType().GetFields())
+            {
+                var value = property.GetValue(myClass) as string;
 
+                if (property.Name == "error_code" || property.Name == "error_details")
+                {
+                    dictionary.Add(property.Name, value);
+                }
+
+
+                else if (value != "null" && value != "" && value != null)
+                {
+                    dictionary.Add(property.Name, value);
+                }
+
+            }
+            return dictionary;
+        }
         /// <summary>
         /// C#反射遍历对象字段，去掉值为fieldValue的字段
         /// </summary>

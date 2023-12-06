@@ -53,6 +53,10 @@ namespace AutoTestSystem.Model
         public static string CameraType;                //新版还是老版摄像头
         public static string TXPowerLimit;              //TX power 和golden的差值
         public static string IsDownloadPathloss;        // 是否在线下载pathloss
+        public static string WPS;//1 新版wps  0 老版wps
+        public static string WebPsIp;
+        public static string WPSPortNum;
+        public static string WPSDUTIP;
         public static string SweepVersion;
         public static string AUTOTESTNOFIXUTRE;
         ///**************************ini配置文件DUT全局配置变量**********************/
@@ -357,6 +361,14 @@ namespace AutoTestSystem.Model
                 IsDownloadPathloss = iniConfig.Readini("Station", "IsDownloadPathloss").Trim();
 
                 NeedCheckSum = iniConfig.Readini("Station", "NeedCheckSum").Trim();
+
+
+                WebPsIp = iniConfig.Readini("Station", "WebPsIp").Trim();
+                WPSPortNum = iniConfig.Readini("Station", "WPSPortNum").Trim();
+
+                WPSDUTIP = iniConfig.Readini("Station", "WPSDUTIP").Trim();
+
+
 
                 DUTIP = iniConfig.Readini("DUT", "DUTIP").Trim();
                 SSH_PORT = iniConfig.Readini("DUT", "SSH_PORT").Trim();

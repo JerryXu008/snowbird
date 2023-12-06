@@ -104,6 +104,9 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\..\dll\office.dll</HintPath>
     </Reference>
+    <Reference Include="PDUSPAPI">
+      <HintPath>.\PDUSPAPI.dll</HintPath>
+    </Reference>
     <Reference Include="RemoteObject, Version=1.0.0.22, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\RemoteObject.dll</HintPath>
@@ -175,8 +178,10 @@
     <Compile Include="DAL\AsyncSocket.cs" />
     <Compile Include="DAL\Communication.cs" />
     <Compile Include="DAL\Comport.cs" />
+    <Compile Include="DAL\DLIOutletClient.cs" />
     <Compile Include="DAL\DosCmd.cs" />
     <Compile Include="DAL\GPIB.cs" />
+    <Compile Include="DAL\HttpAsync.cs" />
     <Compile Include="DAL\SSH.cs" />
     <Compile Include="DAL\SyncSocket.cs" />
     <Compile Include="DAL\Telnet.cs" />
@@ -210,6 +215,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ReadyToTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReadyToTest.Designer.cs">
+      <DependentUpon>ReadyToTest.cs</DependentUpon>
     </Compile>
     <Compile Include="Reset.cs">
       <SubType>Form</SubType>
@@ -293,6 +304,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LEDShow.resx">
       <DependentUpon>LEDShow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReadyToTest.resx">
+      <DependentUpon>ReadyToTest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="USBConfirmDialog.resx">
       <DependentUpon>USBConfirmDialog.cs</DependentUpon>

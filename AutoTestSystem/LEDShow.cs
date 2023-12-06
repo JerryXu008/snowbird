@@ -32,30 +32,38 @@ namespace AutoTestSystem
 
         public void ShowTip(string redtype)
         {
+            this.pictureBox1.Visible = true;
+            label1.Font = new Font("宋体", 22, FontStyle.Bold);
+           
             if (redtype == "red")
             {
                 this.pictureBox1.Image = global::AutoTestSystem.Properties.Resources.redled;
-                label1.Text = "当前灯是否为红色";
+                label1.Text = "当前灯是否为红色\r\nĐèn hiện tại có màu đỏ không";
             }
-            else if (redtype == "green") {
+            else if (redtype == "green")
+            {
                 this.pictureBox1.Image = global::AutoTestSystem.Properties.Resources.greenled;
-                label1.Text = "当前灯是否为绿色";
+                label1.Text = "当前灯是否为绿色\r\nĐèn hiện tại có màu xanh không";
             }
             else if (redtype == "blue")
             {
                 this.pictureBox1.Image = global::AutoTestSystem.Properties.Resources.blueled;
-                label1.Text = "当前灯是否为蓝色";
+                label1.Text = "当前灯是否为蓝色\r\nĐèn hiện tại có màu xanh không";
             }
             else if (redtype == "white")
             {
                 this.pictureBox1.Image = global::AutoTestSystem.Properties.Resources.whiteled;
-                label1.Text = "当前灯是否为白色";
+                label1.Text = "当前灯是否为白色\r\nĐèn hiện tại có màu trắng hay không";
             }
             else if (redtype == "off")
             {
                 this.pictureBox1.Image = global::AutoTestSystem.Properties.Resources.offled;
-                label1.Text = "当前灯是否关闭";
+                label1.Text = "当前灯是否关闭\r\nĐèn hiện tại có tắt không?";
 
+            }
+            else if (redtype == "nopic") {
+                this.pictureBox1.Visible = false;
+                label1.Text = "白色呼吸灯是否闪亮?\r\nĐèn thở màu trắng có nhấp nháy không?";
             }
            
 
