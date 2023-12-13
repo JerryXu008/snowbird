@@ -1302,46 +1302,45 @@ namespace AutoTestSystem.BLL
         //[DllImport("kernel32.dll")]
         //public static extern uint WinExec(string path, uint uCmdShow);
 
-        /// <summary>
-        ///     每秒Ping IP地址一次，ping通立即返回true，超过times后返回失败
-        /// </summary>
-        public static bool PingIP(string address, int times)
-        {
-            var rResult = false;
-            //WinExec("arp -d", 0);
-            //RunDosCmd("arp -d & exit");
-            for (var i = times; i > 0; i--)
-            {
-                //if (i % 4 == 0 && Global.STATIONNAME != "RTT")
-                //    RunDosCmd("arp -d & exit");
-                if (i % 4 == 0) {
-                    RunDosCmd("arp -d & exit");
-                }
+        ///// <summary>
+        /////     每秒Ping IP地址一次，ping通立即返回true，超过times后返回失败
+        ///// </summary>
+        //public static bool PingIP(string address, int times)
+        //{
+        //    var rResult = false;
+        //    //WinExec("arp -d", 0);
+        //    //RunDosCmd("arp -d & exit");
+        //    for (var i = times; i > 0; i--)
+        //    {
+        //        //if (i % 4 == 0 && Global.STATIONNAME != "RTT")
+        //        //    RunDosCmd("arp -d & exit");
+        //        if (i % 4 == 0) {
+        //            RunDosCmd("arp -d & exit");
+        //        }
                     
-                var pingReply = Ping(address);
-                if (pingReply.Status == 0)
-                {
-                    loggerDebug(
-                        $"Reply from {pingReply.Address}：bytes={pingReply.Buffer.Length} time={pingReply.RoundtripTime} TTL={pingReply.Options.Ttl} {pingReply.Status}");
-                    rResult = true;
-                    break;
-                }
+        //        var pingReply = Ping(address);
+        //        if (pingReply.Status == 0)
+        //        {
+        //            loggerDebug(
+        //                $"Reply from {pingReply.Address}：bytes={pingReply.Buffer.Length} time={pingReply.RoundtripTime} TTL={pingReply.Options.Ttl} {pingReply.Status}");
+        //            rResult = true;
+        //            break;
+        //        }
 
-                loggerDebug($"ping {address} ：{pingReply.Status}");
-                if (i == 1)
-                {
-                    loggerDebug($"ping {address} ：Fail！！！！！");
-                    //RunDosCmd("ping 192.168.1.101 -S 192.168.1.100");
-                    rResult = false;
-                }
+        //        loggerDebug($"ping {address} ：{pingReply.Status}");
+        //        if (i == 1)
+        //        {
+        //            loggerDebug($"ping {address} ：Fail！！！！！");
+        //            //RunDosCmd("ping 192.168.1.101 -S 192.168.1.100");
+        //            rResult = false;
+        //        }
 
-                Thread.Sleep(1000);
-            }
+        //        Thread.Sleep(1000);
+        //    }
 
-            return rResult;
-        }
-
-        public static PingReply Ping(string address)
+        //    return rResult;
+        //}
+        public static PingReply Ping(string address, int retryCount = 50)
         {
             Ping ping = null;
             try
@@ -1351,20 +1350,92 @@ namespace AutoTestSystem.BLL
             }
             catch (PingException ex)
             {
-                if (ex.InnerException != null) loggerDebug(ex.InnerException.ToString());
-                return Ping(address);
+                loggerError($"ping {address} ：Fail！！！！！");
+                Thread.Sleep(3000);
+
+                if (retryCount <= 1)
+                {
+                    return null;
+                }
+
+                return Ping(address, retryCount - 1);
             }
             finally
             {
                 if (ping != null)
                 {
-                    // 2.0 下ping 的一个bug，需要显示转型后释放
                     IDisposable disposable = ping;
                     disposable.Dispose();
                     ping.Dispose();
                 }
             }
         }
+
+        /// <summary>
+        /// 每秒Ping IP地址一次，ping通立即返回true，超过times后返回失败
+        /// </summary>
+        public static bool PingIP(string address, int times, bool flag = false)
+        {
+            bool rResult = false;
+            for (int i = times; i > 0; i--)
+            {
+                //if (i % 4 == 0 && flag)
+                //    RunDosCmd("arp -d & exit");
+                var pingReply = Ping(address);
+                if (pingReply != null && pingReply.Status == 0)
+                {
+                    loggerInfo($"Reply from {pingReply.Address}：bytes={pingReply.Buffer.Length} time={pingReply.RoundtripTime} TTL={pingReply.Options.Ttl} {pingReply.Status}");
+                    rResult = true;
+                    break;
+                }
+                else
+                {
+
+                    var rr = pingReply != null ? pingReply.Status : IPStatus.Unknown;
+
+                    loggerInfo($"ping {address} ：{rr}");
+                    if (i == 1)
+                    {
+                        loggerError($"ping {address} ：Fail！！！！！");
+                        rResult = false;
+                    }
+                }
+                Thread.Sleep(1000);
+            }
+            return rResult;
+        }
+
+
+
+
+
+        //public static PingReply Ping(string address)
+        //{
+        //    Ping ping = null;
+        //    try
+        //    {
+        //        ping = new Ping();
+        //        return ping.Send(address, 2000);
+        //    }
+        //    catch (PingException ex)
+        //    {
+        //        if (ex.InnerException != null)
+        //        {
+        //            loggerDebug(ex.InnerException.ToString());
+        //        }
+        //        return Ping(address);
+        //    }
+        //    finally
+        //    {
+        //        if (ping != null)
+        //        {
+        //            // 2.0 下ping 的一个bug，需要显示转型后释放
+        //            IDisposable disposable = ping;
+        //            disposable.Dispose();
+        //            ping.Dispose();
+        //        }
+        //    }
+        //}
 
         /// <summary>
         ///     截取两个子字符中间的字符

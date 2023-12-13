@@ -285,7 +285,7 @@ namespace AutoTestSystem
                 var client = new HttpClient();
                 client.Timeout = TimeSpan.FromSeconds(5);
 
-                HttpResponseMessage httpResponse = client.GetAsync("http://10.90.108.137:9000/version/version/hornbill").GetAwaiter().GetResult();
+                HttpResponseMessage httpResponse = client.GetAsync("http://10.90.122.80:9000/version/version/snowbird").GetAwaiter().GetResult();
                 string responseBody = httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 var dataSet = JsonToDictionary(responseBody);
                 var version = "";
@@ -319,7 +319,7 @@ namespace AutoTestSystem
                 client.Timeout = TimeSpan.FromSeconds(3);
              
 
-                var url = $@"http://10.90.108.137:9000/pathloss/checkpathloss/hornbill/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}";
+                var url = $@"http://10.90.122.80:9000/pathloss/checkpathloss/snowbird/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}";
 
                 //loggerInfo("是否存在接口:" + url);
 
@@ -356,8 +356,8 @@ namespace AutoTestSystem
         private async void  DownloadPathloss(string type) {
             try
             {
-               // var url = $@"http://localhost:9000/upload/public/hornbill/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
-                var url = $@"http://10.90.108.137:9000/upload/public/hornbill/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
+               // var url = $@"http://localhost:9000/upload/public/snowbird/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
+                var url = $@"http://10.90.122.80:9000/upload/public/snowbird/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
 
 
                // MessageBox.Show("下载地址:" + url);
@@ -366,7 +366,7 @@ namespace AutoTestSystem
                 if (type == "wifi")
                 {
                     
-                    save = @"E:\Eero_Hornbill_LUX_MBFT_ATSuitev1.0.2\release\" + "path_loss.csv";
+                    save = @"E:\Eero_snowbird_LUX_MBFT_ATSuitev1.0.2\release\" + "path_loss.csv";
                 }
                 else if (type == "bluetooth")
                 {
@@ -393,13 +393,12 @@ namespace AutoTestSystem
         {
             try
             {
-                // var url = $@"http://localhost:9000/upload/public/hornbill/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
                
                 
-                var url = $@"http://10.90.108.137:9000/upload/public/hornbill/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
+                var url = $@"http://10.90.122.80:9000/upload/public/snowbird/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
 
 
-                // var url = $@"http://172.23.43.43:9000/upload/public/hornbill/SRF/SRF-8402/wifi/path_loss.csv";
+                // var url = $@"http://172.23.241.211:9000/upload/public/snowbird/SRF/SRF-8402/wifi/path_loss.csv";
 
                
                 
@@ -446,13 +445,16 @@ namespace AutoTestSystem
         void AddConsume()
         {
             try
-            {
+            { 
                 var URL = Global.VersionMURL;
+
+
+               // URL = "http://172.23.241.211:9000";
 
                 var name = Global.STATIONNAME;
                 var NO = Global.STATIONNO;
                 //清理耗材
-                var url = URL + "/consumables/add/hornbill/" + name + "/" + NO;
+                var url = URL + "/consumables/add/snowbird/" + name + "/" + NO;
                 var client = new HttpClient();
 
                 HttpResponseMessage httpResponse = client.GetAsync(url).GetAwaiter().GetResult();
@@ -478,7 +480,7 @@ namespace AutoTestSystem
         private void MainForm_Shown(object sender, EventArgs e)
         {
            
-           // AddConsume();
+            AddConsume();
 
 
             //先进行线上版本检测
@@ -1955,7 +1957,7 @@ namespace AutoTestSystem
 
             }
             return ret;
-
+             
 
         }
 

@@ -418,6 +418,7 @@ namespace AutoTestSystem.Model
                                
                             }
 
+                         
 
 
                             rReturn = PingIP(!IsNullOrEmpty(item.ComdOrParam) ? item.ComdOrParam : DUTIP, int.Parse(item.TimeOut));

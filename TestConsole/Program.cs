@@ -14,6 +14,7 @@ using System.Net;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Net.NetworkInformation;
 
 namespace TestConsole
 {
@@ -551,7 +552,7 @@ namespace TestConsole
 
         static void Main(string[] args)
         {
-         
+
 
 
             // ControlPOE();
@@ -578,6 +579,8 @@ namespace TestConsole
             //  TestPort();
 
 
+            PingIP("192.168.1.1", 10);
+
             Console.WriteLine("生成完毕!!!");
 
 
@@ -588,6 +591,85 @@ namespace TestConsole
 
             }
         }
+
+
+
+
+        public static PingReply Ping(string address, int retryCount = 50)
+        {
+            Ping ping = null;
+            try
+            {
+                ping = new Ping();
+                return ping.Send(address, 2000);
+            }
+            catch (PingException ex)
+            {
+                Console.WriteLine($"ping {address} ：Fail！！！！！");
+                Thread.Sleep(3000);
+
+                if (retryCount <= 1)
+                {
+                    return null;
+                }
+
+                return Ping(address, retryCount - 1);
+            }
+            finally
+            {
+                if (ping != null)
+                {
+                    IDisposable disposable = ping;
+                    disposable.Dispose();
+                    ping.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 每秒Ping IP地址一次，ping通立即返回true，超过times后返回失败
+        /// </summary>
+        public static bool PingIP(string address, int times, bool flag = false)
+        {
+            bool rResult = false;
+            for (int i = times; i > 0; i--)
+            {
+                //if (i % 4 == 0 && flag)
+                //    RunDosCmd("arp -d & exit");
+                var pingReply = Ping(address);
+                if (pingReply != null && pingReply.Status == 0)
+                {
+                    Console.WriteLine($"Reply from {pingReply.Address}：bytes={pingReply.Buffer.Length} time={pingReply.RoundtripTime} TTL={pingReply.Options.Ttl} {pingReply.Status}");
+                    rResult = true;
+                    break;
+                }
+                else
+                {
+
+                    var rr = pingReply != null ? pingReply.Status : IPStatus.Unknown;
+
+                    Console.WriteLine($"ping {address} ：{rr}");
+                    if (i == 1)
+                    {
+                        Console.WriteLine($"ping {address} ：Fail！！！！！");
+                        rResult = false;
+                    }
+                }
+                Thread.Sleep(1000);
+            }
+            return rResult;
+        }
+
+
+
+
+
+
+
+
+
+
+
 
 
         public static   bool SendCommand(string command, ref string strRecAll, string DataToWaitFor, int timeout = 3000)

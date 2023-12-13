@@ -53,7 +53,7 @@ namespace AutoTestSystem
                     btnETH.Visible = false;
 
                     //查看耗材
-                    var url = Global.VersionMURL + "/consumables/view/hornbill/" + name + "/" + NO + "/" + "Probe";
+                    var url = Global.VersionMURL + "/consumables/view/snowbird/" + name + "/" + NO + "/" + "Probe";
                     var client = new HttpClient();
 
                     HttpResponseMessage httpResponse = client.GetAsync(url).GetAwaiter().GetResult();
@@ -62,12 +62,14 @@ namespace AutoTestSystem
                     if (result.Contains("ok"))
                     {
                         var num = JObject.Parse(result)["num"].ToString();
-                        lblCableNum.Text = num;
+                        var max = JObject.Parse(result)["max"].ToString();
+                        lblCableNum.Text = num + $"(Max:{max})";
 
                     }
                     else
                     {
                         var msg = JObject.Parse(result)["msg"].ToString();
+
                         lblCableNum.Text = "0";
                         MessageBox.Show(msg);
                     }
@@ -90,7 +92,7 @@ namespace AutoTestSystem
                     btnETH.Visible = true;
 
                     //查看耗材
-                    var url = Global.VersionMURL + "/consumables/view/hornbill/" + name + "/" + NO + "/" + "ETH";
+                    var url = Global.VersionMURL + "/consumables/view/snowbird/" + name + "/" + NO + "/" + "ETH";
                     var client = new HttpClient();
 
                     HttpResponseMessage httpResponse = client.GetAsync(url).GetAwaiter().GetResult();
@@ -99,7 +101,9 @@ namespace AutoTestSystem
                     if (result.Contains("ok"))
                     {
                         var num = JObject.Parse(result)["num"].ToString();
-                        lblETHNum.Text = num;
+                        var max = JObject.Parse(result)["max"].ToString();
+                        lblETHNum.Text = num + $"(Max:{max})";
+
 
                     }
                     else
@@ -111,7 +115,7 @@ namespace AutoTestSystem
 
 
                     //查看耗材
-                    url = Global.VersionMURL + "/consumables/view/hornbill/" + name + "/" + NO + "/" + "TypeC";
+                    url = Global.VersionMURL + "/consumables/view/snowbird/" + name + "/" + NO + "/" + "TypeC";
                     client = new HttpClient();
 
                     httpResponse = client.GetAsync(url).GetAwaiter().GetResult();
@@ -120,7 +124,9 @@ namespace AutoTestSystem
                     if (result.Contains("ok"))
                     {
                         var num = JObject.Parse(result)["num"].ToString();
-                        lblTypeCNum.Text = num;
+                        var max = JObject.Parse(result)["max"].ToString();
+                        lblTypeCNum.Text = num + $"(Max:{max})";
+
 
                     }
                     else
@@ -132,13 +138,6 @@ namespace AutoTestSystem
 
 
                 }
-
-
-
-
-
-
-
 
 
 
@@ -169,7 +168,7 @@ namespace AutoTestSystem
                     var name = Global.STATIONNAME;
                     var NO = Global.STATIONNO;
                     //清理耗材
-                    var url = Global.VersionMURL + "/consumables/clear/hornbill/" + name + "/" + NO + "/" + "Probe";
+                    var url = Global.VersionMURL + "/consumables/clear/snowbird/" + name + "/" + NO + "/" + "Probe";
                     var client = new HttpClient();
 
                     HttpResponseMessage httpResponse = client.GetAsync(url).GetAwaiter().GetResult();
@@ -231,7 +230,7 @@ namespace AutoTestSystem
                     var name = Global.STATIONNAME;
                     var NO = Global.STATIONNO;
                     //清理耗材
-                    var url = Global.VersionMURL + "/consumables/clear/hornbill/" + name + "/" + NO + "/" + "ETH";
+                    var url = Global.VersionMURL + "/consumables/clear/snowbird/" + name + "/" + NO + "/" + "ETH";
                     var client = new HttpClient();
 
                     HttpResponseMessage httpResponse = client.GetAsync(url).GetAwaiter().GetResult();
@@ -273,7 +272,7 @@ namespace AutoTestSystem
                     var name = Global.STATIONNAME;
                     var NO = Global.STATIONNO;
                     //清理耗材
-                    var url = Global.VersionMURL + "/consumables/clear/hornbill/" + name + "/" + NO + "/" + "TypeC";
+                    var url = Global.VersionMURL + "/consumables/clear/snowbird/" + name + "/" + NO + "/" + "TypeC";
                     var client = new HttpClient();
 
                     HttpResponseMessage httpResponse = client.GetAsync(url).GetAwaiter().GetResult();
