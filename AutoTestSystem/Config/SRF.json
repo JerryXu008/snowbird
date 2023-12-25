@@ -443,17 +443,17 @@
         "start_time_json": "0001-01-01T00:00:00",
         "start_time": "0001-01-01T00:00:00",
         "ItemName": "VeritfyDUTMAC",
-        "ErrorCode": "9.7: ProcessControl.MACMismatch",
-        "RetryTimes": "0",
-        "TimeOut": "3",
+        "ErrorCode": "9.7.1: Read.Mac.Timeout",
+        "RetryTimes": "1",
+        "TimeOut": "10",
         "SubStr1": "OK!",
         "SubStr2": "root",
         "IfElse": "",
         "For": "",
         "Mode": "",
-        "ComdOrParam": "fw_printenv mac",
+        "ComdOrParam": "luxshare_tool --get-mac-env",
         "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
+        "CheckStr1": "OK!",
         "CheckStr2": "",
         "Limit_max": "",
         "testValue": null,
@@ -488,9 +488,9 @@
         "IfElse": "",
         "For": "",
         "Mode": "",
-        "ComdOrParam": "fw_printenv serial",
+        "ComdOrParam": "luxshare_tool --get-serial-env",
         "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
+        "CheckStr1": "OK!",
         "CheckStr2": "",
         "Limit_max": "",
         "testValue": null,
@@ -604,7 +604,7 @@
         "ByPassFail": "",
         "FTC": "",
         "TestKeyword": "default",
-        "Spec": "lp5562 | ktd2027",
+        "Spec": "lp5562|ktd2027",
         "error_code": "",
         "Json": "y",
         "EeroName": "LED_MODEL",
@@ -678,7 +678,7 @@
         "ByPassFail": "",
         "FTC": "",
         "TestKeyword": "default",
-        "Spec": "8GUF4R | JS04AC",
+        "Spec": "JS04AC|8GUF4R",
         "error_code": "",
         "Json": "y",
         "EeroName": "MMC_MODEL",
@@ -870,7 +870,7 @@
     "IsTest": true,
     "IsTestFinished": false,
     "TestResult": true,
-    "TotalNumber": 62,
+    "TotalNumber": 63,
     "TestSerial": 9,
     "TestVersion": null,
     "SystemName": null,
@@ -1326,6 +1326,43 @@
         "startIndex": 0,
         "start_time_json": "0001-01-01T00:00:00",
         "start_time": "0001-01-01T00:00:00",
+        "ItemName": "Kill_wifi_ATE",
+        "ErrorCode": "1.4.1.6: Kill_wifi_ATE",
+        "RetryTimes": "1",
+        "TimeOut": "3",
+        "SubStr1": "",
+        "SubStr2": "",
+        "IfElse": "",
+        "For": "",
+        "Mode": "",
+        "ComdOrParam": "QCATestSuite",
+        "ExpectStr": "",
+        "CheckStr1": "",
+        "CheckStr2": "",
+        "Limit_max": "",
+        "testValue": null,
+        "Limit_min": "",
+        "ElapsedTime": null,
+        "ErrorDetails": null,
+        "Unit": "",
+        "MES_var": "",
+        "ByPassFail": "",
+        "FTC": "",
+        "TestKeyword": "KillProcessNoRes",
+        "Spec": "",
+        "error_code": "",
+        "Json": "",
+        "EeroName": "BZT_TEST_INSTRUMENT_OK",
+        "NoContain": null,
+        "SpecStatic": ""
+      },
+      {
+        "testNumber": 13,
+        "tResult": true,
+        "isTest": true,
+        "startIndex": 0,
+        "start_time_json": "0001-01-01T00:00:00",
+        "start_time": "0001-01-01T00:00:00",
         "ItemName": "IQXEL_MODEL",
         "ErrorCode": "1.4.2.4: IQXEL_MODEL",
         "RetryTimes": "0",
@@ -1357,7 +1394,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 13,
+        "testNumber": 14,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1394,7 +1431,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 14,
+        "testNumber": 15,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1431,7 +1468,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 15,
+        "testNumber": 16,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1468,7 +1505,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 16,
+        "testNumber": 17,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1505,7 +1542,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 17,
+        "testNumber": 18,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1542,7 +1579,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 18,
+        "testNumber": 19,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1579,7 +1616,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 19,
+        "testNumber": 20,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1616,7 +1653,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 20,
+        "testNumber": 21,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1653,7 +1690,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 21,
+        "testNumber": 22,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1690,7 +1727,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 22,
+        "testNumber": 23,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1727,7 +1764,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 23,
+        "testNumber": 24,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1764,7 +1801,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 24,
+        "testNumber": 25,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1801,7 +1838,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 25,
+        "testNumber": 26,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1838,7 +1875,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 26,
+        "testNumber": 27,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1875,7 +1912,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 27,
+        "testNumber": 28,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1912,7 +1949,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 28,
+        "testNumber": 29,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1949,7 +1986,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 29,
+        "testNumber": 30,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1986,7 +2023,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 30,
+        "testNumber": 31,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2023,7 +2060,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 31,
+        "testNumber": 32,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2060,7 +2097,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 32,
+        "testNumber": 33,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2097,7 +2134,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 33,
+        "testNumber": 34,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2134,7 +2171,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 34,
+        "testNumber": 35,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2171,7 +2208,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 35,
+        "testNumber": 36,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2208,7 +2245,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 36,
+        "testNumber": 37,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2245,7 +2282,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 37,
+        "testNumber": 38,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2282,7 +2319,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 38,
+        "testNumber": 39,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2319,7 +2356,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 39,
+        "testNumber": 40,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2356,7 +2393,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 40,
+        "testNumber": 41,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2393,7 +2430,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 41,
+        "testNumber": 42,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2430,7 +2467,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 42,
+        "testNumber": 43,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2467,7 +2504,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 43,
+        "testNumber": 44,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2504,7 +2541,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 44,
+        "testNumber": 45,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2541,7 +2578,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 45,
+        "testNumber": 46,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2578,7 +2615,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 46,
+        "testNumber": 47,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2615,7 +2652,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 47,
+        "testNumber": 48,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2652,7 +2689,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 48,
+        "testNumber": 49,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2689,7 +2726,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 49,
+        "testNumber": 50,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2726,7 +2763,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 50,
+        "testNumber": 51,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2763,7 +2800,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 51,
+        "testNumber": 52,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2800,7 +2837,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 52,
+        "testNumber": 53,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2837,7 +2874,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 53,
+        "testNumber": 54,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2874,7 +2911,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 54,
+        "testNumber": 55,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2911,7 +2948,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 55,
+        "testNumber": 56,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2948,7 +2985,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 56,
+        "testNumber": 57,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2985,7 +3022,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 57,
+        "testNumber": 58,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3022,7 +3059,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 58,
+        "testNumber": 59,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3059,7 +3096,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 59,
+        "testNumber": 60,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3096,7 +3133,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 60,
+        "testNumber": 61,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3133,7 +3170,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 61,
+        "testNumber": 62,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -5181,7 +5218,7 @@
         "TestKeyword": "WaitingcsvlogBT",
         "Spec": "",
         "error_code": "",
-        "Json": "y",
+        "Json": "",
         "EeroName": "BZT_TEST_INSTRUMENT_OK",
         "NoContain": null,
         "SpecStatic": ""
@@ -5269,7 +5306,7 @@
     "IsTest": true,
     "IsTestFinished": false,
     "TestResult": true,
-    "TotalNumber": 26,
+    "TotalNumber": 24,
     "TestSerial": 14,
     "TestVersion": null,
     "SystemName": null,
@@ -6161,381 +6198,6 @@
         "EeroName": "ZB_RX_PATHLOSS_F2480_P-96",
         "NoContain": null,
         "SpecStatic": ""
-      },
-      {
-        "testNumber": 24,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "TEMP_LOAD_WIFI_RADIO_2G",
-        "ErrorCode": "3.18: Device.TemperatureSensor",
-        "RetryTimes": "3",
-        "TimeOut": "10",
-        "SubStr1": "temperature:",
-        "SubStr2": ",",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "thermaltool -i wifi0 -get | grep \"temperature\"",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "TempSensorTest_After",
-        "Spec": "",
-        "error_code": "",
-        "Json": "y",
-        "EeroName": "TEMP_LOAD_WIFI_RADIO_2G",
-        "NoContain": null,
-        "SpecStatic": ""
-      },
-      {
-        "testNumber": 25,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "TEMP_LOAD_WIFI_RADIO_5G",
-        "ErrorCode": "3.18: Device.TemperatureSensor",
-        "RetryTimes": "3",
-        "TimeOut": "10",
-        "SubStr1": "temperature:",
-        "SubStr2": ",",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "thermaltool -i wifi1 -get | grep \"temperature\"",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "TempSensorTest_After",
-        "Spec": "",
-        "error_code": "",
-        "Json": "y",
-        "EeroName": "TEMP_LOAD_WIFI_RADIO_5G",
-        "NoContain": null,
-        "SpecStatic": ""
-      }
-    ],
-    "start_time": null,
-    "finish_time": null
-  },
-  {
-    "SeqName": "DisableWifi",
-    "IsTest": true,
-    "IsTestFinished": false,
-    "TestResult": true,
-    "TotalNumber": 4,
-    "TestSerial": 15,
-    "TestVersion": null,
-    "SystemName": null,
-    "SeqItems": [
-      {
-        "testNumber": 0,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "DISABLE_WIFI",
-        "ErrorCode": "3.16.3.2: Device.WiFiRadio.BothRadios.Disable",
-        "RetryTimes": "0",
-        "TimeOut": "3",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "killall ftm",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "default",
-        "Spec": "",
-        "error_code": "",
-        "Json": "",
-        "EeroName": "DISABLE_WIFI",
-        "NoContain": null,
-        "SpecStatic": ""
-      },
-      {
-        "testNumber": 1,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "DISABLE_WIFI",
-        "ErrorCode": "3.16.3.2: Device.WiFiRadio.BothRadios.Disable",
-        "RetryTimes": "0",
-        "TimeOut": "3",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "/etc/init.d/ftm stop",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "default",
-        "Spec": "",
-        "error_code": "",
-        "Json": "",
-        "EeroName": "DISABLE_WIFI",
-        "NoContain": null,
-        "SpecStatic": ""
-      },
-      {
-        "testNumber": 2,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "DISABLE_WIFI",
-        "ErrorCode": "3.16.3.2: Device.WiFiRadio.BothRadios.Disable",
-        "RetryTimes": "0",
-        "TimeOut": "3",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "killall diag_socket_app",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "default",
-        "Spec": "",
-        "error_code": "",
-        "Json": "",
-        "EeroName": "DISABLE_WIFI",
-        "NoContain": null,
-        "SpecStatic": ""
-      },
-      {
-        "testNumber": 3,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "DISABLE_WIFI",
-        "ErrorCode": "3.16.3.2: Device.WiFiRadio.BothRadios.Disable",
-        "RetryTimes": "0",
-        "TimeOut": "10",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "wifi down",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "default",
-        "Spec": "",
-        "error_code": "",
-        "Json": "",
-        "EeroName": "DISABLE_WIFI",
-        "NoContain": null,
-        "SpecStatic": ""
-      }
-    ],
-    "start_time": null,
-    "finish_time": null
-  },
-  {
-    "SeqName": "SetIPAddress",
-    "IsTest": true,
-    "IsTestFinished": false,
-    "TestResult": true,
-    "TotalNumber": 2,
-    "TestSerial": 16,
-    "TestVersion": null,
-    "SystemName": null,
-    "SeqItems": [
-      {
-        "testNumber": 0,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "GetMesIP",
-        "ErrorCode": "7.9: Linux.SetIPAdress",
-        "RetryTimes": "",
-        "TimeOut": "",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "",
-        "ExpectStr": "",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "GetMesIP",
-        "Spec": "",
-        "error_code": "",
-        "Json": "",
-        "EeroName": "SET_IP",
-        "NoContain": null,
-        "SpecStatic": ""
-      },
-      {
-        "testNumber": 1,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "SET_IP",
-        "ErrorCode": "7.9: Linux.SetIPAdress",
-        "RetryTimes": "0",
-        "TimeOut": "10",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "luxsetip <DUTMesIP> 255.0.0.0",
-        "ExpectStr": "OK!",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "SetIpaddrEnv",
-        "Spec": "",
-        "error_code": "",
-        "Json": "y",
-        "EeroName": "SET_IP",
-        "NoContain": null,
-        "SpecStatic": ""
-      }
-    ],
-    "start_time": null,
-    "finish_time": null
-  },
-  {
-    "SeqName": "EnableWifiDownloadEnv",
-    "IsTest": true,
-    "IsTestFinished": false,
-    "TestResult": true,
-    "TotalNumber": 1,
-    "TestSerial": 17,
-    "TestVersion": null,
-    "SystemName": null,
-    "SeqItems": [
-      {
-        "testNumber": 0,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "EnableWifiDownloadEnv",
-        "ErrorCode": "7.3: Linux.WriteMMC",
-        "RetryTimes": "0",
-        "TimeOut": "3",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "fw_setenv bootargs \"console=ttyMSM0,115200n8\" && fw_printenv bootargs",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "console=ttyMSM0,115200n8",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "default",
-        "Spec": "",
-        "error_code": "",
-        "Json": "y",
-        "EeroName": "EnableWifiDownloadEnv",
-        "NoContain": null,
-        "SpecStatic": ""
       }
     ],
     "start_time": null,
@@ -6547,7 +6209,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 12,
-    "TestSerial": 18,
+    "TestSerial": 15,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [

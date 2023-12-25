@@ -548,13 +548,37 @@ namespace TestConsole
             }
             TestTailDiGui(++n);
         }
-
+        public static bool NoCheckStr ( string str, string substr)
+        {
+            if (string.IsNullOrEmpty(substr))
+                return true;
+            else
+            {
+                if (str.Contains(substr))
+                {
+                     
+                    return false;
+                }
+                else
+                    return true;
+            }
+        }
 
         static void Main(string[] args)
         {
+            var str = @"hexdump -s 4096 -n 100 /dev/mmcblk0p12
+0001000 0000 0000 0000 0000 0000 0000 0000 0000
+*
+0001060 0000 0000                              
+0001064";
 
+            var subStr = @"0001000 0000 0000 0000 0000 0000 0000 0000 0000
+*
+0001060 0000 0000                              
+0001064";
 
-
+          var ff =   NoCheckStr(str, subStr);
+            int ii = 0;
             // ControlPOE();
 
             //Console.WriteLine("sleep 10s");
@@ -579,7 +603,7 @@ namespace TestConsole
             //  TestPort();
 
 
-            PingIP("192.168.1.1", 10);
+
 
             Console.WriteLine("生成完毕!!!");
 

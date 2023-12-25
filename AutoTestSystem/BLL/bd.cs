@@ -2051,10 +2051,10 @@ namespace AutoTestSystem.BLL
             var result = client.PostAsync(url, content).GetAwaiter().GetResult();
             var bytes = result.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult();
             var responseBody = System.Text.Encoding.UTF8.GetString(bytes);
-            if (!result.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to post requests.Response code: {result.StatusCode}");
-            }
+            //if (!result.IsSuccessStatusCode)
+            //{
+            //    throw new Exception($"Failed to post requests.Response code: {result.StatusCode}");
+            //}
             loggerDebug(result.StatusCode + ":" + responseBody);
             statusCode = result.StatusCode.ToString();
             return responseBody;

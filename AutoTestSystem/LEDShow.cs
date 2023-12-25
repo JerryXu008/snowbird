@@ -62,7 +62,8 @@ namespace AutoTestSystem
 
             }
             else if (redtype == "nopic") {
-                this.pictureBox1.Visible = false;
+                // this.pictureBox1.Visible = false;
+                this.pictureBox1.Image = global::AutoTestSystem.Properties.Resources.whiteled;
                 label1.Text = "白色呼吸灯是否闪亮?\r\nĐèn thở màu trắng có nhấp nháy không?";
             }
            

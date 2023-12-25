@@ -240,6 +240,9 @@
     <Compile Include="USBConfirmDialog.Designer.cs">
       <DependentUpon>USBConfirmDialog.cs</DependentUpon>
     </Compile>
+    <Content Include="1.20Revert\tftpd32.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="7z.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -258,6 +261,15 @@
     <Content Include="PLINK.EXE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="1.20Revert\emmc-ipq5332-single-v042.img">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="1.20Revert\emmc-ipq5332-single-v044.img">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="1.20Revert\tftpd32.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\blueled.jpg" />
     <None Include="Resources\greenled.jpg" />
     <None Include="Resources\offled.jpg" />

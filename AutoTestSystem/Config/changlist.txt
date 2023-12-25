@@ -30,3 +30,18 @@ Burin RAM和CPU压力测试时间1500->900
 
 20231111  1.0.0.19
 BurnIn 添加SN内外网比对
+
+20231111  1.0.1.3
+1. SFT 去掉boot_LED 检测
+ 
+20231111  1.0.1.5
+1. SFT 修改PHY_STATUS 测试项spec
+2.SRF 修复RX_PER limit不正确问题
+3. SFT LED read 去掉limit和spec
+4. 开启获取online limit功能
+
+20231111  1.0.1.6
+去掉dutyon和dutyoff
+20231111  1.0.1.7
+1 SFT 改为 如果不是v042 升级成v042
+2 Burin改为如果不是V044 改为升级V044

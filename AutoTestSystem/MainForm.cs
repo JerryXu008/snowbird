@@ -121,6 +121,7 @@ namespace AutoTestSystem
         public static Dictionary<string, string> RFCSV_Cache = new Dictionary<string, string>();
 
 
+
         ///***************************  定义DUT产品相关全局变量  ********************************\\
         public const string regexp_GATEWAY = @"^((N)([1-9]|[A-Z])([1-9]|[A-C])([A-HJ-KM-NP-TV-Z]|[1-9]))([A-HJ-KM-NP-TV-Z]|[0-9]){4}$";
         public const string regexp_LEAF = @"^((Q)([1-9]|[A-Z])([1-9]|[A-C])([A-HJ-KM-NP-TV-Z]|[1-9]))([A-HJ-KM-NP-TV-Z]|[0-9]){4}$";
@@ -167,6 +168,7 @@ namespace AutoTestSystem
         public static Limits Online_Limit = null;
 
         public static string ImageVer = "";
+        public static string UploadImageIP = "";
         public static bool CalibrationFail = false;
         public static bool ValidationFail = false;
 
@@ -225,7 +227,7 @@ namespace AutoTestSystem
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi; //设定按分辨率来缩放控件
             InitializeComponent();
 
-        
+          
 
             this.groupBox3.Location = new Point(this.groupBox2.Location.X + this.groupBox2.Size.Width + 30, this.groupBox2.Location.Y);
             this.groupBox1.Location = new Point(this.groupBox3.Location.X + this.groupBox3.Size.Width + 30, this.groupBox3.Location.Y);
@@ -334,7 +336,7 @@ namespace AutoTestSystem
                         if (item.Key.ToString() == "exist")//获取header数据
                         {
                             exist = (string)item.Value;
-
+                          
                             break;
                         }
                     }
@@ -480,7 +482,6 @@ namespace AutoTestSystem
         private void MainForm_Shown(object sender, EventArgs e)
         {
            
-            AddConsume();
 
 
             //先进行线上版本检测
@@ -918,6 +919,13 @@ namespace AutoTestSystem
              if ( e != null && e.KeyCode != Keys.Enter) {
                 return;
             }
+
+
+           
+
+
+
+
             // 扫描SN
             string ScanSN = textBox1.Text.Trim().TrimEnd(new char[] { '\n', '\t', '\r' }).ToUpper();
 
@@ -932,54 +940,12 @@ namespace AutoTestSystem
             }
 
 
-            //if (Global.STATIONNAME == "BURNIN" && Global.TESTMODE == "production")
-            //{
-
-            //    loggerInfo("BURNIN目前只检查当天是否测试过");
-            //    var dir = $@"{Global.LogPath}\{WorkOrder}";
-            //    var flag = $"{ "PASS" }_{ ScanSN}";
-
-            //    if (Directory.Exists(dir))
-            //    {
-            //        DirectoryInfo directory = new DirectoryInfo(dir);
-            //        FileSystemInfo[] filesArray = directory.GetFileSystemInfos();
-            //        bool hasFound = false;
-
-            //        foreach (var item2 in filesArray)
-            //        {
-            //            //是否是一个文件夹
-            //            if (item2.Attributes != FileAttributes.Directory)
-            //            {
-            //                if (item2.FullName.Contains(flag))
-            //                {
-            //                    hasFound = true;
-
-            //                    break;
-            //                }
-
-            //            }
-
-            //        }
-            //        if (hasFound)
-            //        {
-
-            //            MessageBox.Show("今天已经测试过这个产品PASS,不允许再次测试");
-            //            return;
-            //        }
-            //    }
-
-            //}
-
-
-
-
-
-
+       
 
 
 
             if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF") {
-                RestartProcess("QUTSStatusApp", @"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp.exe");
+                RestartProcess("QUTSStatusApp", @"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp\QUTSStatusApp.exe");
             }
 
          
@@ -1087,7 +1053,7 @@ namespace AutoTestSystem
            
 
 #if DEBUG
-            Global.OnlineLimit = false;
+            Global.OnlineLimit = "0";
 #else
             if (!GetLimit()) //初始化limit
                 return;
@@ -1220,7 +1186,19 @@ namespace AutoTestSystem
 
 
 
-           // Global.STATIONNO= Environment.MachineName;
+             var Name = Environment.MachineName;
+            // var Name = "BURNIN-16555";
+
+            if (Name.Contains("-"))
+            {
+                Global.STATIONNO = Name;
+                Global.FIXTURENAME = Global.STATIONNO;
+
+                int lastIndex = Global.STATIONNO.LastIndexOf('-');
+                Global.STATIONNAME = Global.STATIONNO.Substring(0, lastIndex);
+
+
+            }
 
 
 
@@ -1240,6 +1218,7 @@ namespace AutoTestSystem
                 //lbl_StationNo.Text = Global.FIXTURENAME;
                 //Global.STATIONNO = Global.FIXTURENAME;
                 //Global.STATIONNAME = Global.FIXTURENAME.Substring(0, Global.FIXTURENAME.IndexOf("-"));
+
 
 
 
@@ -1271,16 +1250,21 @@ namespace AutoTestSystem
 
                     if (i == 2)
                     {
-                          MessageBox.Show($"Read FixNum error,Please check it!");
-                         System.Environment.Exit(0);
+
+                        if (!Environment.MachineName.Contains("CCT")) {
+                            MessageBox.Show($"Read FixNum error,Please check it!");
+                            System.Environment.Exit(0);
+                        
+                        }
+                      
 
 
 
-                        //CCT
-                        //lbl_StationNo.Text = "CCT-8020";
-                        //Global.STATIONNO = "CCT-8020";
+                        ////CCT
+                        //lbl_StationNo.Text = "CCT-1630";
+                        //Global.STATIONNO = "CCT-1630";
                         //Global.STATIONNAME = "CCT";
-                        //Global.FIXTURENAME = "CCT-8020";
+                        //Global.FIXTURENAME = "CCT-1630";
                         //iniConfig.Writeini("Station", "STATIONNAME", Global.STATIONNAME);
                         //iniConfig.Writeini("Station", "STATIONNO", Global.STATIONNO);
                         //iniConfig.Writeini("Station", "FIXTURENAME", Global.FIXTURENAME);
@@ -1396,6 +1380,7 @@ namespace AutoTestSystem
             MesMac = "";
             QSDKVER = Global.QSDKVER;
             ImageVer = QSDKVER.Substring(QSDKVER.LastIndexOf(".") + 1).ToLower();
+            UploadImageIP = Global.UploadImageIP; 
             CSN = "";
             sec = 0;
             seqNo = 0;
@@ -1428,22 +1413,34 @@ namespace AutoTestSystem
 
         private bool GetLimit()
         {
-            return true;
+            if (Global.STATIONNAME == "BURNIN" || Global.STATIONNAME == "Revert-P2")
+            {
+
+                return true;
+            }
+
+          
 
             bool rReturn = false;
-            if (Online_Limit != null) { return true; }
+            if (Online_Limit != null) {
+
+              //  loggerInfo("不获取在线");
+                return true;
+            }
             try
             {
-                if (Global.OnlineLimit)
+                if (Global.OnlineLimit.Trim()=="1")
                 {
+                //    loggerInfo("获取在线");
+                    //loggerInfo("开始获取在线limit");
                     var cookies = new CookieContainer();
                     var client = GetClient(cookies, "luxshare", "bento");
 
-                    string url = $@"http://luxshare:bento@10.90.122.1:8100/api/1/limits";
+                    string url = $@"http://luxshare:bento@10.90.116.15:8101/api/1/limits";
                     //string data = "{" + $"\"station_type\": \"{Global.STATIONNAME}\", \"model\": \"{DutMode.ToUpper()}\"" + "}";
                     var content = new FormUrlEncodedContent(new[]{
                                new KeyValuePair<string, string>("station_type", Global.STATIONNAME),
-                               new KeyValuePair<string, string>("model", DutMode.ToUpper()),
+                               new KeyValuePair<string, string>("model", "snowbird"),
                             });
                     //StringContent content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
                     var result = client.PostAsync(url, content).Result;
@@ -1539,11 +1536,14 @@ namespace AutoTestSystem
                         break;
 
                     case TestStatus.FAIL:
-                       
+                        logger.Info(">>>>>>>>>>>>>>:跳到fail");
                         if (testStatus == TestStatus.FAIL && SetIPflag)
                         {//SRF 测试失败设回默认IP重测
-                            string recvStr = "";
-                            DUTCOMM.SendCommand($"luxsetip {DUTIP} 255.255.255.0", ref recvStr, Global.PROMPT, 10);
+                            if (DUTCOMM != null) {
+                                string recvStr = "";
+                                DUTCOMM.SendCommand($"luxsetip {DUTIP} 255.255.255.0", ref recvStr, Global.PROMPT, 10);
+                            }
+                         
                         }
                         if (!Global.GoldenSN.Contains(SN) && Global.STATIONNAME == "MBFT")
                         {
@@ -1591,6 +1591,7 @@ namespace AutoTestSystem
                         break;
 
                     case TestStatus.PASS:
+                        logger.Info(">>>>>>>>>>>>>>:跳到pass");
                         Global.Total_Pass_Num++;
                         SetButton(this.bt_Status, "PASS", Color.Green);
                         SetButton(this.bt_errorCode, sec.ToString(), Color.Green);
@@ -1661,7 +1662,7 @@ namespace AutoTestSystem
                             }
 
 
-                            if (Global.STATIONNAME != "BURNIN") {
+                            if (Global.STATIONNAME != "BURNIN" && Global.STATIONNAME!="CCT" && Global.STATIONNAME != "SRF") {
                                 logger.Info("关闭poe");
                                 Bd.PoeConfigSetting(Global.POE_PORT, "disable");
 
@@ -1715,16 +1716,6 @@ namespace AutoTestSystem
 
 
 
-#if DEBUG
-#else
-
-                            Thread thread2 = new Thread(() =>
-                            {
-                                UploadLogToSftp();
-                            });
-                            thread2.IsBackground = true;
-                            thread2.Start();
-#endif
 
 
 
@@ -1889,7 +1880,20 @@ namespace AutoTestSystem
                             {
                                 SetButton(this.bt_errorCode, error_details_firstfail, Color.Red);
                             }
-                            
+
+#if DEBUG
+#else
+
+                            Thread thread2 = new Thread(() =>
+                            {
+                                UploadLogToSftp();
+                            });
+                            thread2.IsBackground = true;
+                            thread2.Start();
+#endif
+
+
+
                             StartScanFlag = true;
                        
                             isFirstRun = false;
@@ -1981,6 +1985,11 @@ namespace AutoTestSystem
         private void UploadLogToSftp()
         {
 
+
+            if (Global.STATIONNAME == "CCT") {
+                return;
+            }
+
             try
             {
                 loggerInfo("开始上传SFTP");
@@ -2041,6 +2050,10 @@ namespace AutoTestSystem
                     }
 
                 }
+                else {
+
+                    loggerError("没有找到csv:"+ CSVFilePath);
+                }
             }
             catch (Exception ex)
             {
@@ -2049,78 +2062,7 @@ namespace AutoTestSystem
 
         }
 
-        //private void UploadLogToSftp()
-        //{
-
-
-        //    loggerInfo("开始上传SFTP");
-        //    var CSVFilePathYesterday = $@"{Global.LOGFOLDER}\CsvData\{DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")}_{Global.STATIONNO}.csv";
-
-        //    if (File.Exists(CSVFilePathYesterday))
-        //    {
-
-        //        using (SFTPHelper sFTP = new SFTPHelper(Global.LOGSERVER, Global.LOGSERVERUser, Global.LOGSERVERPwd, "22"))
-        //        {
-        //            sFTP.Connect();
-        //            string csvFileName = Path.GetFileName(CSVFilePathYesterday);
-        //            loggerInfo("csv yesterdayPath:" + CSVFilePathYesterday);
-        //            try
-        //            {
-        //                sFTP.Put(CSVFilePathYesterday, $@"/{csvFileName}");
-        //                File.Move(CSVFilePathYesterday, $@"{Global.LOGFOLDER}\CsvData\Upload\{csvFileName}");
-        //            }
-        //            catch (IOException)
-        //            {
-
-        //            }
-
-        //            sFTP.Disconnect();
-        //        }
-
-        //    }
-
-
-        //}
-
-
-        //private void UploadLogToSftp()
-        //{
-
-
-
-
-        //    var CSVFilePathYesterday = $@"{Global.LOGFOLDER}\CsvData\{DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")}_{Global.STATIONNO}.csv";
-
-        //    if (File.Exists(CSVFilePathYesterday))
-        //    {
-        //        var files = Directory.GetFileSystemEntries($@"{Global.LOGFOLDER}\CsvData");
-        //        using (SFTPHelper sFTP = new SFTPHelper(Global.LOGSERVER, Global.LOGSERVERUser, Global.LOGSERVERPwd, "22"))
-        //        {
-        //            sFTP.Connect();
-        //            foreach (var file in files)
-        //            {
-        //                string csvFileName = Path.GetFileName(file);
-        //                //if (File.Exists(file) && csvFileName != $@"{DateTime.Now:yyyy-MM-dd--HH}-00-00_{Global.STATIONNO}.csv")
-        //                if (File.Exists(file) && csvFileName != Path.GetFileName(CSVFilePath))
-        //                {
-        //                    sFTP.Put(file, $@"/{csvFileName}");
-        //                    try
-        //                    {
-        //                        File.Move(file, $@"{Global.LOGFOLDER}\CsvData\Upload\{csvFileName}");
-        //                    }
-        //                    catch (IOException)
-        //                    {
-
-        //                    }
-        //                }
-        //            }
-        //            sFTP.Disconnect();
-        //        }
-
-        //    }
-
-
-        //}
+        
         /// <summary>
         /// 根据测试结果更新连续Fail计数
         /// </summary>
@@ -3369,34 +3311,62 @@ namespace AutoTestSystem
                 {
                     stationObj.mode = "debug";
                 }
+                try
+                {
+                    //遍历
+                    for (var i = 0; i < stationObj.tests.Count; i++)
+                    {
+                        var test = stationObj.tests[i];
+                        if (test.start_time == null || test.start_time == "" || test.start_time == "0001-01-01 00:00:00")
+                        {
+                            test.start_time = test.finish_time;
+                        }
+                        if (test.start_time == null || test.start_time == "" || test.start_time == "0001-01-01 00:00:00")
+                        {
+                            test.start_time = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                        }
+                        if (test.finish_time == null || test.finish_time == "" || test.finish_time == "0001-01-01 00:00:00")
+                        {
+                            test.finish_time = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                        }
 
-                //遍历
-                for (var i = 0; i < stationObj.tests.Count; i++) { 
-                     var test = stationObj.tests[i];
-                    if (test.start_time == null || test.start_time == "" || test.start_time == "0001-01-01 00:00:00") {
-                        test.start_time = test.finish_time;
+
+                        DateTime dateTime1 = DateTime.Parse(test.start_time);
+                        DateTime dateTime2 = DateTime.Parse(test.finish_time);
+
+                        if (DateTime.Compare(dateTime1, dateTime2) > 0)
+                        {
+                            test.start_time = test.finish_time;
+                        }
+
+
+
                     }
-                    if (test.start_time == null || test.start_time == "" || test.start_time == "0001-01-01 00:00:00")
+                }
+                catch (Exception ex)
+                {
+
+                    SaveLog("时间1 转换失败");
+                }
+                try
+                {
+                    //开始测试时间要小于 第一个测试项开始时间
+                    if (stationObj.tests.Count > 0)
                     {
-                        test.start_time = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                        DateTime dateTime1 = DateTime.Parse(stationObj.start_time);
+                        DateTime dateTime2 = DateTime.Parse(stationObj.tests[0].start_time);
+
+                        if (DateTime.Compare(dateTime1, dateTime2) > 0)
+                        {
+                            stationObj.start_time = stationObj.tests[0].start_time;
+                        }
                     }
-                    if (test.finish_time == null || test.finish_time == "" || test.finish_time == "0001-01-01 00:00:00")
-                    {
-                        test.finish_time = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                    }
-                  
-                    
-                    //if (test.lower_limit.EndsWith(".0")) {
-                    //    test.lower_limit = Regex.Replace(test.lower_limit, ".0", "");
-                    //    int ii = 0;
-                    //}
-                    //if (test.upper_limit.EndsWith(".0"))
-                    //{
-                    //    test.upper_limit = Regex.Replace(test.upper_limit, ".0", "");
-                    //}
+                }
+                catch
+                {
+                    SaveLog("时间2 转换失败");
 
                 }
-
 
 
 
@@ -3468,7 +3438,7 @@ namespace AutoTestSystem
 
         public bool UploadJson(string JsonFilePath)
         {
-            if (Global.STATIONNAME == "BURNIN")
+            if (Global.STATIONNAME == "BURNIN" || Global.STATIONNAME == "Revert-P2")
             {
 
                 return true;
@@ -3491,6 +3461,8 @@ namespace AutoTestSystem
 
                 // string responds = RunDosCmd(cmd, out string errors, 30000);
                 string responds = RunDosCmd(cmd, out string errors, 180000);
+
+               
                 if (responds.Contains("Result:200"))
                 {
                     mesPhases.JSON_UPLOAD = "TRUE";
@@ -3518,7 +3490,16 @@ namespace AutoTestSystem
                         error_code = "JSON_UPLOAD"; 
                         error_details = "JSON_UPLOAD";
                         error_code_firstfail = "JSON_UPLOAD";
-                        error_details_firstfail = "JSON_UPLOAD";
+                        if (responds.Contains("No valid session found from cloud admin API"))
+                        {   
+                            error_details_firstfail = "JSON_UPLOAD\r\n" + "(" + "No valid session found from cloud admin API" + ")";
+                        }
+                        else
+                        {
+                            error_details_firstfail = "JSON_UPLOAD";
+                        }
+                       
+                        
                     }
                     return false;
                 }
@@ -3573,6 +3554,12 @@ namespace AutoTestSystem
         /// <returns></returns>
         private bool PostAsyncJsonToMes()
         {
+            if (Global.STATIONNAME == "CancelDHCP" || Global.STATIONNAME == "Revert-P2")
+            {
+                return true;
+            }
+
+
             if (Global.STATIONNAME == "BURNIN")
             {
 

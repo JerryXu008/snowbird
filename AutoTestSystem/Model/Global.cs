@@ -87,7 +87,7 @@ namespace AutoTestSystem.Model
         public static string PowermeterNRP8SSN;
         public static string QSDKVER;
         public static string JSON;
-        public static bool OnlineLimit;
+        public static string OnlineLimit;
         public static bool ClearCalWhenValidation;
         ///**************************ini配置文件CountNum全局配置变量**********************/
         public static short CONTINUE_FAIL_LIMIT;        //
@@ -111,9 +111,9 @@ namespace AutoTestSystem.Model
         public static string NeedCheckSum;
         //versionManager URL
         public static string VersionMURL = "http://10.90.122.80:9000";
-       
-    
 
+
+        public static string UploadImageIP;
 
 
 
@@ -334,7 +334,7 @@ namespace AutoTestSystem.Model
 
                 AUTOTESTNOFIXUTRE = iniConfig.Readini("Station", "AUTOTESTNOFIXUTRE").Trim();
 
-
+                UploadImageIP = iniConfig.Readini("Station", "UploadImageIP").Trim();
 
 #if DEBUG
                 // FIXTUREFLAG = "0";
@@ -397,7 +397,7 @@ namespace AutoTestSystem.Model
                 PowermeterNRP8SSN = iniConfig.Readini("Product", "DUTBPowermeterNRP8SSNaudRate").Trim();
                 QSDKVER = iniConfig.Readini("Product", "QSDKVER").Trim();
                 JSON = iniConfig.Readini("Product", "JSON").Trim();
-                OnlineLimit = iniConfig.Readini("Product", "OnlineLimit").Trim().ToLower() == "true" ? true : false;
+                OnlineLimit = iniConfig.Readini("Product", "OnlineLimit").Trim();
                 ClearCalWhenValidation = iniConfig.Readini("Product", "ClearCal").Trim().ToLower() == "true" ? true : false;
 
                 CONTINUE_FAIL_LIMIT = short.Parse(iniConfig.Readini("CountNum", "CONTINUE_FAIL_LIMIT").Trim());

@@ -2141,7 +2141,7 @@
         "Json": "y",
         "EeroName": "TEST_IMAGE_VERSION",
         "NoContain": null,
-        "SpecStatic": ""
+        "SpecStatic": "<QSDKVER>"
       },
       {
         "testNumber": 1,
@@ -2363,7 +2363,7 @@
         "Json": "y",
         "EeroName": "TEST_IMAGE_VERSION",
         "NoContain": null,
-        "SpecStatic": ""
+        "SpecStatic": "<QSDKVER>"
       }
     ],
     "start_time": null,
@@ -2451,7 +2451,7 @@
         "Json": "y",
         "EeroName": "NODEPROPERTY_MAC",
         "NoContain": null,
-        "SpecStatic": ""
+        "SpecStatic": "<MesMac>"
       },
       {
         "testNumber": 2,
@@ -2525,7 +2525,7 @@
         "Json": "y",
         "EeroName": "SETENV_SN",
         "NoContain": null,
-        "SpecStatic": ""
+        "SpecStatic": "<SN>"
       }
     ],
     "start_time": null,

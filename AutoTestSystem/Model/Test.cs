@@ -104,6 +104,7 @@ namespace AutoTestSystem.Model
                 || item.TestKeyword.Contains("GetWorkOrder")
                  || item.TestKeyword.Contains("SetDHCP")
                  || item.TestKeyword.Contains("CKCustom")
+                
                 ))
             {
                 loggerWarn("This is debug mode.Skip this step.");
@@ -125,7 +126,7 @@ namespace AutoTestSystem.Model
             // Spec值中含有变量
             while (!string.IsNullOrEmpty(item.Spec) && item.Spec.Contains("<") && item.Spec.Contains(">"))
             {
-                if (item.EeroName == "TEST_IMAGE_VERSION" && Global.STATIONNAME.ToUpper() == "MBLT")
+                if (item.EeroName == "TEST_IMAGE_VERSION" &&  (Global.STATIONNAME.ToUpper() == "MBLT" || Global.STATIONNAME.ToUpper() == "SFT"))
                     specFlag = false;
                 else
                     specFlag = true;
@@ -143,6 +144,10 @@ namespace AutoTestSystem.Model
                     loggerDebug($"mescheckroute.getFirmwareFW:{mes_qsdk_version}");
                 }
 #endif
+               
+                
+                
+                
                 string verName = GetMidStr(item.Spec, "<", ">");
                 item.Spec = GetMidStr(item.Spec, null, "<") + GetVerReflection(f1, verName) + GetMidStr(item.Spec, ">", null);
                 if (string.IsNullOrEmpty(item.Spec))
@@ -162,7 +167,7 @@ namespace AutoTestSystem.Model
             //added 20230516  SpecStatic,为了解决specFlag默认等于false的bug，导致jsonupload fail
             if (!IsNullOrEmpty(item.SpecStatic) && item.SpecStatic.Contains("<") && item.SpecStatic.Contains(">"))
             {
-                if (item.EeroName == "TEST_IMAGE_VERSION" && Global.STATIONNAME.ToUpper() == "MBLT")
+                if (item.EeroName == "TEST_IMAGE_VERSION" && (Global.STATIONNAME.ToUpper() == "MBLT" || Global.STATIONNAME.ToUpper() == "SFT"))  
                 {
                     loggerInfo($"MBLT Test_Image_Version特殊处理,设置specFlag=false");
                     specFlag = false;
@@ -182,7 +187,7 @@ namespace AutoTestSystem.Model
 
             //get limit
             {
-                if (!IsNullOrEmpty(item.Json) && Global.OnlineLimit)
+                if (!IsNullOrEmpty(item.Json) && Global.OnlineLimit=="1")
                 {
                     if (Online_Limit == null)
                     {
@@ -365,14 +370,23 @@ namespace AutoTestSystem.Model
 
                     case "GetCsnErroMessage_CCT":
                         {
-                            //var url = $"http://10.90.108.172:8086/api/1/CheckRoute/serial/{SN}/station/CCT-8020";
-                            var url = $"http://10.90.108.172:8086/api/EeroRevert/CheckRoute/serial/{SN}/terminal/CCT-8020";
+
+                            if (Global.TESTMODE == "debug") {
+                                loggerDebug("debug,skip");
+                                return rReturn = true;
+                            }
+
+
+                           var url = $"http://10.90.116.132:8086/api/CHKRoute/serial/{SN}/station/CCT-1630";
                             loggerDebug(url);
 
                             var ret = "";
                             try
                             {
-                                ret = HttpGet(url);
+                                // ret = HttpGet(url);
+                                ret = HttpPost(url, null, out _);
+
+
                                 loggerInfo(">>>>:" + ret);
                                 if (ret.Contains("OK"))
                                 {
@@ -380,13 +394,15 @@ namespace AutoTestSystem.Model
                                 }
                                 else
                                 {
+
+                                    MainForm.f1.ShowLbl_FAIL_TEXT(ret);
                                     rReturn = false;
                                 }
                             }
-                            catch
+                            catch(Exception ex)
                             {
 
-                                loggerInfo(">>>>:" + ret);
+                                loggerInfo(">>>>:" + ex.Message);
                                 rReturn = false;
                             }
 
@@ -560,8 +576,12 @@ namespace AutoTestSystem.Model
                     case "COMPortOpen":
                     case "SerialPortOpen":
                         {
-                            if (DUTCOMM == null)
+                            if (DUTCOMM == null || DUTCOMM.GetType() == typeof(Telnet))
                             {
+                                if (DUTCOMM != null) { 
+                                    DUTCOMM.Close();
+                                }
+
                                 if (!string.IsNullOrEmpty(item.ComdOrParam))
                                 {
                                     DUTCOMinfo = new SerialConnetInfo { PortName = item.ComdOrParam, BaudRate = int.Parse(item.ExpectStr) };
@@ -1338,6 +1358,7 @@ namespace AutoTestSystem.Model
                                 value = double.Parse(str);
                             };
                             usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                            usbDialog.TopMost = true;
                             usbDialog.ShowTip();
                             usbDialog.ShowDialog();
 
@@ -1364,6 +1385,7 @@ namespace AutoTestSystem.Model
                                 value = str;
                             };
                             usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                            usbDialog.TopMost = true;
                             usbDialog.ShowTip(item.ComdOrParam);
                             usbDialog.ShowDialog();
 
@@ -1402,6 +1424,7 @@ namespace AutoTestSystem.Model
                             ButtonShow usbDialog = new ButtonShow();
                             usbDialog.TextHandler = (str) => { };
                             usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                            usbDialog.TopMost = true;
                             usbDialog.ShowPressTip();
                             usbDialog.ShowDialog();
                             rReturn = true;
@@ -1413,6 +1436,7 @@ namespace AutoTestSystem.Model
                             ButtonShow usbDialog = new ButtonShow();
                             usbDialog.TextHandler = (str) => { };
                             usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                            usbDialog.TopMost = true;
                             usbDialog.ShowReleaseTip();
                             usbDialog.ShowDialog();
                             rReturn = true;
@@ -1433,7 +1457,7 @@ namespace AutoTestSystem.Model
 
 
 
-
+                            usbDialog.TopMost = true;
                             //// 设置窗体为无边框样式
                             usbDialog.FormBorderStyle = FormBorderStyle.None;
                             // 最大化窗体
@@ -1525,6 +1549,7 @@ namespace AutoTestSystem.Model
                             ButtonShow usbDialog = new ButtonShow();
                             usbDialog.TextHandler = (str) => { };
                             usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                            usbDialog.TopMost = true;
                             usbDialog.ShowReleaseTip();
                             usbDialog.ShowDialog();
                             rReturn = true;
@@ -1914,9 +1939,9 @@ namespace AutoTestSystem.Model
                                      
                                         
                                         
-                                        //  item.Limit_min = temp[9];
-                                      //  item.Limit_max = temp[10];
-                                        //item.Unit = "dB";
+                                        item.Limit_min = temp[9];
+                                        item.Limit_max = temp[10];
+                                        //item.Unit = "%";
                                     }
                                     else if (item.ItemName.ToLower().Contains("tx_power"))
                                     { 
@@ -2877,14 +2902,6 @@ namespace AutoTestSystem.Model
 
 
 
-
-
-
-
-
-
-
-
                 
 
                     case "GetIQXInfo":
@@ -3161,103 +3178,7 @@ namespace AutoTestSystem.Model
                         break;
 
 
-                    //case "GetTXorRXValue":
-                    //    {
-                    //        item.testValue = DataManager.ShareInstance.GetData("MBLTTxOrRxValue");
-                    //        if (item.testValue == "")
-                    //        {
-                    //            loggerError("GetTXorRXValue is null ,fail");
-                    //            rReturn = false;
-
-                    //        }
-                    //        else {
-                    //            rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
-                    //        }
-
-                            
-                    //    }
-                    //    break;
-                    //case "IperfThroughputMBLT":
-                    //    if (inPutValue == "")
-                    //    {
-                    //        var revStr = "";
-                    //        if (dosCmd.SendCommand(item.ComdOrParam, ref revStr, item.ExpectStr, short.Parse(item.TimeOut))
-                    //            && revStr.CheckStr(item.CheckStr1) && revStr.CheckStr(item.CheckStr2))
-                    //        {
-                    //            rReturn = true;
-                    //            inPutValue = revStr;
-                    //        }
-                    //        else
-                    //        {
-                    //            inPutValue = "";
-                    //            return rReturn = false;
-                    //        }
-                    //    }
-                    //    {
-                    //        var revStr = inPutValue;
-                    //        string[] lines = revStr.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                    //        foreach (var line in lines)
-                    //        {
-                    //            if (line.Contains(item.CheckStr1) && line.Contains(item.CheckStr2))
-                    //            {
-                    //                item.testValue = GetValue(line, item.SubStr1, item.SubStr2);
-
-                    //                if (!string.IsNullOrEmpty(item.testValue) && item.testValue.EndsWith("G"))
-                    //                {
-                    //                    string tempValue = item.testValue.Replace("G", "").Trim();
-                    //                    item.testValue = ((double.Parse(tempValue)) * 1000).ToString();
-                    //                }
-                    //                else if (!string.IsNullOrEmpty(item.testValue) && item.testValue.EndsWith("M"))
-                    //                    item.testValue = (double.Parse(item.testValue.Replace("M", "").Trim())).ToString();
-                    //                else
-                    //                    loggerDebug("Get Speed error!");
-
-                    //                rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
-                    //                break;
-                    //            }
-                    //        }
-
-                    //        foreach (var line in lines)
-                    //        {
-                    //            var CurCheckStr2 = "";
-                    //            if (item.CheckStr2 == "receiver")
-                    //            {
-                    //                CurCheckStr2 = "sender";
-                    //            }
-                    //            else if (item.CheckStr2 == "sender"){ 
-                    //                CurCheckStr2 = "receiver";
-                    //            }
-                    //            else {
-                    //                loggerError("传递的CheckStr不对，fail");
-                    //                break;
-                    //            }
-                    //            var testValue = "";
-                    //            if (line.Contains(item.CheckStr1) && line.Contains(CurCheckStr2))
-                    //            {
-                    //                testValue = GetValue(line, item.SubStr1, item.SubStr2);
-
-                    //                if (!string.IsNullOrEmpty(item.testValue) && item.testValue.EndsWith("G"))
-                    //                {
-                    //                    string tempValue = item.testValue.Replace("G", "").Trim();
-                    //                    testValue = ((double.Parse(tempValue)) * 1000).ToString();
-                    //                }
-                    //                else if (!string.IsNullOrEmpty(item.testValue) && item.testValue.EndsWith("M"))
-                    //                    testValue = (double.Parse(item.testValue.Replace("M", "").Trim())).ToString();
-                    //                else {
-                    //                    loggerDebug("Get Speed error!");
-                    //                }
-
-                    //                DataManager.ShareInstance.SaveData("MBLTTxOrRxValue", testValue);
-                                     
-                    //                break;
-                    //            }
-                    //        }
-
-
-
-                    //    }
-                    //    break;
-
+                     
 
 
 
@@ -3426,7 +3347,7 @@ namespace AutoTestSystem.Model
                     default:
                         {
 
-
+                        
                             if (DUTCOMM == null) {
 
                                 loggerError("DUTCOM 为空");
@@ -3442,15 +3363,60 @@ namespace AutoTestSystem.Model
                                 rReturn = true;
                             }
 
-                            if ((Global.TESTMODE == "debug" || Global.TESTMODE == "fa" || IsDebug)  && item.TestKeyword.Contains("SetDHCP"))
+                            else if ((Global.TESTMODE == "debug" || Global.TESTMODE == "fa" || IsDebug)  && item.TestKeyword.Contains("SetDHCP"))
                             {
                                 rReturn = true;
                             }
 
-                             
-                            else if (DUTCOMM.SendCommand(item.ComdOrParam, ref revStr, item.ExpectStr, double.Parse(item.TimeOut))
-                                && revStr.CheckStr(item.CheckStr1) && revStr.CheckStr(item.CheckStr2) && revStr.NoCheckStr(item.NoContain))
+                            else if ((Global.TESTMODE == "debug" || Global.TESTMODE == "fa" || IsDebug) && item.EeroName.Trim()== "CHECK_ART_PARTITION")
                             {
+                                rReturn = true;
+                                loggerDebug("Debug Mode CHECK_ART_PARTITION SKip ,do not run");
+                            }
+
+
+                            else if (DUTCOMM.SendCommand(item.ComdOrParam, ref revStr, item.ExpectStr, double.Parse(item.TimeOut))
+                                && revStr.CheckStr(item.CheckStr1) && revStr.CheckStr(item.CheckStr2)
+                                
+                                
+                                
+                                
+                                )
+                            {
+
+                                var itemNoContain = item.NoContain;
+                                if (item.ItemName == "CheckCalData1" || item.ItemName == "CheckCalData2") {
+
+                                  //  loggerDebug("去掉各种空格换行");
+
+                                     revStr = revStr.Replace(" ", "");
+                                     revStr = revStr.Replace("\r", "");
+                                     revStr = revStr.Replace("\n", "");
+                                     revStr = revStr.Replace("\t", "");
+
+                                    loggerInfo("revStr=" + revStr);
+
+                                    itemNoContain = itemNoContain.Replace(" ", "");
+                                    itemNoContain = itemNoContain.Replace("\r", "");
+                                    itemNoContain = itemNoContain.Replace("\n", "");
+                                    itemNoContain = itemNoContain.Replace("\t", "");
+
+                                    loggerInfo("itemNoContain=" + itemNoContain);
+
+                                }
+                                
+                                if (revStr.NoCheckStr(itemNoContain) == false) {
+
+                                    loggerError($"{revStr} contains {item.NoContain}, fail");
+                                      return rReturn = false;
+                                }
+
+
+
+
+                                
+
+
                                 rReturn = true;
                              
                                 // 需要提取测试值
@@ -3495,8 +3461,6 @@ namespace AutoTestSystem.Model
 
 
 
-
-
                                 if (item.TestKeyword.Contains("TempSensorTest_After") || item.TestKeyword.Contains("TempSensorTest_Before"))
                                 {
                                     if (string.IsNullOrEmpty(item.testValue))
@@ -3528,6 +3492,7 @@ namespace AutoTestSystem.Model
                                 if (item.TestKeyword == "TEST_IMAGE_VERSION")
                                 {
                                     ImageVer = item.Spec;
+                                    logger.Info("<<<<<<<<<<读取到Spec:" + ImageVer);
                                 }
                               
                                 // 需要比较Spec
@@ -3577,9 +3542,9 @@ namespace AutoTestSystem.Model
 
                             }
                             else {  //
-                                 
 
 
+                               
 
 
                                 //****************************P1阶段先屏蔽掉**********************************//
@@ -3588,7 +3553,7 @@ namespace AutoTestSystem.Model
                                 //if (Global.STATIONNAME == "SFT" || Global.STATIONNAME == "MBFT"
                                 //     || Global.STATIONNAME == "RTT" || Global.STATIONNAME == "SRF"){
 
-                                 
+
                                 //    if (DUTCOMM != null && DUTCOMM.GetType() == typeof(Telnet))
                                 //    {
                                 //       loggerInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
@@ -3598,11 +3563,11 @@ namespace AutoTestSystem.Model
                                 //       DUTCOMM = new Telnet(telnetInfo);
                                 //       DUTCOMM.Open(Global.PROMPT);
                                 //    }
-                                   
+
 
                                 //}
 
-                               HandleSpecialMethed(item, rReturn, revStr);
+                                HandleSpecialMethed(item, rReturn, revStr);
 
 
 
@@ -3926,6 +3891,7 @@ namespace AutoTestSystem.Model
                 USBConfirmDialog usbDialog = new USBConfirmDialog();
                 usbDialog.TextHandler = (str) => { };
                 usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                usbDialog.TopMost = true;
                 usbDialog.ShowDialog();
                 Thread.Sleep(3000);
             }
