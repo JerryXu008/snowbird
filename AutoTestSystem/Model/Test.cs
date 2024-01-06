@@ -187,7 +187,8 @@ namespace AutoTestSystem.Model
 
             //get limit
             {
-                if (!IsNullOrEmpty(item.Json) && Global.OnlineLimit=="1")
+               
+                if (!IsNullOrEmpty(item.Json) && Global.OnlineLimit=="1" && Global.STATIONNAME!= "BURNIN" && Global.STATIONNAME != "SetDHCP" && Global.STATIONNAME != "Revert")
                 {
                     if (Online_Limit == null)
                     {
@@ -237,6 +238,12 @@ namespace AutoTestSystem.Model
                     }
                 }
             }
+
+
+
+
+
+
 
             if (item.ComdOrParam == "quit" || item.ComdOrParam == "0x03")
             {
@@ -483,6 +490,11 @@ namespace AutoTestSystem.Model
                         {
                             if (DUTCOMM == null || DUTCOMM.GetType() != typeof(Telnet))
                             {
+
+                                if (DUTCOMM != null) { 
+                                    DUTCOMM.Close();
+                                }
+
                                 if (!IsNullOrEmpty(item.ComdOrParam))
                                     telnetInfo = new TelnetInfo { _Address = item.ComdOrParam };
                                 

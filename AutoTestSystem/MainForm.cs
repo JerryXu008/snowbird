@@ -160,6 +160,7 @@ namespace AutoTestSystem
         public static string MD55G = "";
         public static string mes_qsdk_version = "";
         public static string QSDKVER = "";
+        public static string BURNINWAITTIME = "0";
         public static int retry = 0;
         private string CSVFilePath = "";
         public static string WorkOrder = "0";
@@ -1050,13 +1051,24 @@ namespace AutoTestSystem
  
             SaveRichText(true);
 
-           
+
 
 #if DEBUG
             Global.OnlineLimit = "0";
 #else
-            if (!GetLimit()) //初始化limit
-                return;
+            if (!GetLimit()) {
+
+                Thread.Sleep(3000);
+
+                if (!GetLimit()) {
+                    return;
+                }
+
+               
+            }
+               
+               
+              
 #endif
             StartTestInit();
         }
@@ -1397,6 +1409,8 @@ namespace AutoTestSystem
             retry = 0;
             WorkOrder = "1";
 
+            BURNINWAITTIME = Global.BURNINWAITTIME;
+
             if (Global.STATIONNAME == "BURNIN" && Global.TESTMODE == "production") {
                 WorkOrder = "2";
             }
@@ -1413,7 +1427,7 @@ namespace AutoTestSystem
 
         private bool GetLimit()
         {
-            if (Global.STATIONNAME == "BURNIN" || Global.STATIONNAME == "Revert-P2")
+            if (Global.STATIONNAME == "BURNIN" || Global.STATIONNAME.ToLower() == "revert")
             {
 
                 return true;
@@ -1447,6 +1461,11 @@ namespace AutoTestSystem
 
                     var response_content = result.Content.ReadAsByteArrayAsync().Result;
                     var responseStr = System.Text.Encoding.UTF8.GetString(response_content);
+
+                    loggerDebug(responseStr);
+
+
+
                     responseStr = responseStr.Replace("\"limits\": {", "\"limits\": [").Trim().TrimEnd('}');
 
                     Regex r = new Regex("\"[\\S]*\"\\: {");
@@ -1459,7 +1478,7 @@ namespace AutoTestSystem
                     string responseStr2 = responseStr.Substring(a).Replace('}', ']');
                     responseStr = responseStr1 + responseStr2 + "}";
 
-                    loggerDebug(responseStr);
+                    
                     if (result.IsSuccessStatusCode)
                     {
                         Online_Limit = JsonConvert.DeserializeObject<Limits>(responseStr);
@@ -1660,6 +1679,18 @@ namespace AutoTestSystem
                                 };
 
                             }
+
+                            if (testStatus != TestStatus.PASS) {
+                                if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF" || Global.STATIONNAME == "BURNIN")
+                                {
+                                    loggerInfo("失败了连续ping 10次");
+                                    PingIP("192.168.1.1", 10);
+                                }
+
+                            }
+
+
+
 
 
                             if (Global.STATIONNAME != "BURNIN" && Global.STATIONNAME!="CCT" && Global.STATIONNAME != "SRF") {
@@ -3438,7 +3469,7 @@ namespace AutoTestSystem
 
         public bool UploadJson(string JsonFilePath)
         {
-            if (Global.STATIONNAME == "BURNIN" || Global.STATIONNAME == "Revert-P2")
+            if (Global.STATIONNAME == "BURNIN" || Global.STATIONNAME.ToLower() == "revert")
             {
 
                 return true;
@@ -3554,7 +3585,7 @@ namespace AutoTestSystem
         /// <returns></returns>
         private bool PostAsyncJsonToMes()
         {
-            if (Global.STATIONNAME == "CancelDHCP" || Global.STATIONNAME == "Revert-P2")
+            if (Global.STATIONNAME == "CancelDHCP" || Global.STATIONNAME.ToLower() == "revert")
             {
                 return true;
             }

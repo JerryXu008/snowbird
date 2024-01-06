@@ -258,6 +258,15 @@
     <Content Include="Config\data_api_client.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="cygcrypto-1.1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cygz.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="iperf3.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="PLINK.EXE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -282,7 +291,7 @@
     <Content Include="DynamsoftKey.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="iperf3.exe">
+    <Content Include="iperf3_old.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="7z.dll">

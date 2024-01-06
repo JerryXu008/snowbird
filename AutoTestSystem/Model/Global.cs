@@ -96,10 +96,16 @@ namespace AutoTestSystem.Model
         public static Int32 Total_Pass_Num;
         public static Int32 Total_Abort_Num;
 
+
+
+        public static string BURNINWAITTIME;
         ///**************************ini配置文件各工站全局配置变量**********************/
         public static string CalTreeName;
         public static string VerTreeName;
         public static bool PopFixture;
+
+
+    
 
         public static DateTime time1;
         public static DateTime time2;
@@ -116,7 +122,7 @@ namespace AutoTestSystem.Model
         public static string UploadImageIP;
 
 
-
+      
 
         /// <summary>
         /// 把STATIONALL所有Excel测试用例转换成Json文件格式
@@ -263,6 +269,11 @@ namespace AutoTestSystem.Model
                         jsonStr = sr.ReadToEnd();
                     }
                     Global.Sequences = JsonConvert.DeserializeObject<List<Sequence>>(jsonStr);
+
+                    var ff = Global.Sequences;
+
+                    int iii = 0;
+
                 }
                 else
                 {
@@ -398,6 +409,10 @@ namespace AutoTestSystem.Model
                 QSDKVER = iniConfig.Readini("Product", "QSDKVER").Trim();
                 JSON = iniConfig.Readini("Product", "JSON").Trim();
                 OnlineLimit = iniConfig.Readini("Product", "OnlineLimit").Trim();
+                BURNINWAITTIME = iniConfig.Readini("Product", "BURNINWAITTIME").Trim();
+
+
+
                 ClearCalWhenValidation = iniConfig.Readini("Product", "ClearCal").Trim().ToLower() == "true" ? true : false;
 
                 CONTINUE_FAIL_LIMIT = short.Parse(iniConfig.Readini("CountNum", "CONTINUE_FAIL_LIMIT").Trim());
