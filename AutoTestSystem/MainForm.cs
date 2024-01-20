@@ -108,13 +108,16 @@ namespace AutoTestSystem
         public string FIXTURE_TIME = "";
         public string DUT_PING_TIME;
 
-
+        public static DateTime PowerToTelnetStartTime;
+        public static DateTime PowerToTelnetEndTime;
 
         //WPS
         public static DLIOutletClient C;
         private WebSwitchConInfo _webSwitchCon;
 
 
+        bool isTestAgain = false;
+        int AUTOTESTNOFIXUTRE_COUNT = -1;
 
         //SRF/MBFT RF 数据缓存
 
@@ -247,6 +250,11 @@ namespace AutoTestSystem
                 scanManager = new ScanManager();
                 scanManager.ScanFinished += ScanManager_ScanFinished;
             }
+
+
+            AUTOTESTNOFIXUTRE_COUNT = int.Parse(Global.AUTOTESTNOFIXUTRE_COUNT);
+
+
 
 
             this.Visible = false;   //!用来防止初次开启界面卡顿现象
@@ -604,17 +612,49 @@ namespace AutoTestSystem
 
             }
             else if (Global.CameraType == "0" && Global.STATIONNAME != "CCT") {
-                scanThread = new Thread(new ThreadStart(ScanThread1))
+
+
+
+
+                if (Global.AUTOTESTNOFIXUTRE_COUNT == "-1")
                 {
-                    IsBackground = true
-                };       
+                    scanThread = new Thread(new ThreadStart(ScanThread1))
+                    {
+                        IsBackground = true
+                    };
+
+                }
+                else {
+
+
+                    scanThread = new Thread(new ThreadStart(ScanThread1_Nofixutre))
+                    {
+                        IsBackground = true
+                    };
+
+                    
+
+
+                }
+                
+               
+           
+            
+            
+            
             }
 
 
-        
+
 
 
 #if DEBUG
+            //if (Global.STATIONNAME != "CCT")
+            //{
+
+            //    scanThread.Start();
+            //}
+
 #else
 
             if (Global.STATIONNAME != "CCT")
@@ -724,7 +764,50 @@ namespace AutoTestSystem
             }
         }
 
+        private void ScanThread1_Nofixutre()
+        {
 
+            string fixcomRcv = "";
+            string barcode = $@"{System.Environment.CurrentDirectory}\Barcode.txt";
+            try
+            {
+                if (Global.STATIONNAME != "CCT" && Global.FIXTUREFLAG == "1")
+                {
+                    while (true)
+                    {
+                        if (StartScanFlag)
+                        {
+                            int ii = 0;
+
+                            if (
+                                isTestAgain
+
+                                )
+
+
+                            {
+                                isTestAgain = false;
+                                SetTextBox(textBox1, true, SN);
+                                TextBox1_KeyDown(null, null);
+                            }
+                            else
+                                Thread.Sleep(1);
+                        }
+                        else
+                            Thread.Sleep(1);
+                    }
+                }
+                // scanThread.Abort();
+            }
+            catch (ThreadAbortException ex)
+            {
+                //abort线程忽略报错
+            }
+            catch (Exception ex)
+            {
+                loggerFatal(ex.ToString());
+            }
+        }
 
 
         /// <summary>
@@ -743,156 +826,163 @@ namespace AutoTestSystem
                     {
                         if (StartScanFlag)
                         {
+                             
+                                       
                             fixcomRcv += FixSerialPort.Read();
-                            if (
-                                
-                                (fixcomRcv.Contains("AT+SCAN") && !startFlag)
-                                ||
-                                (isFirstRun==false && Cycle_Count>0 && !startFlag)
-                                
-                                ) // 通过按治具的scan button发送执行扫描命令
-                            
-                            
-                            {
-                                try
-                                {
-                                    //杀死驻波程序
-                                   
+                                if (
 
-                                    if (Global.STATIONNAME == "SRF")
+                                    (fixcomRcv.Contains("AT+SCAN") && !startFlag)
+                                    ||
+                                    (isFirstRun == false && Cycle_Count > 0 && !startFlag)
+
+                                    ) // 通过按治具的scan button发送执行扫描命令
+
+
+                                {
+                                    try
                                     {
-                                        KillProcessNoRes("QCATestSuite"); //SRF
-                                        KillProcessNoRes("QPSTConfig"); //SRF
-                                        KillProcessNoRes("BTTestSuite");//SRF
-                                        KillProcessNoRes("QPSTServer");//SRF
-                                        
+                                        //杀死驻波程序
+
+
+                                        if (Global.STATIONNAME == "SRF")
+                                        {
+                                            KillProcessNoRes("QCATestSuite"); //SRF
+                                            KillProcessNoRes("QPSTConfig"); //SRF
+                                            KillProcessNoRes("BTTestSuite");//SRF
+                                            KillProcessNoRes("QPSTServer");//SRF
+
+                                        }
+
+                                        if (Global.STATIONNAME == "MBFT")
+                                        {
+                                            KillProcessNoRes("ATSuite"); //MBFT
+                                            KillProcessNoRes("BTTestSuiteRD");//MBFT
+                                            KillProcessNoRes("QPSTConfig"); //MBFT
+                                            KillProcessNoRes("QPSTServer");//MBFT
+                                        }
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        loggerError("error2:" + ex.ToString());
                                     }
 
-                                    if (Global.STATIONNAME == "MBFT")
+
+
+                                    if (isFirstRun == false && Cycle_Count > 0 && !startFlag)
                                     {
-                                        KillProcessNoRes("ATSuite"); //MBFT
-                                        KillProcessNoRes("BTTestSuiteRD");//MBFT
-                                        KillProcessNoRes("QPSTConfig"); //MBFT
-                                        KillProcessNoRes("QPSTServer");//MBFT
+                                        Cycle_Count--;
                                     }
 
-                                }
-                                catch (Exception ex) { 
-                                  loggerError("error2:" + ex.ToString());
-                                }
-                              
+                                    fixcomRcv = "";
+                                    loggerDebug("Check Prompt AT+SCAN OK...");
+                                    Global.time1 = DateTime.Now;
 
 
-                                if (isFirstRun == false && Cycle_Count > 0 && !startFlag) {
-                                    Cycle_Count--;
-                                }
 
-                                fixcomRcv = "";
-                                loggerDebug("Check Prompt AT+SCAN OK...");
-                                Global.time1 = DateTime.Now; 
-                               
-
-
-                                 int retryTimes =6;
-                                for (int i = 1; i <= retryTimes; i++)
-                                {
-                                    if (File.Exists(barcode))
-                                        File.Delete(barcode);
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    loggerDebug("------------------>start run1 Scan_Barcode_C03");
-                                     
-                                    //修改电脑时间
-                                    preDateTime = DateTime.Now;//保存当前时间
-
-                                    DateTime oldTime = Convert.ToDateTime("2021-10-02 10:00:00");
-
-                                    SyDateTimeHelper.SetLocalDateTime2(oldTime);
-                                   
-                                    Thread.Sleep(50);
-
-                                    RunDosCmd2("Scan_Barcode_C03.exe");
-                                    // StartProcess("Scan_Barcode_C03", $@"{System.Environment.CurrentDirectory}\Scan_Barcode_C03.exe");
-                                    var lngStart = DateTime.Now.AddSeconds(3).Ticks;
-                                    while (DateTime.Now.Ticks <= lngStart)
+                                    int retryTimes = 6;
+                                    for (int i = 1; i <= retryTimes; i++)
                                     {
-                                        //loggerDebug("开始查找Barcode.txt......");
-                                        // loggerInfo($@"{System.Environment.CurrentDirectory}\Barcode.txt");
-                                        bool found = false;
-                                        var re = RunDosCmd("type " + $@"{System.Environment.CurrentDirectory}\Barcode.txt");
-                                        //  loggerInfo("dos返回:" + re);
-                                        if (re.Contains("找不到") || re.Contains("cannot find "))
+                                        if (File.Exists(barcode))
+                                            File.Delete(barcode);
+
+
+
+
+
+                                        loggerDebug("------------------>start run1 Scan_Barcode_C03");
+
+                                        //修改电脑时间
+                                        preDateTime = DateTime.Now;//保存当前时间
+
+                                        DateTime oldTime = Convert.ToDateTime("2021-10-02 10:00:00");
+
+                                        SyDateTimeHelper.SetLocalDateTime2(oldTime);
+
+                                        Thread.Sleep(50);
+
+                                        RunDosCmd2("Scan_Barcode_C03.exe");
+                                        // StartProcess("Scan_Barcode_C03", $@"{System.Environment.CurrentDirectory}\Scan_Barcode_C03.exe");
+                                        var lngStart = DateTime.Now.AddSeconds(3).Ticks;
+                                        while (DateTime.Now.Ticks <= lngStart)
                                         {
-                                            found = false;
-                                        }
-                                        else
-                                        {
-                                            found = true;
-                                        }
-                                        if (found)
-                                        {
-                                            loggerDebug(" find Barcode.txt，close scan software");
-                                            //关闭扫码软件
-
-                                         // 20200228 操作的   KillProcess("Scan_Barcode_C03");
-
-                                            //扫码完成，重置时间，获取的是谷歌时间
-
-                                            SyDateTimeHelper.SetLocalDateTime2(SyDateTimeHelper.GetNetDateTime(preDateTime.AddMilliseconds(0)));
-
-                                            using (var sr = new StreamReader(barcode, Encoding.Default))
+                                            //loggerDebug("开始查找Barcode.txt......");
+                                            // loggerInfo($@"{System.Environment.CurrentDirectory}\Barcode.txt");
+                                            bool found = false;
+                                            var re = RunDosCmd("type " + $@"{System.Environment.CurrentDirectory}\Barcode.txt");
+                                            //  loggerInfo("dos返回:" + re);
+                                            if (re.Contains("找不到") || re.Contains("cannot find "))
                                             {
-                                                string readAll = sr.ReadToEnd();
-                                                loggerDebug(readAll);
-                                                string textBox1Sn = readAll.Trim().Replace("1_", "").Replace("\n", "").Replace("\r\n", "");
-                                                loggerDebug("------------------>give textbox value:" + textBox1Sn);
-                                                Global.time2 = DateTime.Now;
-                                               
-                                                SetTextBox(textBox1, true, textBox1Sn);
+                                                found = false;
                                             }
+                                            else
+                                            {
+                                                found = true;
+                                            }
+                                            if (found)
+                                            {
+                                                loggerDebug(" find Barcode.txt，close scan software");
+                                                //关闭扫码软件
+
+                                                // 20200228 操作的   KillProcess("Scan_Barcode_C03");
+
+                                                //扫码完成，重置时间，获取的是谷歌时间
+
+                                                SyDateTimeHelper.SetLocalDateTime2(SyDateTimeHelper.GetNetDateTime(preDateTime.AddMilliseconds(0)));
+
+                                                using (var sr = new StreamReader(barcode, Encoding.Default))
+                                                {
+                                                    string readAll = sr.ReadToEnd();
+                                                    loggerDebug(readAll);
+                                                    string textBox1Sn = readAll.Trim().Replace("1_", "").Replace("\n", "").Replace("\r\n", "");
+                                                    loggerDebug("------------------>give textbox value:" + textBox1Sn);
+                                                    Global.time2 = DateTime.Now;
+
+                                                    SetTextBox(textBox1, true, textBox1Sn);
+                                                }
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                // loggerDebug("没找到");
+                                            }
+
+
+
+
+                                            Thread.Sleep(1);
+                                        }
+
+                                        if (textBox1.Text.Length == Global.SN_LENGTH && Regex.IsMatch(textBox1.Text, regexp))
+                                        {
+                                            loggerDebug("------------------>give standard SN value:" + textBox1.Text);
+                                            TextBox1_KeyDown(null, null);
+                                            fixcomRcv = "";
+                                            SyDateTimeHelper.SetLocalDateTime2(SyDateTimeHelper.GetNetDateTime(preDateTime.AddMilliseconds(0)));
                                             break;
                                         }
                                         else
                                         {
-                                            // loggerDebug("没找到");
+                                            loggerDebug("------------------> SN not standard:" + textBox1.Text);
+                                            KillProcess("Scan_Barcode_C03");
+
                                         }
 
-
-
-
-                                        Thread.Sleep(1);
-                                    }
-
-                                    if (textBox1.Text.Length == Global.SN_LENGTH && Regex.IsMatch(textBox1.Text, regexp))
-                                    {
-                                        loggerDebug("------------------>give standard SN value:" + textBox1.Text);
-                                        TextBox1_KeyDown(null, null);
-                                        fixcomRcv = "";
+                                        loggerDebug($"Scan_Barcode get SN:{textBox1.Text} error.");
+                                        //重置UTC时间
                                         SyDateTimeHelper.SetLocalDateTime2(SyDateTimeHelper.GetNetDateTime(preDateTime.AddMilliseconds(0)));
-                                        break;
+
+                                        if (i != retryTimes) continue;
+
+                                        loggerDebug($"Scan_Barcode have fail {retryTimes} times,pls tell TE.");
+                                        // MessageBox.Show($"Scan_Barcode have fail {retryTimes} times,pls tell TE.");
                                     }
-                                    else
-                                    {
-                                        loggerDebug("------------------> SN not standard:" + textBox1.Text);
-                                        KillProcess("Scan_Barcode_C03");
-
-                                    }
-
-                                    loggerDebug($"Scan_Barcode get SN:{textBox1.Text} error.");
-                                    //重置UTC时间
-                                    SyDateTimeHelper.SetLocalDateTime2(SyDateTimeHelper.GetNetDateTime(preDateTime.AddMilliseconds(0)));
-
-                                    if (i != retryTimes) continue;
-
-                                    loggerDebug($"Scan_Barcode have fail {retryTimes} times,pls tell TE.");
-                                   // MessageBox.Show($"Scan_Barcode have fail {retryTimes} times,pls tell TE.");
                                 }
-                            }
-                            else
-                                Thread.Sleep(1);
+                                else {
+                                    Thread.Sleep(1);
+                                }
+                              
+                            
                         }
                         else
                             Thread.Sleep(1);
@@ -922,8 +1012,8 @@ namespace AutoTestSystem
             }
 
 
-           
 
+            isTestAgain = false;
 
 
 
@@ -1198,8 +1288,8 @@ namespace AutoTestSystem
 
 
 
-             var Name = Environment.MachineName;
-            // var Name = "BURNIN-16555";
+            var Name = Environment.MachineName;
+             //var Name = "BURNIN-16555";
 
             if (Name.Contains("-"))
             {
@@ -1420,6 +1510,11 @@ namespace AutoTestSystem
             uploadJsonSpecialFail = false;
 
             RFCSV_Cache = new Dictionary<string, string>();
+
+
+
+               PowerToTelnetStartTime = new DateTime();
+               PowerToTelnetEndTime = new DateTime();
 
             DataManager.ShareInstance.ClearData();
         }
@@ -1929,15 +2024,15 @@ namespace AutoTestSystem
                        
                             isFirstRun = false;
 
-                            //if (Global.AUTOTESTNOFIXUTRE == "1") { 
-                            
-                            //   Thread.Sleep(1000);
-                            //    this.Invoke(new Action(() => {
-                            //        this.textBox1.Text = SN;
-                            //    }));
-                              
-                            //    TextBox1_KeyDown(null, null);
-                            //}
+
+                            if (Global.AUTOTESTNOFIXUTRE_COUNT != "-1" && AUTOTESTNOFIXUTRE_COUNT>0)
+                            {
+                                AUTOTESTNOFIXUTRE_COUNT = AUTOTESTNOFIXUTRE_COUNT - 1;
+                                logger.Info("等待1s");
+                                Thread.Sleep(1000);
+
+                                isTestAgain = true;
+                            }
                         }
                     }
                     catch (Exception ex)

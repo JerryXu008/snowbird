@@ -58,7 +58,7 @@ namespace AutoTestSystem.Model
         public static string WPSPortNum;
         public static string WPSDUTIP;
         public static string SweepVersion;
-        public static string AUTOTESTNOFIXUTRE;
+        public static string AUTOTESTNOFIXUTRE_COUNT;
         ///**************************ini配置文件DUT全局配置变量**********************/
         public static string DUTIP;
         public static string SSH_PORT;
@@ -152,7 +152,7 @@ namespace AutoTestSystem.Model
                     // 生成对应的SHA256检验码，以二进制方式保存
                     byte[] shaByte = Bd.GetSHA256Byte(jsonPath);
                     Bd.BinaryWrite(shaByte, jsonSHA256);
-                    SaveLog($"生成{tempStation[i]}站Json用例文件成功");
+                    Console.WriteLine($"生成{tempStation[i]}站Json用例文件成功");
                     SendDosCmd($@"copy {jsonPath} {System.Environment.CurrentDirectory.Replace(@"bin\Release", "").Replace(@"bin\Debug", "")}\Config /y");
 #if DEBUG
 #else
@@ -343,7 +343,7 @@ namespace AutoTestSystem.Model
                 PopFixture = iniConfig.Readini("Station", "PopFixture").Trim().ToLower() == "true" ? true : false;
                 SweepVersion = iniConfig.Readini("Station", "SweepVersion").Trim();
 
-                AUTOTESTNOFIXUTRE = iniConfig.Readini("Station", "AUTOTESTNOFIXUTRE").Trim();
+                AUTOTESTNOFIXUTRE_COUNT = iniConfig.Readini("Station", "AUTOTESTNOFIXUTRE_COUNT").Trim();
 
                 UploadImageIP = iniConfig.Readini("Station", "UploadImageIP").Trim();
 

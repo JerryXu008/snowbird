@@ -239,7 +239,7 @@ namespace AutoTestSystem.Model
                         tempSequencesList.Add(tempSeq);
                     }
                     GetItems(dataTableOfTestCase, itemHeader, i, columOfItemName);
-                    Console.WriteLine(">>>>>>>>>>>:"+"看看多慢");
+                  
                 }
                 return tempSequencesList.ToList(); 
             }

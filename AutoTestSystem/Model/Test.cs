@@ -296,6 +296,33 @@ namespace AutoTestSystem.Model
                             break;
                         }
 
+
+                    case "StartRecordTime": {
+
+                            PowerToTelnetStartTime = DateTime.Now;
+                            rReturn = true;
+
+                            break;
+                        }
+
+                    case "EndRecordTime":
+                        {
+
+                            if (PowerToTelnetStartTime != null) {
+
+                                PowerToTelnetEndTime = DateTime.Now;
+
+                               var  seconds = (PowerToTelnetEndTime - PowerToTelnetStartTime).TotalSeconds;
+                               item.testValue = seconds.ToString();
+
+                            }
+                            rReturn = true;
+                            break;
+                        }
+
+
+
+
                     case "CopyMBFTConfig":
 
                         return true;
