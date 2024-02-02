@@ -231,7 +231,36 @@ namespace AutoTestSystem
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi; //设定按分辨率来缩放控件
             InitializeComponent();
 
-          
+
+
+
+            string pattern = @"completed,\s(\d+)\sbad blocks found";
+            var revStr = @"% done, 3:34 elapsed. (0/0/0 errors)
+2024-02-01 02:59:02 [DEBUG] -  17.13% done, 3:35 elapsed. (0/0/0 errors)
+2024-02-01 02:59:03 [DEBUG] -  26.57% done, 3:36 elapsed. (0/0/0 errors)
+2024-02-01 02:59:04 [DEBUG] -  36.00% done, 3:37 elapsed. (0/0/0 errors)
+2024-02-01 02:59:05 [DEBUG] -  45.43% done, 3:38 elapsed. (0/0/0 errors)
+2024-02-01 02:59:06 [DEBUG] -  54.70% done, 3:39 elapsed. (0/0/0 errors)";
+            Match match = Regex.Match(revStr, pattern);
+            if (match.Success)
+            {
+
+                BadBlockCount = match.Groups[1].Value;
+                loggerDebug("Number of bad blocks: " + match.Groups[1].Value);
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             this.groupBox3.Location = new Point(this.groupBox2.Location.X + this.groupBox2.Size.Width + 30, this.groupBox2.Location.Y);
             this.groupBox1.Location = new Point(this.groupBox3.Location.X + this.groupBox3.Size.Width + 30, this.groupBox3.Location.Y);
