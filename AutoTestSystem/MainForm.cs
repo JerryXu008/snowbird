@@ -16,6 +16,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 using static AutoTestSystem.BLL.Bd;
@@ -230,35 +231,6 @@ namespace AutoTestSystem
 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi; //设定按分辨率来缩放控件
             InitializeComponent();
-
-
-
-
-            string pattern = @"completed,\s(\d+)\sbad blocks found";
-            var revStr = @"% done, 3:34 elapsed. (0/0/0 errors)
-2024-02-01 02:59:02 [DEBUG] -  17.13% done, 3:35 elapsed. (0/0/0 errors)
-2024-02-01 02:59:03 [DEBUG] -  26.57% done, 3:36 elapsed. (0/0/0 errors)
-2024-02-01 02:59:04 [DEBUG] -  36.00% done, 3:37 elapsed. (0/0/0 errors)
-2024-02-01 02:59:05 [DEBUG] -  45.43% done, 3:38 elapsed. (0/0/0 errors)
-2024-02-01 02:59:06 [DEBUG] -  54.70% done, 3:39 elapsed. (0/0/0 errors)";
-            Match match = Regex.Match(revStr, pattern);
-            if (match.Success)
-            {
-
-                BadBlockCount = match.Groups[1].Value;
-                loggerDebug("Number of bad blocks: " + match.Groups[1].Value);
-            }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -519,7 +491,16 @@ namespace AutoTestSystem
 
         private void MainForm_Shown(object sender, EventArgs e)
         {
-           
+
+            //Task.Run(() =>
+            //{
+
+            //    Thread.Sleep(2000);
+
+            //    scanManager.Scan();
+
+
+            //});
 
 
             //先进行线上版本检测
@@ -701,20 +682,191 @@ namespace AutoTestSystem
             testThread.Start();
 
 
-          // textBox1.Text = "GGC3530132850621";
+
+
+
+
+
+
+
+            // textBox1.Text = "GGC3530132850621";
         }
 
         private void ScanManager_ScanFinished(string sn)
         {
             if (sn.Length > 0) {
+                
                 Global.time2 = DateTime.Now;
-                SetTextBox(textBox1, true, sn);
+
+                //SetTextBox(textBox1, true, sn);
+
+                AfterScanAction(sn);
+                
                 scanManager.Close();
             }
               
         }
 
 
+        private bool CheckSNRole(string ScanSN)
+        {
+
+
+            ScanSN = ScanSN.Replace('\r', ' ');
+            ScanSN = ScanSN.Replace('\n', ' ');
+            ScanSN = ScanSN.Trim();
+
+            // 检查扫描的SN的长度
+            if (ScanSN.Length != Global.SN_LENGTH && !IsDebug)
+            {
+                MessageBox.Show($"SN:{ScanSN} length {ScanSN.Length} is wrong,{Global.SN_LENGTH} is right.Please Scan again!", "SN Length Fail", 0, MessageBoxIcon.Error);
+
+
+                //this.Invoke((MethodInvoker)delegate {
+                //    lblErrorMsg.Text = $"SN:{ScanSN} length {ScanSN.Length} is wrong,{Global.SN_LENGTH} is right.Please Scan again!";
+
+                //});
+
+
+
+
+                return false;
+            }
+            // 根据扫描的SN判断机种
+            if (!JudgeProdMode(ScanSN))
+            {
+                return false;
+            }
+            // 检查SN规则是否正确
+            if (!Regex.IsMatch(ScanSN, regexp) && !IsDebug)
+            {
+                MessageBox.Show($"SN matching rule is wrong ,Please find TE!", "SN Match Rule", 0, MessageBoxIcon.Error);
+                //this.Invoke((MethodInvoker)delegate {
+                //    lblErrorMsg.Text = $"SN matching rule is wrong ,Please find TE!";
+
+                //});
+
+
+
+
+                return false;
+            }
+            return true;
+        }
+        public void AfterScanAction(string sn)
+        {
+            //这里面不是主线程
+
+            if (sn.Length > 0)
+            {
+                if (!CheckSNRole(sn))
+                {
+                    return;
+                }
+                else
+                {
+
+                 
+                }
+                if (!SetTextBoxNewScan(textBox1, true, sn))
+                {
+                    return;
+                }
+
+
+
+            }
+
+        }
+
+        public bool SetTextBoxNewScan(TextBox textBox, bool isEnable = true, string text = "")
+        {
+            bool re = false;
+
+
+            this.Invoke(new Action(() => {
+                textBox.Enabled = isEnable;
+                textBox.Text = text;
+                this.ActiveControl = textBox; //设置当前窗口的活动控件为textBox1
+                textBox.Focus();
+                if (text != "")
+                {
+                    re = TriggerKeyDown(); //这个在主线程运行的
+                }
+
+            }));
+            return re;
+
+            
+        }
+
+        private bool TriggerKeyDown()
+        {
+            // 扫描SN
+            string ScanSN = textBox1.Text.Trim().TrimEnd(new char[] { '\n', '\t', '\r' }).ToUpper();
+
+
+            if (!CheckSNRole(ScanSN))
+            {
+                return false;
+            }
+
+            StartScanFlag = false;
+
+            SN = "";
+            // 重置treeViewSeq.Node颜色
+            for (int i = 0; i < sequences.Count; i++)
+            {
+                for (int j = 0; j < sequences[i].SeqItems.Count; j++)
+                { treeViewSeq.Nodes[i].Nodes[j].BackColor = Color.White; }
+            }
+            if (IsDebug)
+            {
+            }
+            else
+            {
+                sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);           //!克隆测试用例序列对象
+                LoadSeqTreeView();
+            }
+            // 连续FAIL提示
+            if (!IsDebug && Global.TESTMODE.ToLower() != "debug" && Global.TESTMODE.ToLower() != "fa" && !CheckContinueFailNum())
+            { return false; }
+
+
+
+
+            // 创建测试主线程
+            if (!testThread.IsAlive)
+            {
+                testThread = new Thread(new ThreadStart(TestThread))
+                {
+                    IsBackground = true
+                };
+                testThread.Start();
+            }
+
+
+
+
+            SN = ScanSN;
+
+
+            SaveRichText(true);
+
+
+
+#if DEBUG
+            Global.OnlineLimit = "0";
+#else
+            if (!GetLimit()) //初始化limit
+                return false;
+#endif
+            StartTestInit();
+
+            return true;
+
+
+        }
 
         /// <summary>
         /// 自动扫描进程
@@ -1318,7 +1470,7 @@ namespace AutoTestSystem
 
 
             var Name = Environment.MachineName;
-             //var Name = "BURNIN-16555";
+           // var Name = "BURNIN-16555";
 
             if (Name.Contains("-"))
             {
@@ -3255,6 +3407,13 @@ namespace AutoTestSystem
             }
 
 
+            this.ConsumbleMenuItem2.Visible = true;
+
+
+
+
+
+
 
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
@@ -3265,6 +3424,11 @@ namespace AutoTestSystem
                     contextMenuStripRightKey.Show(MousePosition.X, MousePosition.Y);
                 }
             }
+
+
+
+
+
         }
 
         /// <summary>
@@ -3296,7 +3460,11 @@ namespace AutoTestSystem
 
         }
 
+        private void SeeConsumeMenuItem_Click2(object sender, EventArgs e)
+        {
 
+            scanManager.Scan();
+        }
 
 
         /// <summary>
@@ -4630,6 +4798,7 @@ namespace AutoTestSystem
                     this.ActiveControl = textBox; //设置当前窗口的活动控件为textBox1
                     textBox.Focus();
                     if (Global.CameraType == "1" && text!="") {
+                        
                         SendKeys.Send("{ENTER}");
                     }
                 }

@@ -80,6 +80,7 @@ namespace AutoTestSystem
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStripRightKey = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ConsumbleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ConsumbleMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.OneStepTestMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CycleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.全不选ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -735,6 +736,7 @@ namespace AutoTestSystem
             
             this.contextMenuStripRightKey.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
                   this.ConsumbleMenuItem,
+                  this.ConsumbleMenuItem2,
         this.OneStepTestMenuItem,
         this.CycleToolStripMenuItem,
         this.全不选ToolStripMenuItem,
@@ -755,6 +757,19 @@ namespace AutoTestSystem
             this.ConsumbleMenuItem.Size = new System.Drawing.Size(124, 22);
             this.ConsumbleMenuItem.Text = "耗材查看";
             this.ConsumbleMenuItem.Click += new System.EventHandler(this.SeeConsumeMenuItem_Click);
+
+
+
+
+            // 
+            //  ConsumbleMenuItem
+            // 
+            this.ConsumbleMenuItem2.Name = "ConsumbleMenuItem2";
+            this.ConsumbleMenuItem2.Size = new System.Drawing.Size(124, 22);
+            this.ConsumbleMenuItem2.Text = "模拟摄像头";
+            this.ConsumbleMenuItem2.Click += new System.EventHandler(this.SeeConsumeMenuItem_Click2);
+
+
 
             // 
             // OneStepTestMenuItem
@@ -873,6 +888,7 @@ namespace AutoTestSystem
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripRightKey;
         private System.Windows.Forms.ToolStripMenuItem ConsumbleMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ConsumbleMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem OneStepTestMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CycleToolStripMenuItem;
         private System.Windows.Forms.Label label2;

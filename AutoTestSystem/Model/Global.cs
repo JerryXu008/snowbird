@@ -59,6 +59,7 @@ namespace AutoTestSystem.Model
         public static string WPSDUTIP;
         public static string SweepVersion;
         public static string AUTOTESTNOFIXUTRE_COUNT;
+        public static string POEType;
         ///**************************ini配置文件DUT全局配置变量**********************/
         public static string DUTIP;
         public static string SSH_PORT;
@@ -104,8 +105,9 @@ namespace AutoTestSystem.Model
         public static string VerTreeName;
         public static bool PopFixture;
 
+        public static string SCANCOM;
 
-    
+
 
         public static DateTime time1;
         public static DateTime time2;
@@ -331,6 +333,10 @@ namespace AutoTestSystem.Model
                // FIXTURENAME = iniConfig.Readini("Station", "FIXTURENAME").Trim();
                 STATIONNO = iniConfig.Readini("Station", "STATIONNO").Trim();
 
+
+                POEType = iniConfig.Readini("Station", "POEType").Trim();
+
+
                 FIXTURENAME = STATIONNO;
                 MescheckrouteIP = iniConfig.Readini("Station", "MescheckrouteIP").Trim();
                 MESIP = iniConfig.Readini("Station", "MESIP").Trim();
@@ -379,7 +385,7 @@ namespace AutoTestSystem.Model
 
                 WPSDUTIP = iniConfig.Readini("Station", "WPSDUTIP").Trim();
 
-
+                SCANCOM = iniConfig.Readini("SCAN", "SCANCOM").Trim();
 
                 DUTIP = iniConfig.Readini("DUT", "DUTIP").Trim();
                 SSH_PORT = iniConfig.Readini("DUT", "SSH_PORT").Trim();

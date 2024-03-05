@@ -652,7 +652,7 @@ namespace AutoTestSystem.BLL
  
         }
 
-        public  static  bool PoeConfigSetting(string peo_Port, string cmd)
+        public  static  bool PoeConfigSetting(string peo_Port,string poeType)
         {
 
             bool re = false;
@@ -661,8 +661,24 @@ namespace AutoTestSystem.BLL
                 var cookies = new CookieContainer();
                 var client = GetClient(cookies, "admin", "admin123");
                 string url = $@"http://169.254.100.101/api/v1/service";
-                string data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{peo_Port}\",{{\"Mode\":\"{cmd}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":164}}";
+                string data = "";
+                if (poeType == "poeDot3af") //poe
+                {
+                    data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{peo_Port}\",{{\"Mode\":\"{"poeDot3af"}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":164}}";
 
+                }
+                else if (poeType == "disable") {
+
+                    data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{peo_Port}\",{{\"Mode\":\"{"disable"}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":164}}";
+
+                }
+                else if (poeType == "poePlusDot3bt") { //poe+
+
+                    data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{peo_Port}\",{{\"Mode\":\"{"poePlusDot3bt"}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":0,\"Structure\":\"2Pair\"}}],\"id\":942}}";
+                }
+
+
+                
                 loggerDebug("请求参数:" + data);
                 
                 StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
@@ -1148,6 +1164,27 @@ namespace AutoTestSystem.BLL
                 }
             }
             return instance;
+        }
+        public static void StartSFTPSever(string ip = "", string port = "8090")
+        {
+            loggerInfo($">>>>>>>>>>启动: iperf3 -B {ip} -s -p{port}");
+            Process SFTPSeverProcess = new Process();
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            startInfo.FileName = "cmd.exe";
+            startInfo.Verb = "runas";
+
+            if (ip == "")
+            {
+                startInfo.Arguments = $"/C .\\iperfserver\\iperf3 -B 192.168.1.20 -s -p{port}";
+            }
+            else
+            {
+                startInfo.Arguments = $"/C .\\iperfserver\\iperf3 -B {ip} -s -p{port}";
+            }
+
+            SFTPSeverProcess.StartInfo = startInfo;
+            SFTPSeverProcess.Start();
         }
 
         public static string RunDosCmd(string command, int timeout = 0)

@@ -1,4 +1,4 @@
-﻿using AutoTestSystem.Model;
+﻿ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -229,7 +229,7 @@ namespace AutoTestSystem.BLL
         public ScanManager()
         {
 
-            init(); 
+            init();
 
 
 
@@ -272,7 +272,7 @@ namespace AutoTestSystem.BLL
             for (i = 0; i < usWriteLen; i++)
                 ucWrite[i] = 0x05;
 
-           // Console.WriteLine("hello ts scan");
+            Console.WriteLine("hello ts scan");
 
             /**注册扫描数据上报函数**/
             byte[] Nop = new byte[16];
@@ -316,7 +316,7 @@ namespace AutoTestSystem.BLL
             int siuartnum = 0;
             int siBaudrate = 0;
 
-            usuartNum = Global.SCANCOM;
+            usuartNum = "COM9";
             uiBaudrate = "115200";
 
             siuartnum = int.Parse(Regex.Replace(usuartNum, "COM", ""));

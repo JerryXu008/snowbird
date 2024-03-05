@@ -424,7 +424,7 @@ namespace AutoTestSystem.Model
                                 loggerInfo(">>>>:" + ret);
                                 if (ret.Contains("OK"))
                                 {
-                                    rReturn = true;
+                                    rReturn = true; 
                                 }
                                 else
                                 {
@@ -538,6 +538,14 @@ namespace AutoTestSystem.Model
                             //    DUTCOMM = new Telnet(new TelnetInfo { _Address = item.ComdOrParam });
                             //}
                             //rReturn = DUTCOMM.Open(Global.PROMPT);
+                        }
+                        break;
+
+                    case "StartSFTPSever":
+                        {
+                            RunDosCmd("taskkill /IM " + "iperf3" + ".exe" + " /F");
+                            StartSFTPSever(item.ComdOrParam, "8090");
+                            rReturn = true;
                         }
                         break;
                     case "WaitForTelnet2":
@@ -907,8 +915,13 @@ namespace AutoTestSystem.Model
 
                     case "POEconfig":
                         {
-                            
-                            rReturn = PoeConfigSetting(Global.POE_PORT, item.ComdOrParam);
+
+
+                             
+                                rReturn = PoeConfigSetting(Global.POE_PORT, item.ComdOrParam);
+                          
+
+                           
                         }
                         break;
                     case "POEReadConsumption":
@@ -1028,6 +1041,11 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
+                    case "WPS_PowerOFF": {
+                            rReturn = Power_OnOff_WPS(int.Parse(Global.WPSPortNum), false);
+                            
+                        }
+                        break;
 
                     case "HardwareResetWPS":
                         {
@@ -1120,6 +1138,9 @@ namespace AutoTestSystem.Model
                          
                         }
                         break;
+
+                    
+
 
                     case "PowerCycleTest":
                         {

@@ -83,6 +83,7 @@
     <Compile Include="Log4NetHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScanManager.cs" />
     <Compile Include="Telnet.cs" />
     <Compile Include="Val.cs" />
   </ItemGroup>
@@ -104,6 +105,9 @@
     <Content Include="AutoItX3.dll" />
     <Content Include="AutoItX3_x64.dll" />
     <Content Include="C++_hidpos_dll.dll" />
+    <Content Include="C++_uart_dll.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Checkroute.dll" />
     <Content Include="ClientUtils.dll" />
     <Content Include="cmd.exe">

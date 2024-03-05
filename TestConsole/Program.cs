@@ -64,6 +64,8 @@ namespace TestConsole
                     
                     }
 
+                    int ii = 0;
+
 
                 }
             }
