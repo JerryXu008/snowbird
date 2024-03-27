@@ -93,7 +93,7 @@ namespace TestConsole
                     var arr = name.Split('_');
                     //WIFI_TX_FREQERR_F5180_HE_BW20_MCS0_C0
                     //WIFI_RX_POWER_F5290_HE_BW80_MCS0_P-82-100_C0
-                    if (arr.Length != 8 && arr.Length != 9)
+                    if (arr.Length != 8 && arr.Length != 9 && arr.Length != 10)
                     {
                         Console.WriteLine($"{name} 长度不对");
 
@@ -105,24 +105,9 @@ namespace TestConsole
                     // ,WIFI_TX_POWER_F5955_HE_BW20_MCS0_C1,WIFI_TX_POWER_F5955_HE_BW20_MCS0_C1,y,6G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,Tx,1,,,,5955, HE_SU-MCS0,,,,,,,,,,,,
 
 
-                    if (!name.Contains("_TEMP_"))
+                    if (name.Contains("_TEMP_"))
                     {
-                        var flag = name.Contains("C0") ? "0" : "1";
-                        var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
-                        var f = arr[3].Replace('F', ' ').Trim();
-                        var type = arr[4] + "_" + (arr[4] == "HE" ? "SU" : "MU") + "-" + arr[6];
 
-                        string pattern = "-P-\\d+";
-                        string replacement = "";
-
-                        type = Regex.Replace(type, pattern, replacement);
-
-                        var line = $",{name},{name},y,5G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
-
-                        sb.AppendLine(line);
-                    }
-                    else
-                    {
                         //WIFI_TX_CPU_TEMP_F2472_HE_BW20_MCS0_C0
                         var flag = name.Contains("C0") ? "0" : "1";
                         var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
@@ -134,7 +119,82 @@ namespace TestConsole
 
                         type = Regex.Replace(type, pattern, replacement);
 
-                        var line = $",{name},{name},y,5G_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
+
+
+
+                        var g5org2 = "";
+                        if (f.StartsWith("2"))
+                        {
+                            g5org2 = "2G";
+                        }
+                        else
+                        {
+                            g5org2 = "5G";
+                        }
+
+                        var line = $",{name},{name},y,{g5org2}_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
+
+                        sb.AppendLine(line);
+
+
+
+
+
+
+
+
+                       
+                    }
+                    else if (name.Contains("USER1") || name.Contains("USER2")) {
+
+                        var flag = name.Contains("C0") ? "0" : "1";
+                        var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
+                        var f = arr[4].Replace('F', ' ').Trim();
+                        //var type = arr[5] + "_" + (arr[5] == "HE" ? "SU" : "MU") + "-" + arr[8];
+
+
+                        var g5org2 = "";
+                        if (f.StartsWith("2"))
+                        {
+                            g5org2 = "2G";
+                        }
+                        else
+                        {
+                            g5org2 = "5G";
+                        }
+
+                        var type = "NA";
+
+                        var line = $",{name},{name},y,{g5org2}_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
+
+                        sb.AppendLine(line);
+                    }
+                    else
+                    {
+                        var flag = name.Contains("C0") ? "0" : "1";
+                        var TxOrRx = name.Contains("TX") ? "Tx" : "Rx";
+                        var f = arr[3].Replace('F', ' ').Trim();
+                        var type = arr[4] + "_" + (arr[4] == "HE" ? "SU" : "MU") + "-" + arr[6];
+
+                        string pattern = "-P-\\d+";
+                        string replacement = "";
+
+                        type = Regex.Replace(type, pattern, replacement);
+                        var g5org2 = "";
+                        if (f.StartsWith("2"))
+                        {
+                            g5org2 = "2G";
+                        }
+                        else
+                        {
+                            g5org2 = "5G";
+                        }
+
+
+
+
+
+                        var line = $",{name},{name},y,{g5org2}_RadioValidation,1.4.1.1: Equipment.DUT.Initiate,0,3,{ TxOrRx },{flag},,,,{f}, {type},,,,,,,,,,,,";
 
                         sb.AppendLine(line);
 
@@ -567,20 +627,7 @@ namespace TestConsole
         }
 
         static void Main(string[] args)
-        {
-            var str = @"hexdump -s 4096 -n 100 /dev/mmcblk0p12
-0001000 0000 0000 0000 0000 0000 0000 0000 0000
-*
-0001060 0000 0000                              
-0001064";
-
-            var subStr = @"0001000 0000 0000 0000 0000 0000 0000 0000 0000
-*
-0001060 0000 0000                              
-0001064";
-
-          var ff =   NoCheckStr(str, subStr);
-            int ii = 0;
+        { 
             // ControlPOE();
 
             //Console.WriteLine("sleep 10s");
@@ -597,9 +644,9 @@ namespace TestConsole
 
 
 
-            // CreateCSVDataMerciAndSnowBirdMBFT();
+           //  CreateCSVDataMerciAndSnowBirdMBFT();
 
-            //  CreateCSVDataSnowbirdSRF();
+              CreateCSVDataSnowbirdSRF();
             // POESwtichPortSpeed();
 
             //  TestPort();

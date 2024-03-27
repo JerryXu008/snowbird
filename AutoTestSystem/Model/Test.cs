@@ -915,13 +915,7 @@ namespace AutoTestSystem.Model
 
                     case "POEconfig":
                         {
-
-
-                             
                                 rReturn = PoeConfigSetting(Global.POE_PORT, item.ComdOrParam);
-                          
-
-                           
                         }
                         break;
                     case "POEReadConsumption":
@@ -1703,6 +1697,59 @@ namespace AutoTestSystem.Model
 
 
 
+                    //case "VoltageTest":
+                    //case "LEDTest":
+                    //    if (inPutValue == "")
+                    //    {
+                    //        FixSerialPort.OpenCOM();
+                    //        Thread.Sleep(500);
+                    //        var revStr = "";
+                    //        if (FixSerialPort.SendCommandToFix(item.ComdOrParam, ref revStr, item.ExpectStr, short.Parse(item.TimeOut))
+                    //             && revStr.CheckStr(item.CheckStr1) && revStr.CheckStr(item.CheckStr2))
+                    //        {
+                    //            rReturn = true;
+                    //            inPutValue = revStr;
+                    //        }
+                    //        else
+                    //        {
+                    //            inPutValue = "";
+                    //            return rReturn = false;
+                    //        }
+                    //    }
+                    //    {
+                    //        var revStr = inPutValue;
+                    //        // 需要提取测试值
+                    //        if (!string.IsNullOrEmpty(item.SubStr1) || !string.IsNullOrEmpty(item.SubStr2))
+                    //        {
+                    //            item.testValue = GetValue(revStr, item.SubStr1, item.SubStr2).Replace(";", "");
+                    //        }
+                    //        else
+                    //        {
+                    //            return rReturn = true;
+                    //        }
+                    //        // 需要比较Spec
+                    //        if (!string.IsNullOrEmpty(item.Spec) && string.IsNullOrEmpty(item.Limit_min) && string.IsNullOrEmpty(item.Limit_max))
+                    //        {
+                    //            return rReturn = CheckSpec(item.Spec, item.testValue);
+                    //        }
+                    //        // 需要比较Limit
+                    //        if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max))
+                    //        {
+                    //            rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                    //        }
+                    //    }
+                    //    if (!rReturn)
+                    //    {
+                    //        inPutValue = "";
+                    //    }
+                    //    if (!rReturn) {
+                    //       // HandleSpecialMethed(item, rReturn, "");
+                    //    }
+
+                    //    break;
+
+
+
                     case "VoltageTest":
                     case "LEDTest":
                         if (inPutValue == "")
@@ -1729,6 +1776,52 @@ namespace AutoTestSystem.Model
                             {
                                 item.testValue = GetValue(revStr, item.SubStr1, item.SubStr2).Replace(";", "");
                             }
+                            else if (item.ComdOrParam == "getxy01" || item.ComdOrParam == "getrgbi01")
+                            {
+
+
+                                revStr = Regex.Replace(revStr, "\r", "");
+                                revStr = Regex.Replace(revStr, "\n", "");
+                                revStr = revStr.Trim();
+                                var arr = Regex.Split(revStr, " ");
+
+                                if (item.ComdOrParam == "getxy01")
+                                {
+                                    if (arr.Length < 2)
+                                    {
+
+                                        inPutValue = "";
+                                        return rReturn = false;
+
+                                    }
+
+                                    if (item.ItemName.Contains("_X"))
+                                    {
+                                        item.testValue = arr[0];
+                                        logger.Debug(">>>>>>>>>>X=" + item.testValue);
+                                    }
+                                    else if (item.ItemName.Contains("_Y"))
+                                    {
+                                        item.testValue = arr[1];
+                                        logger.Debug(">>>>>>>>>>Y=" + item.testValue);
+                                    }
+                                    rReturn = true;
+                                }
+                                else
+                                {
+                                    if (arr.Length < 4)
+                                    {
+
+                                        inPutValue = "";
+                                        return rReturn = false;
+
+                                    }
+                                    item.testValue = arr[3];
+                                    logger.Debug(">>>>>>>>>>LUM=" + item.testValue);
+                                    rReturn = true;
+                                }
+
+                            }
                             else
                             {
                                 return rReturn = true;
@@ -1748,11 +1841,15 @@ namespace AutoTestSystem.Model
                         {
                             inPutValue = "";
                         }
-                        if (!rReturn) {
-                           // HandleSpecialMethed(item, rReturn, "");
+                        if (!rReturn)
+                        {
+                            // HandleSpecialMethed(item, rReturn, "");
                         }
 
                         break;
+
+
+
 
                     case "BTPairTest":
                         rReturn = BTConnection(item.ComdOrParam, BtDevAddress, int.Parse(item.RetryTimes));
@@ -2153,41 +2250,87 @@ namespace AutoTestSystem.Model
 
                                     else if (item.ItemName.ToLower().Contains("tx_power"))
                                     {
+
+
+
+
+
+
+                                        try
+                                        {
+                                            item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
+                                        }
+                                        catch
+                                        {
+                                            item.Limit_min = "0.0";
+                                        }
+
+                                        try
+                                        {
+                                            item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
+                                        }
+                                        catch
+                                        {
+                                            item.Limit_max = "0.0";
+                                        }
+
+
+
                                         if (item.ItemName.ToLower().Contains("user1"))
                                         {
+
+
+
+
+
                                             item.testValue = temp[66];
-                                            item.Unit = temp[67];
-                                            item.Limit_min = temp[68];
-                                            item.Limit_max = temp[69];
+
+                                            if (temp[68] != "" && temp[68] != "NA" && temp[68] != "N/A" && temp[68] != "null" && temp[68] != "None" && temp[68] != "NULL")
+                                            {
+                                                item.Limit_min = temp[68];
+                                            }
+
+                                            if (temp[69] != "" && temp[69] != "NA" && temp[69] != "N/A" && temp[69] != "null" && temp[69] != "None" && temp[69] != "NULL")
+                                            {
+                                                item.Limit_max = temp[69];
+                                            }
+
+                                            if (temp[67] != "" && temp[67] != "NA" && temp[67] != "N/A" && temp[67] != "null" && temp[67] != "None" && temp[67] != "NULL")
+                                            {
+                                                item.Unit = temp[67];
+                                            }
+
+                                              
+                                         
+                                            
                                         }
                                         else if (item.ItemName.ToLower().Contains("user2"))
                                         {
+
+
+
                                             item.testValue = temp[70];
-                                            item.Unit = temp[71];
-                                            item.Limit_min = temp[72];
-                                            item.Limit_max = temp[73];
+
+                                            if (temp[72] != "" && temp[72] != "NA" && temp[72] != "N/A" && temp[72] != "null" && temp[72] != "None" && temp[72] != "NULL")
+                                            {
+                                                item.Limit_min = temp[72];
+                                            }
+
+                                            if (temp[73] != "" && temp[73] != "NA" && temp[73] != "N/A" && temp[73] != "null" && temp[73] != "None" && temp[73] != "NULL")
+                                            {
+                                                item.Limit_max = temp[73];
+                                            }
+
+                                            if (temp[71] != "" && temp[71] != "NA" && temp[71] != "N/A" && temp[71] != "null" && temp[71] != "None" && temp[71] != "NULL")
+                                            {
+                                                item.Unit = temp[71];
+                                            }                                          
+                                            
                                         }
                                         else
                                         {
 
-                                            try
-                                            {
-                                                item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
-                                            }
-                                            catch
-                                            {
-                                                item.Limit_min = "0.0";
-                                            }
-
-                                            try
-                                            {
-                                                item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
-                                            }
-                                            catch
-                                            {
-                                                item.Limit_max = "0.0";
-                                            }
-
+                                         
 
 
                                             item.testValue = temp[20];
@@ -3559,6 +3702,27 @@ namespace AutoTestSystem.Model
                                 if (!string.IsNullOrEmpty(item.Spec) && string.IsNullOrEmpty(item.Limit_min) && string.IsNullOrEmpty(item.Limit_max))
                                 {
                                     loggerInfo("比较spec开始: Spec=" + item.Spec + " Value=" + item.testValue);
+
+
+
+
+
+                                    if (item.ItemName == "NODEPROPERTY_MAC")
+                                    {
+
+                                        string input = item.testValue;
+                                        string pattern = @"([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})";
+
+                                        Match match = Regex.Match(input, pattern);
+                                        if (match.Success)
+                                        {
+                                            item.testValue = match.Value;
+                                        }
+
+
+                                    }
+
+
 
                                     rReturn = CheckSpec(item.Spec, item.testValue);
                                     loggerDebug(">>>>>>>>:" + rReturn);

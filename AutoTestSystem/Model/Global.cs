@@ -248,6 +248,13 @@ namespace AutoTestSystem.Model
         //    File.WriteAllText($@"{System.Environment.CurrentDirectory}\Config\{STATIONNAME}.json", JsonClintContent);
         //}
 
+
+
+
+
+
+
+
         /// <summary>
         /// 反序列化Json
         /// </summary>
@@ -319,6 +326,13 @@ namespace AutoTestSystem.Model
                 //throw;
             }
         }
+
+
+
+
+
+
+
 
         public static bool InitStation()
         {

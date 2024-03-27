@@ -236,7 +236,7 @@
     "finish_time": null
   },
   {
-    "SeqName": "PingDUT",
+    "SeqName": "InsertDUTIntoFixture",
     "IsTest": true,
     "IsTestFinished": false,
     "TestResult": true,
@@ -254,7 +254,7 @@
         "start_time": "0001-01-01T00:00:00",
         "ItemName": "FIXTURE_CLOSE",
         "ErrorCode": "1.11.5: Equipment.FixtureMCU.InsertIOBlock",
-        "RetryTimes": "0",
+        "RetryTimes": "2",
         "TimeOut": "20",
         "SubStr1": "",
         "SubStr2": "",
@@ -274,7 +274,7 @@
         "MES_var": "",
         "ByPassFail": "",
         "FTC": "",
-        "TestKeyword": "skip",
+        "TestKeyword": "FIXCOMSend",
         "Spec": "",
         "error_code": "",
         "Json": "y",
@@ -604,7 +604,7 @@
         "ByPassFail": "",
         "FTC": "",
         "TestKeyword": "default",
-        "Spec": "lp5562|ktd2027",
+        "Spec": "lp5810|ktd2027",
         "error_code": "",
         "Json": "y",
         "EeroName": "LED_MODEL",
@@ -678,7 +678,7 @@
         "ByPassFail": "",
         "FTC": "",
         "TestKeyword": "default",
-        "Spec": "JS04AC|8GUF4R",
+        "Spec": "JS04AC|MMC8GB|S40008",
         "error_code": "",
         "Json": "y",
         "EeroName": "MMC_MODEL",
@@ -833,8 +833,8 @@
         "start_time": "0001-01-01T00:00:00",
         "ItemName": "LOAD_WIFI",
         "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
-        "RetryTimes": "10",
-        "TimeOut": "5",
+        "RetryTimes": "5",
+        "TimeOut": "50",
         "SubStr1": "",
         "SubStr2": "",
         "IfElse": "",
@@ -870,7 +870,7 @@
     "IsTest": true,
     "IsTestFinished": false,
     "TestResult": true,
-    "TotalNumber": 63,
+    "TotalNumber": 15,
     "TestSerial": 9,
     "TestVersion": null,
     "SystemName": null,
@@ -1429,9 +1429,23 @@
         "EeroName": "IQXEL_SN",
         "NoContain": null,
         "SpecStatic": ""
-      },
+      }
+    ],
+    "start_time": null,
+    "finish_time": null
+  },
+  {
+    "SeqName": "WiFiTransmitPowerTest",
+    "IsTest": true,
+    "IsTestFinished": false,
+    "TestResult": true,
+    "TotalNumber": 47,
+    "TestSerial": 10,
+    "TestVersion": null,
+    "SystemName": null,
+    "SeqItems": [
       {
-        "testNumber": 15,
+        "testNumber": 0,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1468,7 +1482,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 16,
+        "testNumber": 1,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1505,7 +1519,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 17,
+        "testNumber": 2,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1542,7 +1556,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 18,
+        "testNumber": 3,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1579,7 +1593,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 19,
+        "testNumber": 4,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1616,7 +1630,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 20,
+        "testNumber": 5,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1653,7 +1667,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 21,
+        "testNumber": 6,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1690,7 +1704,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 22,
+        "testNumber": 7,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1727,7 +1741,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 23,
+        "testNumber": 8,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1764,7 +1778,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 24,
+        "testNumber": 9,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1801,7 +1815,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 25,
+        "testNumber": 10,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1838,7 +1852,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 26,
+        "testNumber": 11,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1875,7 +1889,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 27,
+        "testNumber": 12,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1912,7 +1926,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 28,
+        "testNumber": 13,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1949,7 +1963,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 29,
+        "testNumber": 14,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1986,7 +2000,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 30,
+        "testNumber": 15,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2023,7 +2037,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 31,
+        "testNumber": 16,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2060,7 +2074,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 32,
+        "testNumber": 17,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2097,7 +2111,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 33,
+        "testNumber": 18,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2134,7 +2148,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 34,
+        "testNumber": 19,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2171,7 +2185,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 35,
+        "testNumber": 20,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2208,7 +2222,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 36,
+        "testNumber": 21,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2245,7 +2259,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 37,
+        "testNumber": 22,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2282,7 +2296,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 38,
+        "testNumber": 23,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2319,7 +2333,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 39,
+        "testNumber": 24,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2356,7 +2370,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 40,
+        "testNumber": 25,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2393,7 +2407,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 41,
+        "testNumber": 26,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2430,7 +2444,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 42,
+        "testNumber": 27,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2467,7 +2481,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 43,
+        "testNumber": 28,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2504,7 +2518,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 44,
+        "testNumber": 29,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2541,7 +2555,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 45,
+        "testNumber": 30,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2578,7 +2592,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 46,
+        "testNumber": 31,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2615,7 +2629,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 47,
+        "testNumber": 32,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2652,7 +2666,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 48,
+        "testNumber": 33,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2689,7 +2703,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 49,
+        "testNumber": 34,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2726,7 +2740,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 50,
+        "testNumber": 35,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2763,7 +2777,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 51,
+        "testNumber": 36,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2800,7 +2814,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 52,
+        "testNumber": 37,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2837,7 +2851,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 53,
+        "testNumber": 38,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2874,7 +2888,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 54,
+        "testNumber": 39,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2911,7 +2925,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 55,
+        "testNumber": 40,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2948,7 +2962,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 56,
+        "testNumber": 41,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2985,7 +2999,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 57,
+        "testNumber": 42,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3022,7 +3036,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 58,
+        "testNumber": 43,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3059,7 +3073,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 59,
+        "testNumber": 44,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3096,7 +3110,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 60,
+        "testNumber": 45,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3133,7 +3147,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 61,
+        "testNumber": 46,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3168,43 +3182,6 @@
         "EeroName": "WIFI_TX_PATHLOSS_F2472_HE_BW20_MCS0_C0",
         "NoContain": null,
         "SpecStatic": ""
-      },
-      {
-        "testNumber": 62,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "WIFI_TX_PATHLOSS_F2472_HE_BW20_MCS0_C1",
-        "ErrorCode": "1.4.1.1: Equipment.DUT.Initiate",
-        "RetryTimes": "0",
-        "TimeOut": "3",
-        "SubStr1": "Tx",
-        "SubStr2": "1",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "2472",
-        "ExpectStr": "",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "2G",
-        "Spec": "",
-        "error_code": "",
-        "Json": "y",
-        "EeroName": "WIFI_TX_PATHLOSS_F2472_HE_BW20_MCS0_C1",
-        "NoContain": null,
-        "SpecStatic": ""
       }
     ],
     "start_time": null,
@@ -3216,7 +3193,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 1,
-    "TestSerial": 10,
+    "TestSerial": 11,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -3267,7 +3244,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 48,
-    "TestSerial": 11,
+    "TestSerial": 12,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -5057,7 +5034,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 1,
-    "TestSerial": 12,
+    "TestSerial": 13,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -5108,7 +5085,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 5,
-    "TestSerial": 13,
+    "TestSerial": 14,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -5307,7 +5284,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 24,
-    "TestSerial": 14,
+    "TestSerial": 15,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -6204,12 +6181,12 @@
     "finish_time": null
   },
   {
-    "SeqName": "SetBootcmdToDHCP",
+    "SeqName": "SetIPAddress",
     "IsTest": true,
     "IsTestFinished": false,
     "TestResult": true,
-    "TotalNumber": 12,
-    "TestSerial": 15,
+    "TotalNumber": 6,
+    "TestSerial": 16,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -6220,17 +6197,17 @@
         "startIndex": 0,
         "start_time_json": "0001-01-01T00:00:00",
         "start_time": "0001-01-01T00:00:00",
-        "ItemName": "bootcmd",
-        "ErrorCode": "7.13: Linux.SetEnvVar",
-        "RetryTimes": "0",
-        "TimeOut": "3",
+        "ItemName": "GetMesIP",
+        "ErrorCode": "7.9: Linux.SetIPAdress",
+        "RetryTimes": "",
+        "TimeOut": "",
         "SubStr1": "",
         "SubStr2": "",
         "IfElse": "",
         "For": "",
         "Mode": "",
-        "ComdOrParam": "fw_setenv bootcmd 'sleep 3 && dhcp && bootm'",
-        "ExpectStr": "root@OpenWrt:/#",
+        "ComdOrParam": "",
+        "ExpectStr": "",
         "CheckStr1": "",
         "CheckStr2": "",
         "Limit_max": "",
@@ -6242,11 +6219,11 @@
         "MES_var": "",
         "ByPassFail": "",
         "FTC": "",
-        "TestKeyword": "SetDHCP",
+        "TestKeyword": "GetMesIP",
         "Spec": "",
         "error_code": "",
         "Json": "",
-        "EeroName": "BOOT_SETUP",
+        "EeroName": "SET_IP",
         "NoContain": null,
         "SpecStatic": ""
       },
@@ -6257,18 +6234,18 @@
         "startIndex": 0,
         "start_time_json": "0001-01-01T00:00:00",
         "start_time": "0001-01-01T00:00:00",
-        "ItemName": "Checkbootcmd",
-        "ErrorCode": "7.13: Linux.SetEnvVar",
-        "RetryTimes": "0",
-        "TimeOut": "3",
+        "ItemName": "SET_IP",
+        "ErrorCode": "7.9: Linux.SetIPAdress",
+        "RetryTimes": "3",
+        "TimeOut": "10",
         "SubStr1": "",
         "SubStr2": "",
         "IfElse": "",
         "For": "",
         "Mode": "",
-        "ComdOrParam": "fw_printenv bootcmd",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "bootcmd=sleep 3 && dhcp && bootm",
+        "ComdOrParam": "luxsetip <DUTMesIP> 255.0.0.0",
+        "ExpectStr": "",
+        "CheckStr1": "",
         "CheckStr2": "",
         "Limit_max": "",
         "testValue": null,
@@ -6279,11 +6256,11 @@
         "MES_var": "",
         "ByPassFail": "",
         "FTC": "",
-        "TestKeyword": "SetDHCP",
+        "TestKeyword": "SetIpaddrEnv",
         "Spec": "",
         "error_code": "",
         "Json": "",
-        "EeroName": "BOOT_SETUP",
+        "EeroName": "SET_IP",
         "NoContain": null,
         "SpecStatic": ""
       },
@@ -6294,17 +6271,17 @@
         "startIndex": 0,
         "start_time_json": "0001-01-01T00:00:00",
         "start_time": "0001-01-01T00:00:00",
-        "ItemName": "bootfile",
-        "ErrorCode": "7.13: Linux.SetEnvVar",
-        "RetryTimes": "0",
-        "TimeOut": "3",
+        "ItemName": "SET_IP",
+        "ErrorCode": "7.9: Linux.SetIPAdress",
+        "RetryTimes": "3",
+        "TimeOut": "10",
         "SubStr1": "",
         "SubStr2": "",
         "IfElse": "",
         "For": "",
         "Mode": "",
-        "ComdOrParam": "fw_setenv bootfile snowbird-test-image",
-        "ExpectStr": "root@OpenWrt:/#",
+        "ComdOrParam": "luxsetip <DUTMesIP> 255.0.0.0",
+        "ExpectStr": "",
         "CheckStr1": "",
         "CheckStr2": "",
         "Limit_max": "",
@@ -6316,11 +6293,11 @@
         "MES_var": "",
         "ByPassFail": "",
         "FTC": "",
-        "TestKeyword": "SetDHCP",
+        "TestKeyword": "SetIpaddrEnv",
         "Spec": "",
         "error_code": "",
         "Json": "",
-        "EeroName": "BOOT_SETUP",
+        "EeroName": "SET_IP",
         "NoContain": null,
         "SpecStatic": ""
       },
@@ -6331,18 +6308,18 @@
         "startIndex": 0,
         "start_time_json": "0001-01-01T00:00:00",
         "start_time": "0001-01-01T00:00:00",
-        "ItemName": "Checkbootfile",
-        "ErrorCode": "7.13: Linux.SetEnvVar",
-        "RetryTimes": "0",
-        "TimeOut": "3",
+        "ItemName": "SET_IP",
+        "ErrorCode": "7.9: Linux.SetIPAdress",
+        "RetryTimes": "3",
+        "TimeOut": "10",
         "SubStr1": "",
         "SubStr2": "",
         "IfElse": "",
         "For": "",
         "Mode": "",
-        "ComdOrParam": "fw_printenv bootfile",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "bootfile=snowbird-test-image",
+        "ComdOrParam": "luxsetip <DUTMesIP> 255.0.0.0",
+        "ExpectStr": "",
+        "CheckStr1": "",
         "CheckStr2": "",
         "Limit_max": "",
         "testValue": null,
@@ -6353,238 +6330,16 @@
         "MES_var": "",
         "ByPassFail": "",
         "FTC": "",
-        "TestKeyword": "SetDHCP",
+        "TestKeyword": "SetIpaddrEnv",
         "Spec": "",
         "error_code": "",
-        "Json": "",
-        "EeroName": "BOOT_SETUP",
+        "Json": "y",
+        "EeroName": "SET_IP",
         "NoContain": null,
         "SpecStatic": ""
       },
       {
         "testNumber": 4,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "revert_mode",
-        "ErrorCode": "7.13: Linux.SetEnvVar",
-        "RetryTimes": "0",
-        "TimeOut": "3",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "fw_setenv revert_mode dhcp",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "SetDHCP",
-        "Spec": "",
-        "error_code": "",
-        "Json": "",
-        "EeroName": "BOOT_SETUP",
-        "NoContain": null,
-        "SpecStatic": ""
-      },
-      {
-        "testNumber": 5,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "Checkmode",
-        "ErrorCode": "7.13: Linux.SetEnvVar",
-        "RetryTimes": "0",
-        "TimeOut": "3",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "fw_printenv revert_mode",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "revert_mode=dhcp",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "SetDHCP",
-        "Spec": "",
-        "error_code": "",
-        "Json": "",
-        "EeroName": "BOOT_SETUP",
-        "NoContain": null,
-        "SpecStatic": ""
-      },
-      {
-        "testNumber": 6,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "WriteMACDHCP",
-        "ErrorCode": "7.13: Linux.SetEnvVar",
-        "RetryTimes": "0",
-        "TimeOut": "3",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "fw_setenv ethaddr <MesMac>",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "SetDHCP",
-        "Spec": "",
-        "error_code": "",
-        "Json": "",
-        "EeroName": "BOOT_SETUP",
-        "NoContain": null,
-        "SpecStatic": ""
-      },
-      {
-        "testNumber": 7,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "BOOT_SETUP",
-        "ErrorCode": "7.13: Linux.SetEnvVar",
-        "RetryTimes": "3",
-        "TimeOut": "3",
-        "SubStr1": "ethaddr=",
-        "SubStr2": "root",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "fw_printenv ethaddr",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "SetDHCP",
-        "Spec": "<MesMac>",
-        "error_code": "",
-        "Json": "y",
-        "EeroName": "BOOT_SETUP",
-        "NoContain": null,
-        "SpecStatic": "<MesMac>"
-      },
-      {
-        "testNumber": 8,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "set_lux_test_image_version1",
-        "ErrorCode": "7.13: Linux.SetEnvVar",
-        "RetryTimes": "0",
-        "TimeOut": "3",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "fw_setenv lux_test_image_version $(luxshare_tool -v sw | cut -d! -f2)",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "SetDHCP",
-        "Spec": "",
-        "error_code": "",
-        "Json": "",
-        "EeroName": "BOOT_SETUP",
-        "NoContain": null,
-        "SpecStatic": ""
-      },
-      {
-        "testNumber": 9,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "set_lux_test_image_version2",
-        "ErrorCode": "7.13: Linux.SetEnvVar",
-        "RetryTimes": "0",
-        "TimeOut": "3",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "fw_printenv",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "SetDHCP",
-        "Spec": "",
-        "error_code": "",
-        "Json": "",
-        "EeroName": "BOOT_SETUP",
-        "NoContain": null,
-        "SpecStatic": ""
-      },
-      {
-        "testNumber": 10,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -6621,7 +6376,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 11,
+        "testNumber": 5,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,

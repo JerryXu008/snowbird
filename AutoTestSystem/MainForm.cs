@@ -188,6 +188,9 @@ namespace AutoTestSystem
         public string CellLogPath = "";
 
 
+        public bool isTesting = false;
+
+
         //新版扫码软件管理器
         ScanManager scanManager;
         public static string ZhuBoPath = "";
@@ -280,15 +283,28 @@ namespace AutoTestSystem
 
 
 
+            //if (Screen.PrimaryScreen.Bounds.Width != 1920 && Screen.PrimaryScreen.Bounds.Width != 1536)
+            //{
+            //    if (Environment.MachineName != "YNLX22OF1181") {
+            //        if (!SetDisplay.ChangeRes(1366, 768))
+            //        {
+            //            MessageBox.Show($"设置屏幕分辨率为1366*768,60Hz失败！请确认显示器是否支持此分辨率.");
+            //        }
+            //    }
+
+            //}
+
+
             if (Screen.PrimaryScreen.Bounds.Width != 1920 && Screen.PrimaryScreen.Bounds.Width != 1536)
             {
-                if (Environment.MachineName != "YNLX22OF1181") {
+                if (Environment.MachineName != "YNLX22OF1181")
+                {
                     if (!SetDisplay.ChangeRes(1366, 768))
                     {
-                        MessageBox.Show($"设置屏幕分辨率为1366*768,60Hz失败！请确认显示器是否支持此分辨率.");
+                       // MessageBox.Show($"设置屏幕分辨率为1366*768,60Hz失败！请确认显示器是否支持此分辨率.");
                     }
                 }
-               
+
             }
         }
          
@@ -686,9 +702,6 @@ namespace AutoTestSystem
 
 
 
-
-
-
             // textBox1.Text = "GGC3530132850621";
         }
 
@@ -802,6 +815,18 @@ namespace AutoTestSystem
 
         private bool TriggerKeyDown()
         {
+
+
+
+            //如果正在测试，扫码无效
+            if (isTesting) {
+
+                logger.Error("程序测试中，扫码无效");
+                return false;
+            
+            }
+
+
             // 扫描SN
             string ScanSN = textBox1.Text.Trim().TrimEnd(new char[] { '\n', '\t', '\r' }).ToUpper();
 
@@ -1469,25 +1494,27 @@ namespace AutoTestSystem
 
 
 
-            var Name = Environment.MachineName;
-           // var Name = "BURNIN-16555";
+           // var Name = Environment.MachineName;
+           //// var Name = "BURNIN-16555";
 
-            if (Name.Contains("-"))
-            {
-                Global.STATIONNO = Name;
-                Global.FIXTURENAME = Global.STATIONNO;
+           // if (Name.Contains("-"))
+           // {
+           //     Global.STATIONNO = Name;
+           //     Global.FIXTURENAME = Global.STATIONNO;
 
-                int lastIndex = Global.STATIONNO.LastIndexOf('-');
-                Global.STATIONNAME = Global.STATIONNO.Substring(0, lastIndex);
+           //     int lastIndex = Global.STATIONNO.LastIndexOf('-');
+           //     Global.STATIONNAME = Global.STATIONNO.Substring(0, lastIndex);
 
 
-            }
+           // }
 
 
 
             if (Global.FIXTUREFLAG == "0") {
                 FixSerialPort = new Comport(FixCOMinfo);
                 FixSerialPort.OpenCOM();
+
+                MessageBox.Show("111");
                 return;
             }
             try
@@ -1496,50 +1523,39 @@ namespace AutoTestSystem
                 FixSerialPort = new Comport(FixCOMinfo);
                 FixSerialPort.OpenCOM();
 
-                //Global.FIXTURENAME = "MBFT-10100";
-                // Global.FIXTURENAME = "MBLT-10001";
-                //lbl_StationNo.Text = Global.FIXTURENAME;
-                //Global.STATIONNO = Global.FIXTURENAME;
-                //Global.STATIONNAME = Global.FIXTURENAME.Substring(0, Global.FIXTURENAME.IndexOf("-"));
 
+                
 
-
-
-
-                return;
                 string recvStr = "";
                 for (int i = 0; i < 3; i++)
                 {
                     loggerDebug($"READ_FIXNUM {i}");
-                   if (FixSerialPort.SendCommandToFix("AT+READ_FIXNUM%", ref recvStr, "\r\n", 1))
-                    
-                    {
-                        // Global.FIXTURENAME = recvStr.Replace("\r\n", "").Trim();
+                    if (FixSerialPort.SendCommandToFix("AT+READ_FIXNUM%", ref recvStr, "\r\n", 1))
 
-                      //  Global.FIXTURENAME = "MBFT-10100";
-                      //  Global.FIXTURENAME = "MBLT-10001";
-                     //   lbl_StationNo.Text = Global.FIXTURENAME;
-                     //   Global.STATIONNO = Global.FIXTURENAME;
-                     //   Global.STATIONNAME = Global.FIXTURENAME.Substring(0, Global.FIXTURENAME.IndexOf("-"));
-                       
-                        
-                        
+                    {
+
+
+                        Global.FIXTURENAME = recvStr.Replace("\r\n", "").Trim();
+                        lbl_StationNo.Text = Global.FIXTURENAME;
+                        Global.STATIONNO = Global.FIXTURENAME;
+                        Global.STATIONNAME = Global.FIXTURENAME.Substring(0, Global.FIXTURENAME.IndexOf("-"));
                         iniConfig.Writeini("Station", "STATIONNAME", Global.STATIONNAME);
                         iniConfig.Writeini("Station", "STATIONNO", Global.STATIONNO);
-                        //iniConfig.Writeini("Station", "FIXTURENAME", Global.FIXTURENAME);
-                        loggerDebug($"Read fix number success,stationName:{ Global.STATIONNAME}");
+                       // iniConfig.Writeini("Station", "FIXTURENAME", Global.FIXTURENAME);
+                        logger.Debug($"Read fix number success,stationName:{ Global.STATIONNAME}");
                         break;
                     }
 
                     if (i == 2)
                     {
 
-                        if (!Environment.MachineName.Contains("CCT")) {
+                        if (!Environment.MachineName.Contains("CCT"))
+                        {
                             MessageBox.Show($"Read FixNum error,Please check it!");
                             System.Environment.Exit(0);
-                        
+
                         }
-                      
+
 
 
 
@@ -1553,10 +1569,11 @@ namespace AutoTestSystem
                         //iniConfig.Writeini("Station", "FIXTURENAME", Global.FIXTURENAME);
 
                     }
-                    
+
                 }
+
                 if (Global.STATIONNAME != "CCT") {
-                  //  GetPoePort();
+                    GetPoePort();
                 }
                 
             }
@@ -1571,7 +1588,11 @@ namespace AutoTestSystem
 
         public void GetPoePort()
         {
-            if (Global.FIXTUREFLAG == "0" || (Global.STATIONNAME != "MBLT" && Global.STATIONNAME != "SRF"))
+            //if (Global.FIXTUREFLAG == "0" || (Global.STATIONNAME != "MBLT" && Global.STATIONNAME != "SRF"))
+            //{ return; }
+
+
+            if (Global.FIXTUREFLAG == "0")
             { return; }
 
             try
@@ -1626,6 +1647,24 @@ namespace AutoTestSystem
            
             loggerInfo("~~~~~~~~~~~~~~~~~~~Scan Start Time:" + Global.time1.ToLongTimeString());
             loggerInfo("~~~~~~~~~~~~~~~~~~~Scan End Time:" + Global.time2.ToLongTimeString());
+
+
+
+
+            if (Global.STATIONNAME == "MBLT" || Global.STATIONNAME == "SFT" || Global.STATIONNAME == "BURNIN")
+            {
+                // StopSFTPSever();
+                // Task.Run(() => StartSFTPSever());
+
+                RunDosCmd("taskkill /IM " + "iperf3" + ".exe" + " /F");
+                StartSFTPSever();
+            }
+
+
+
+            isTesting = true;
+
+
 
 
             DUTCOMM = null;
@@ -1948,9 +1987,12 @@ namespace AutoTestSystem
 
                                     FixSerialPort.OpenCOM();
                                     var recvStr = "";
-                                  
-                                 
-                                  //  FixSerialPort.SendCommandToFix("AT+VBUS_OFF%", ref recvStr, "OK", 5);
+
+
+                                    //  FixSerialPort.SendCommandToFix("AT+VBUS_OFF%", ref recvStr, "OK", 5);
+
+                                    loggerInfo("pop up fixture");
+                                    FixSerialPort.SendCommandToFix("AT+TESTEND%", ref recvStr, "OK", 5);
 
                                 };
 
@@ -1970,8 +2012,8 @@ namespace AutoTestSystem
 
 
                             if (Global.STATIONNAME != "BURNIN" && Global.STATIONNAME!="CCT" && Global.STATIONNAME != "SRF") {
-                                logger.Info("关闭poe");
-                                Bd.PoeConfigSetting(Global.POE_PORT, "disable");
+                               // logger.Info("关闭poe");
+                               // Bd.PoeConfigSetting(Global.POE_PORT, "disable");
 
                             }
 
@@ -2199,6 +2241,12 @@ namespace AutoTestSystem
                             thread2.Start();
 #endif
 
+
+
+
+
+
+                            isTesting = false;
 
 
                             StartScanFlag = true;
@@ -3691,7 +3739,30 @@ namespace AutoTestSystem
 
                 }
 
+                try
+                {
+                    //找一个测试项最小的时间付给汇总时间
+                    for (var i = 0; i < stationObj.tests.Count; i++)
+                    {
+                        var test = stationObj.tests[i];
 
+
+
+                        DateTime dateTime1 = DateTime.Parse(test.start_time);
+                        DateTime dateTime2 = DateTime.Parse(stationObj.start_time);
+
+                        if (DateTime.Compare(dateTime1, dateTime2) < 0)
+                        {
+                            stationObj.start_time = test.start_time;
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    logger.Error("时间3 转换失败");
+                }
 
 
                 if (!JsonSerializer(stationObj, out string JsonStr, JsonPath))
@@ -3935,7 +4006,7 @@ namespace AutoTestSystem
                        
                 
                 }
-
+                loggerDebug("执行到>>>>>>>>>>>>>>>>1");
                 //转换成字典对象：
                 var firstDict = ConvertToDictionary(mesPhasesUpload);
                 //从jsonupload 取出第二个字典
@@ -3950,28 +4021,32 @@ namespace AutoTestSystem
                             continue;
                         }
 
-                        secDict.Add(testItems[i].test_name, testItems[i].test_value);
+
+                        if (secDict.ContainsKey(testItems[i].test_name) == false) {
+                            secDict.Add(testItems[i].test_name, testItems[i].test_value);
+                        }
+                        
 
 
                     }
-
+                    loggerDebug("执行到>>>>>>>>>>>>>>>>2");
                 }
                 //合并两个字典
                 var dictionaries = new List<Dictionary<string, string>> { firstDict, secDict };
 
 
-
+                loggerDebug("执行到>>>>>>>>>>>>>>>>3");
                 var finalDict = dictionaries
                     .SelectMany(dict => dict)
                     .ToLookup(pair => pair.Key, pair => pair.Value)
                     .ToDictionary(group => group.Key, group => group.First());
 
 
+                loggerDebug("执行到>>>>>>>>>>>>>>>>4");
 
 
-      
                 JsonSerializer(finalDict, out string currentMes);
-              
+                loggerDebug("执行到>>>>>>>>>>>>>>>>5");
 
                 if (Global.TESTMODE.ToLower() == "fa")
                 {
