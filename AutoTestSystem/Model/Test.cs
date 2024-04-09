@@ -102,7 +102,7 @@ namespace AutoTestSystem.Model
                 || item.TestKeyword.Contains("CheckEeroTest") || item.TestKeyword.Contains("Checkroute")
                 || item.TestKeyword.Contains("CheckEeroABA")
                 || item.TestKeyword.Contains("GetWorkOrder")
-                 || item.TestKeyword.Contains("SetDHCP")
+                // || item.TestKeyword.Contains("SetDHCP")
                  || item.TestKeyword.Contains("CKCustom")
                 
                 ))
@@ -915,6 +915,10 @@ namespace AutoTestSystem.Model
 
                     case "POEconfig":
                         {
+
+
+                            loggerDebug(">>>>>>>>>>cmd:" + item.ComdOrParam);
+
                                 rReturn = PoeConfigSetting(Global.POE_PORT, item.ComdOrParam);
                         }
                         break;
@@ -1597,6 +1601,26 @@ namespace AutoTestSystem.Model
 
                         }
                         break;
+                    case "AceVersionCheck":
+                        {
+
+                            var md5 = GetMD5HashFromFile(item.ComdOrParam);
+
+                            if (md5 == item.CheckStr1)
+                            {
+
+                                rReturn = true;
+
+                            }
+                            else
+                            {
+                                loggerError("文件md5:" + md5 + " CheckStr1:" + item.ComdOrParam + " 不相等");
+                                rReturn = false;
+                            }
+
+
+                        }
+                        break;
 
                     case "ReleaseButtonShowNoRes":
                         {
@@ -1751,6 +1775,69 @@ namespace AutoTestSystem.Model
 
 
                     case "VoltageTest":
+
+                    //case "LEDTestSpecial":
+                    //    if (inPutValue == "")
+                    //    {
+                    //        //using (var FIXCOMM = new Comport(FixCOMinfo))
+                    //        //{
+                    //        FixSerialPort.OpenCOM();
+                    //        Thread.Sleep(500);
+                    //        var revStr = "";
+                    //        if (FixSerialPort.SendCommandToFixLEDSpecial(item.ComdOrParam, ref revStr, item.ExpectStr, item.Limit_min, item.Limit_max, short.Parse(item.TimeOut))
+                    //             && revStr.CheckStr(item.CheckStr1) && revStr.CheckStr(item.CheckStr2))
+                    //        {
+                    //            rReturn = true;
+                    //            inPutValue = revStr;
+                    //        }
+                    //        else
+                    //        {
+                    //            inPutValue = "";
+                    //            return rReturn = false;
+                    //        }
+                    //        //FIXCOMM.Close();
+                    //        //}
+                    //    }
+                    //    {
+                    //        var revStr = inPutValue;
+                    //        // 需要提取测试值
+                    //        if (!string.IsNullOrEmpty(item.SubStr1) || !string.IsNullOrEmpty(item.SubStr2))
+                    //        {
+                    //            item.testValue = GetValue(revStr, item.SubStr1, item.SubStr2);
+                    //        }
+                    //        else
+                    //        {
+                    //            return rReturn = true;
+                    //        }
+                    //        // 需要比较Spec
+                    //        if (!string.IsNullOrEmpty(item.Spec) && string.IsNullOrEmpty(item.Limit_min) && string.IsNullOrEmpty(item.Limit_max))
+                    //        {
+                    //            return rReturn = CheckSpec(item.Spec, item.testValue);
+                    //        }
+
+
+
+                    //        // 需要比较Limit
+                    //        if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max))
+                    //        {
+                    //            rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                    //        }
+
+
+
+
+
+
+
+                    //    }
+                    //    if (!rReturn)
+                    //    {
+                    //        inPutValue = "";
+                    //    }
+                    //    break;
+
+
+                    case "LEDTestSpecial":
                     case "LEDTest":
                         if (inPutValue == "")
                         {
@@ -3545,6 +3632,125 @@ namespace AutoTestSystem.Model
                             rReturn = true;
                         }
                         break;
+                    case "LoopGetDelataValue": {
+
+                            loggerInfo("治具测试完成，开始读Delta值..");
+
+                            var cmd = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 010316900002C06E";
+                            string re = RunDosCmd(cmd, 2);
+                            loggerInfo("Delta反馈信息" + re);
+                            var data = GetMidStr(re, "[", "]");
+                            if (data.Length >= 18)
+                            {
+
+                                string hexNumber = data.Substring(6, 8);  // 提取 "05aa0000"
+                                loggerInfo("提取出数据:" + hexNumber);
+
+
+                                var subString = hexNumber.Substring(4, 4) + hexNumber.Substring(0, 4);
+
+                                int decimalNumber = Convert.ToInt32(subString, 16);  // 将十六进制字符串转换为十进制数
+
+                                loggerInfo("转换后数据:" + decimalNumber);
+                                
+
+                                item.testValue = decimalNumber.ToString();
+
+                                if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max))
+                                {
+
+                                    rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                                    loggerDebug("返回结果:" + (rReturn ? "True" : "False"));
+                                }
+
+
+ 
+                            }
+                            else
+                            {
+                                loggerError("提取数据:" + data + " 有问题");
+                            }
+                            break;
+                        }
+                    case "LoopGetLeakValue":
+                        {
+
+                            DateTime startTime = DateTime.Now;
+
+                            var tempReture = false;
+                           
+                            while ((DateTime.Now - startTime).TotalSeconds < 60)
+                            {
+
+                                var cmd = @"python ./Config/testLeak.py -p "+Global.LeakCOM+" -cmd 0103000C00014409";
+                                string re = RunDosCmd(cmd, 2);
+
+                                var data = GetMidStr(re, "[", "]");
+                                if (data.Length >= 14)
+                                {
+                                   
+
+                                    if (data.Contains("46") || data.Contains("47"))
+                                    {
+
+                                        tempReture = true;
+                                        break;
+                                    }
+
+                                   
+                                }
+                                Thread.Sleep(1000);
+                            }
+
+                            if (tempReture)
+                            {
+                                loggerInfo("治具测试完成，开始读压力值..");
+
+                                var cmd = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 010316dc000201b9";
+                                string re = RunDosCmd(cmd, 2);
+                                loggerInfo("气压值反馈信息" + re);
+                                var data = GetMidStr(re, "[", "]");
+                                if (data.Length >= 18)
+                                {
+
+                                    string hexNumber = data.Substring(6, 8);  // 提取 "05aa0000"
+                                    loggerInfo("提取出数据:" + hexNumber);
+
+
+                                    var subString = hexNumber.Substring(4, 4) + hexNumber.Substring(0, 4);
+                            
+                                    int decimalNumber = Convert.ToInt32(subString, 16);  // 将十六进制字符串转换为十进制数
+
+                                    loggerInfo("转换后数据:" + decimalNumber);
+
+
+                                    item.testValue = decimalNumber.ToString();
+
+
+                                    if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max))
+                                    {
+
+                                        rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                                        loggerDebug("返回结果:" + (rReturn ? "True" : "False"));
+                                    }
+                                  
+                                }
+                                else
+                                {
+                                    loggerError("提取数据:" + data + " 有问题");
+                                }
+
+
+                            }
+                            else
+                            {
+                                loggerError("测试超时");
+                            }
+
+                        }
+                        break;
+
+
 
                     case "PowerONTest":
                     default:

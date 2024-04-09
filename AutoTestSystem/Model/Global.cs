@@ -107,7 +107,7 @@ namespace AutoTestSystem.Model
 
         public static string SCANCOM;
 
-
+        public static string LeakCOM;
 
         public static DateTime time1;
         public static DateTime time2;
@@ -442,6 +442,10 @@ namespace AutoTestSystem.Model
                 Total_Abort_Num = Int32.Parse(iniConfig.Readini("CountNum", "Total_Abort_Num").Trim());
                 CalTreeName = iniConfig.Readini("TMORFTest", "CalTreeName").Trim();
                 VerTreeName = iniConfig.Readini("TMORFTest", "CalTreeName").Trim();
+
+                LeakCOM = iniConfig.Readini("LEAKTEST", " LeakCOM").Trim();
+
+
                 //#if DEBUG
                 try
                 {

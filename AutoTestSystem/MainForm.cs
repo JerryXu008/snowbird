@@ -28,8 +28,10 @@ namespace AutoTestSystem
         public static MainForm f1;
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern bool SwitchToThisWindow(IntPtr hWnd, bool fAltTab);
-      
-        
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        private const int SW_MINIMIZE = 6;
         //用例表头
         private readonly string[] colHeader = new string[] { "SN", "ItemName", "Spec", "LSL", "tValue", "ULS", "ElapsedTime", "StartTime", "tResult" }; //测试step表头
         private delegate void SaveTestResult();                                                          //定义生成结果委托
@@ -231,6 +233,11 @@ namespace AutoTestSystem
 
         public MainForm()
         {
+
+
+ 
+
+
 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi; //设定按分辨率来缩放控件
             InitializeComponent();
@@ -508,58 +515,25 @@ namespace AutoTestSystem
         private void MainForm_Shown(object sender, EventArgs e)
         {
 
-            //Task.Run(() =>
-            //{
 
-            //    Thread.Sleep(2000);
-
-            //    scanManager.Scan();
-
-
-            //});
 
 
             //先进行线上版本检测
 
-            if (Global.VERSION_CHECK == "1") { 
-               var versionOnline = CheckVersion();
-              
-                if (versionOnline != Global.Version.ToString()) {
+            if (Global.VERSION_CHECK == "1")
+            {
+                var versionOnline = CheckVersion();
+
+                if (versionOnline != Global.Version.ToString())
+                {
                     MessageBox.Show("当前版本与线上版本不一致\r\nPhiên bản hiện tại không phù hợp với phiên bản trực tuyến");
                     Application.Exit();
                     return;
                 }
             }
-            //下载pathloss文件
-            if (Global.STATIONNAME == "MBFT") {
-                if (Global.IsDownloadPathloss == "1") {
 
-                    if (CheckPathloss("wifi") && CheckPathloss("bluetooth")) {
-                        DownloadPathloss("wifi");
-                        DownloadPathloss("bluetooth");
-                    }
-                   
-                }
-               
-                
-               
 
-            }
-            else if (Global.STATIONNAME == "SRF") {
-                if (Global.IsDownloadPathloss == "1")
-                {
-                    if (CheckPathloss("wifi") && CheckPathloss("bluetooth"))
-                    {
-                        DownloadPathloss2("wifi");
-                        DownloadPathloss2("bluetooth");
-                    }
-                       
-                }
-               
-            }
-
-            
-                mescheckroute = new Mescheckroute(Global.MescheckrouteIP);
+            mescheckroute = new Mescheckroute(Global.MescheckrouteIP);
 #if DEBUG
             //if (Global.DEBUTBUTTON == "0")
             bt_debug.Visible = true;
@@ -672,6 +646,45 @@ namespace AutoTestSystem
 
 
 
+          
+            //下载pathloss文件
+            if (Global.STATIONNAME == "MBFT")
+            {
+                if (Global.IsDownloadPathloss == "1")
+                {
+
+                    if (CheckPathloss("wifi") && CheckPathloss("bluetooth"))
+                    {
+                        DownloadPathloss("wifi");
+                        DownloadPathloss("bluetooth");
+                    }
+
+                }
+
+
+
+            }
+            else if (Global.STATIONNAME == "SRF")
+            {
+                if (Global.IsDownloadPathloss == "1")
+                {
+                    if (CheckPathloss("wifi") && CheckPathloss("bluetooth"))
+                    {
+                        DownloadPathloss2("wifi");
+                        DownloadPathloss2("bluetooth");
+                    }
+
+                }
+
+            }
+
+
+         
+
+
+
+
+
 
 
 #if DEBUG
@@ -708,11 +721,12 @@ namespace AutoTestSystem
         private void ScanManager_ScanFinished(string sn)
         {
             if (sn.Length > 0) {
-                
+                scanManager.Close();
+
                 Global.time2 = DateTime.Now;
 
                 //SetTextBox(textBox1, true, sn);
-
+                Console.WriteLine("Scan finish...");
                 AfterScanAction(sn);
                 
                 scanManager.Close();
@@ -827,6 +841,44 @@ namespace AutoTestSystem
             }
 
 
+
+            if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF")
+            {
+
+                //  MessageBox.Show(@"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp\QUTSStatusApp.exe");
+
+                //   if (Global.STATIONNAME == "SRF") {
+                RunDosCmd("taskkill /IM QUTSStatusApp.exe /F");
+             
+
+                Task.Run(async () =>
+                {
+                    Thread.Sleep(1000);
+                    Process outProcess;
+                    RestartProcess("QUTSStatusApp", @"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp\QUTSStatusApp.exe", out outProcess);
+                    if (outProcess != null)
+                    {
+
+
+                        await Task.Delay(3000);
+
+                        // 最小化窗口
+                        ShowWindow(outProcess.MainWindowHandle, SW_MINIMIZE);
+
+
+                    }
+
+                });
+
+            }
+
+                 
+
+
+
+          
+
+
             // 扫描SN
             string ScanSN = textBox1.Text.Trim().TrimEnd(new char[] { '\n', '\t', '\r' }).ToUpper();
 
@@ -883,9 +935,35 @@ namespace AutoTestSystem
 #if DEBUG
             Global.OnlineLimit = "0";
 #else
-            if (!GetLimit()) //初始化limit
+
+            var getlimitOK = false;
+            for (var i = 0; i < 5; i++) {
+
+                getlimitOK = GetLimit();
+
+                if (!getlimitOK)
+                {
+                    Thread.Sleep(1000);
+                    continue;
+                }
+                else {
+                    break;
+                }
+                    
+            }
+
+            if (getlimitOK == false) {
+                //修改扫码标志
+
+                StartScanFlag = true;
                 return false;
+            
+            }
 #endif
+
+
+
+
             StartTestInit();
 
             return true;
@@ -912,7 +990,7 @@ namespace AutoTestSystem
                         {
                             fixcomRcv += FixSerialPort.Read();
                             if (
-
+                                
                                 (fixcomRcv.Contains("AT+SCAN") && !startFlag)
                                 ||
                                 (isFirstRun == false && Cycle_Count > 0 && !startFlag)
@@ -939,12 +1017,21 @@ namespace AutoTestSystem
 
                                 //窗体放在最上层
                                 SwitchToThisWindow(handle, true);
+                                if (!isTesting)
+                                {
+                                    //开启扫描
+                                    scanManager.Scan();
+                                }
 
+                                //这里注释掉，不然扫码超时之后，无法再次扫码
+                                //StartScanFlag = false; //跳出循环,
+                                Thread.Sleep(3000);
+                                if (isTesting)
+                                {
+                                    scanManager.Close();
+                                }
 
-                                //开启扫描
-                                scanManager.Scan();
-
-                                StartScanFlag = false; //跳出循环
+                                
                             }
                             else
                             {
@@ -1242,7 +1329,33 @@ namespace AutoTestSystem
 
 
             if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF") {
-                RestartProcess("QUTSStatusApp", @"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp\QUTSStatusApp.exe");
+
+                //  MessageBox.Show(@"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp\QUTSStatusApp.exe");
+
+                //   if (Global.STATIONNAME == "SRF") {
+                RunDosCmd("taskkill /IM QUTSStatusApp.exe /F");
+
+                Task.Run(async () =>
+                {
+                Thread.Sleep(1000);
+                Process outProcess;
+                RestartProcess("QUTSStatusApp", @"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp\QUTSStatusApp.exe", out outProcess);
+                if (outProcess != null)
+                {
+                 
+
+                        await Task.Delay(3000);
+
+                        // 最小化窗口
+                        ShowWindow(outProcess.MainWindowHandle, SW_MINIMIZE);
+                   
+
+                }
+
+                });
+
+                //  }
+
             }
 
          
@@ -1494,19 +1607,38 @@ namespace AutoTestSystem
 
 
 
-           // var Name = Environment.MachineName;
-           //// var Name = "BURNIN-16555";
+           var Name = Environment.MachineName;
 
-           // if (Name.Contains("-"))
-           // {
-           //     Global.STATIONNO = Name;
-           //     Global.FIXTURENAME = Global.STATIONNO;
-
-           //     int lastIndex = Global.STATIONNO.LastIndexOf('-');
-           //     Global.STATIONNAME = Global.STATIONNO.Substring(0, lastIndex);
+         //  Name = "ALK-1640";
+          // Name = "BURNIN-0001";
 
 
-           // }
+
+
+            if (Name.Contains("BURNIN") || Name.Contains("ALK")) {
+                if (Name.Contains("-"))
+                {
+                    Global.STATIONNO = Name;
+                    Global.FIXTURENAME = Global.STATIONNO;
+
+                    int lastIndex = Global.STATIONNO.LastIndexOf('-');
+                    Global.STATIONNAME = Global.STATIONNO.Substring(0, lastIndex);
+
+                    return;
+
+                }
+                else {
+
+                    MessageBox.Show($"请检查机台名字是否正确!");
+                    System.Environment.Exit(0);
+                    return;
+                }
+                
+            }
+           
+
+
+
 
 
 
@@ -1514,7 +1646,7 @@ namespace AutoTestSystem
                 FixSerialPort = new Comport(FixCOMinfo);
                 FixSerialPort.OpenCOM();
 
-                MessageBox.Show("111");
+            
                 return;
             }
             try
@@ -1549,7 +1681,7 @@ namespace AutoTestSystem
                     if (i == 2)
                     {
 
-                        if (!Environment.MachineName.Contains("CCT"))
+                        if (!Environment.MachineName.Contains("CCT") && !Environment.MachineName.Contains("ALK"))
                         {
                             MessageBox.Show($"Read FixNum error,Please check it!");
                             System.Environment.Exit(0);
@@ -1595,6 +1727,11 @@ namespace AutoTestSystem
             if (Global.FIXTUREFLAG == "0")
             { return; }
 
+
+            //if (Global.STATIONNAME == "SRF" || Global.STATIONNAME == "SRF" || Global.STATIONNAME == "SRF" ) {
+            //    return;
+            //}
+
             try
             {
                 string recvStr = "";
@@ -1637,6 +1774,12 @@ namespace AutoTestSystem
         /// </summary>
         private void StartTestInit()
         {
+
+
+            isTesting = true;
+
+
+
 #if !DEBUG
             if (!RunDosCmd("tzutil /g").Contains("China Standard"))
             {
@@ -1659,10 +1802,6 @@ namespace AutoTestSystem
                 RunDosCmd("taskkill /IM " + "iperf3" + ".exe" + " /F");
                 StartSFTPSever();
             }
-
-
-
-            isTesting = true;
 
 
 
@@ -1742,26 +1881,29 @@ namespace AutoTestSystem
 
         private bool GetLimit()
         {
+
+            
             if (Global.STATIONNAME == "BURNIN" || Global.STATIONNAME.ToLower() == "revert")
             {
 
                 return true;
             }
 
-          
+            
 
             bool rReturn = false;
             if (Online_Limit != null) {
-
-              //  loggerInfo("不获取在线");
+               
+                loggerInfo("not get online data");
                 return true;
             }
             try
             {
                 if (Global.OnlineLimit.Trim()=="1")
                 {
-                //    loggerInfo("获取在线");
-                    //loggerInfo("开始获取在线limit");
+                    
+                    
+                    loggerInfo("begin get online data");
                     var cookies = new CookieContainer();
                     var client = GetClient(cookies, "luxshare", "bento");
 
@@ -1807,6 +1949,7 @@ namespace AutoTestSystem
                 }
                 else
                 {
+               
                     rReturn = true;
                     loggerWarn("OnlineLimit is false,using program limit in excel script:");
                 }
@@ -1863,7 +2006,7 @@ namespace AutoTestSystem
                         SetButtonPro(buttonBegin, Properties.Resources.pause);
                         SetButtonPro(buttonExit, Properties.Resources.stop);
                         singleStepTest = false;
-                        startFlag = true;
+                        startFlag = true; 
                         pauseEvent.Set();
                         loggerDebug($"Start test...SN:{SN},Station:{Global.FIXTURENAME},DUTMode:{DutMode},TestMode:{Global.TESTMODE},Isdebug:{IsDebug.ToString()},FCT:{Global.FAIL_CONTINUE},onlineLimit:{Global.OnlineLimit},SoftVersion:{Global.Version}");
                         UpdateDetailViewClear();
@@ -1964,6 +2107,16 @@ namespace AutoTestSystem
                             // 关闭DUT通信
                             if (DUTCOMM != null)
                             {
+                                if (Global.STATIONNAME == "MBLT")
+                                {
+                                    string recvStr = "";
+                                    DUTCOMM.SendCommand($"umount /mnt", ref recvStr, Global.PROMPT, 10);
+                                }
+
+                                
+
+
+
                                 DUTCOMM.Close();
                             }
                             // 无论测试pass/fail，都弹出治具
@@ -1984,15 +2137,23 @@ namespace AutoTestSystem
 
                                 else
                                 {
+                                    if (FixSerialPort != null) {
+                                        FixSerialPort.OpenCOM();
 
-                                    FixSerialPort.OpenCOM();
-                                    var recvStr = "";
 
 
-                                    //  FixSerialPort.SendCommandToFix("AT+VBUS_OFF%", ref recvStr, "OK", 5);
+                                        var recvStr = "";
 
-                                    loggerInfo("pop up fixture");
-                                    FixSerialPort.SendCommandToFix("AT+TESTEND%", ref recvStr, "OK", 5);
+                                        if (Global.STATIONNAME == "MBLT") {
+                                            FixSerialPort.SendCommandToFix("AT+USB_PWROFF%", ref recvStr, "OK", 5);
+                                        }
+                                        
+                                        //FixSerialPort.SendCommandToFix("AT+VBUS_OFF%", ref recvStr, "OK", 5);
+
+                                        loggerInfo("pop up fixture");
+                                        FixSerialPort.SendCommandToFix("AT+TESTEND%", ref recvStr, "OK", 5);
+                                    }
+                                   
 
                                 };
 
@@ -2001,8 +2162,8 @@ namespace AutoTestSystem
                             if (testStatus != TestStatus.PASS) {
                                 if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF" || Global.STATIONNAME == "BURNIN")
                                 {
-                                    loggerInfo("失败了连续ping 10次");
-                                    PingIP("192.168.1.1", 10);
+                                   // loggerInfo("失败了连续ping 10次");
+                                   // PingIP("192.168.1.1", 10);
                                 }
 
                             }
@@ -2036,6 +2197,9 @@ namespace AutoTestSystem
 
                             if (Global.STATIONNAME == "SRF")
                             {
+
+
+                                RunDosCmd("taskkill /IM QUTSStatusApp.exe /F");
                                 KillProcessNoRes("QUTSStatusApp");
                                 KillProcessNoRes("QCATestSuite"); //SRF
                                 KillProcessNoRes("QPSTConfig"); //SRF
@@ -2046,7 +2210,7 @@ namespace AutoTestSystem
 
                             if (Global.STATIONNAME == "MBFT") {
 
-                                KillProcessNoRes("QUTSStatusApp");//MBFT
+                                RunDosCmd("taskkill /IM QUTSStatusApp.exe /F");
 
                                 KillProcessNoRes("ATSuite"); //MBFT
                                 KillProcessNoRes("BTTestSuiteRD");//MBFT
@@ -4908,6 +5072,12 @@ namespace AutoTestSystem
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+          
+
+
+
+
+ 
 
         }
     }

@@ -322,15 +322,7 @@ namespace AutoTestSystem.BLL
             siuartnum = int.Parse(Regex.Replace(usuartNum, "COM", ""));
             siBaudrate = int.Parse(uiBaudrate);
 
-
-
-            // string[] portNames = System.IO.Ports.SerialPort.GetPortNames();
-
-            //if (!portNames.Contains(usuartNum))
-            //{
-            //    ScanError(portIndex, $"COM{COM} is not exist");
-            //    return;
-            //}
+ 
 
 
             ts_scan_uart_close();

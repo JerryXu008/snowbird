@@ -651,8 +651,19 @@ namespace AutoTestSystem.BLL
             }
  
         }
+        public static string GetMD5HashFromFile(string fileName)
+        {
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = File.OpenRead(fileName))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                }
+            }
+        }
 
-        public  static  bool PoeConfigSetting(string peo_Port,string poeType)
+        public static  bool PoeConfigSetting(string peo_Port,string poeType)
         {
 
             bool re = false;
@@ -662,6 +673,11 @@ namespace AutoTestSystem.BLL
                 var client = GetClient(cookies, "admin", "admin123");
                 string url = $@"http://169.254.100.101/api/v1/service";
                 string data = "";
+
+
+                loggerDebug(">>>>>>>>>>poeType:" + poeType);
+
+
                 if (poeType == "poeDot3af") //poe
                 {
                     data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{peo_Port}\",{{\"Mode\":\"{"poeDot3af"}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":164}}";
@@ -784,6 +800,11 @@ namespace AutoTestSystem.BLL
                         loggerDebug($"dos 命令再杀一次");
                         RunDosCmd("taskkill /IM userspace_speedtest.exe /F");
                     }
+                    if (processName == "QCATestSuite") {
+                        RunDosCmd("taskkill /IM QCATestSuite.exe /F");
+                    }
+
+
 
                     if (Global.STATIONNAME == "SRF" || Global.STATIONNAME == "MBFT") {
                         loggerDebug($"dos 命令再杀一次");
@@ -932,6 +953,45 @@ namespace AutoTestSystem.BLL
                 return false;
             }
         }
+
+
+        public static bool RestartProcess(string processName, string fileName,out Process rProcess)
+        {
+
+            try
+            {
+                FileInfo fileInfo = new FileInfo(fileName);
+                if (KillProcess(processName))
+                {
+                    Process p = null;
+                    if (fileInfo.Directory != null)
+                    {
+                        p = new Process { StartInfo = { WorkingDirectory = fileInfo.Directory.ToString(), FileName = fileInfo.Name } };
+                     
+                        p.Start();
+                    }
+
+                    Thread.Sleep(1000);
+                    var myProc = Process.GetProcessesByName(processName); //获取所有进程
+                    rProcess = p;
+                    return myProc.Length > 0;
+                }
+                rProcess = null;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                loggerFatal(ex.ToString());
+                rProcess = null;
+                return false;
+            }
+        }
+
+
+
+
+
+
 
         public static void Sleep(int millisecondsTimeout)
         {

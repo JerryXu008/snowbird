@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Net.NetworkInformation;
+using System.IO.Ports;
 
 namespace TestConsole
 {
@@ -626,8 +627,194 @@ namespace TestConsole
             }
         }
 
-        static void Main(string[] args)
-        { 
+        public static string RunDosCmd(string command, int timeout = 0)
+        {
+            Console.WriteLine($"DosSendComd-->{command}");
+            using (var p = new Process())
+            {
+                p.StartInfo.FileName = "cmd.exe";
+                p.StartInfo.Arguments = "/c " + command;    //命令运行之后窗口关闭
+                p.StartInfo.UseShellExecute = false;        //是否使用操作系统shell启动
+                p.StartInfo.RedirectStandardInput = true;   //接受来自调用程序的输入信息
+                p.StartInfo.RedirectStandardOutput = true;  //由调用程序获取输出信息
+                p.StartInfo.RedirectStandardError = true;   //重定向标准错误输出
+                p.StartInfo.CreateNoWindow = true;          //不显示程序窗口
+                var error = "";
+                p.ErrorDataReceived += (sender, e) => { error += e.Data; };
+                p.Start();
+                p.BeginErrorReadLine();                     //获取cmd窗口的输出信息
+                var output = p.StandardOutput.ReadToEnd();
+                p.WaitForExit(timeout * 1000);
+                p.Close();
+                Console.WriteLine(output + error);
+                return output + error;
+            }
+        }
+        public static string GetMidStr(string sourse, string startStr, string endStr)
+        {
+            var result = string.Empty;
+            try
+            {
+                if (startStr != null)
+                {
+                    var startIndex = sourse.IndexOf(startStr, StringComparison.Ordinal);
+                    if (startIndex == -1)
+                        return result;
+                    var tmpStr = sourse.Substring(startIndex + startStr.Length);
+                    if (endStr != null)
+                    {
+                        var endIndex = tmpStr.IndexOf(endStr, StringComparison.Ordinal);
+                        if (endIndex == -1)
+                            return result;
+                        result = tmpStr.Remove(endIndex);
+                    }
+                    else
+                    {
+                        return tmpStr;
+                    }
+                }
+                else
+                {
+                    var tmpStr = sourse;
+                    if (endStr != null)
+                    {
+                        var endIndex = tmpStr.IndexOf(endStr, StringComparison.Ordinal);
+                        if (endIndex == -1)
+                            return result;
+                        result = tmpStr.Remove(endIndex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+              
+                //throw ex;
+            }
+            return result;
+        }
+
+        static void TestLoopLeakValue()
+        {
+
+
+            DateTime startTime = DateTime.Now;
+            var rReturn = false;
+            while ((DateTime.Now - startTime).TotalSeconds < 60)
+            {
+
+                var cmd = @"python ./testZaoSheng.py -p COM8 -cmd 0103000C00014409";
+                string re = RunDosCmd(cmd, 2);
+
+                var data = GetMidStr(re, "[", "]");
+                if (data.Length >= 14)
+                {
+                    //data = data.Substring(6, 4);
+                    //int int_value = Convert.ToInt32(data, 16);
+
+                    //var value = System.Convert.ToString(int_value, 10);
+                    //var value1 = (double.Parse(value) / 10).ToString();
+
+                    if (data.Contains("46") || data.Contains("47"))
+                    {
+
+                        rReturn = true;
+                         break;
+                    }
+
+                    Thread.Sleep(1000);
+                }
+            }
+
+            if (rReturn)
+            {
+                Console.WriteLine("治具测试完成，开始读值..");
+
+                var cmd = @"python ./testZaoSheng.py -p COM8 -cmd 010316dc000201b9";
+                string re = RunDosCmd(cmd, 2);
+                Console.WriteLine("气压值L" + re);
+                var data = GetMidStr(re, "[", "]");
+                if (data.Length >= 18)
+                {
+
+
+
+
+                    string hexNumber = data.Substring(6, 8);  // 提取 "05aa0000"
+                    Console.WriteLine("提取出数据:" + hexNumber);
+
+
+                     var   subString = hexNumber.Substring(4, 4) + hexNumber.Substring(0, 4);
+
+                    // subString = "F6D0FFFF";
+
+                    int decimalNumber = Convert.ToInt32(subString, 16);  // 将十六进制字符串转换为十进制数
+
+                    Console.WriteLine("转换后数据:" + decimalNumber);
+                }
+                else {
+                    Console.WriteLine("提取数据:" + data + " 有问题");
+                }
+
+
+            }
+            else
+            {
+                Console.WriteLine("测试超时");
+            }
+        }
+
+
+
+            // Console.WriteLine("python return:" + re);
+
+
+
+            //var data =GetMidStr(re, "[", "]");
+            //if (data.Length >= 18)
+            //{
+            //    data = data.Substring(6, 4);
+            //    int int_value = Convert.ToInt32(data, 16);
+
+            //    var value = System.Convert.ToString(int_value, 10);
+            //    var value1 = (double.Parse(value) / 10).ToString();
+            //    EnvTemp = value1;
+            //    logger.Debug($"Temperature(degree C):" + EnvTemp);
+            //    rReturn = true;
+
+
+
+
+
+            //}
+
+
+
+
+
+
+            static void Main(string[] args)
+        {
+
+
+
+
+           //var  subString = "00000600";
+
+           //int decimalNumber = Convert.ToInt32(subString, 16);
+
+           //int ff = 0;
+
+
+
+
+            Task.Run(() => {
+
+                TestLoopLeakValue();
+
+            });
+
+           
+
             // ControlPOE();
 
             //Console.WriteLine("sleep 10s");
@@ -644,9 +831,9 @@ namespace TestConsole
 
 
 
-           //  CreateCSVDataMerciAndSnowBirdMBFT();
+            //  CreateCSVDataMerciAndSnowBirdMBFT();
 
-              CreateCSVDataSnowbirdSRF();
+            //   CreateCSVDataSnowbirdSRF();
             // POESwtichPortSpeed();
 
             //  TestPort();
