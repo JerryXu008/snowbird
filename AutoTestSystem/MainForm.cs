@@ -234,8 +234,14 @@ namespace AutoTestSystem
         public MainForm()
         {
 
+           
 
- 
+
+           
+
+
+
+
 
 
 
@@ -1704,7 +1710,7 @@ namespace AutoTestSystem
 
                 }
 
-                if (Global.STATIONNAME != "CCT") {
+                if (Global.STATIONNAME != "CCT" && Global.STATIONNAME != ("ALK")) {
                     GetPoePort();
                 }
                 
@@ -1741,6 +1747,22 @@ namespace AutoTestSystem
                     if (FixSerialPort.SendCommandToFix("AT+READ_POE%", ref recvStr, "\r\n", 1))
                     {
                         string port = recvStr.Replace("\r\n", "").Replace("POE-", "").Replace("%", "").Trim();
+                  
+
+                        if (port == "010")
+                        {
+                            Global.POE_PORT = "10";
+
+
+                        }
+                        else if (port == "020")
+                        {
+                            Global.POE_PORT = "20";
+
+
+                        }
+                        else { 
+                       
                         Global.POE_PORT = port.Substring(port.LastIndexOf("0") + 1);
                         if (int.TryParse(Global.POE_PORT, out int ds))
                         {
@@ -1752,6 +1774,8 @@ namespace AutoTestSystem
                         {
                             MessageBox.Show($"Error! Read fix POE port:{Global.POE_PORT},pls check it.");
                             Application.Exit();
+                        }
+
                         }
                     }
 

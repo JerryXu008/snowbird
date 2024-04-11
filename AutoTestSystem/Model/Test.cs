@@ -3672,6 +3672,61 @@ namespace AutoTestSystem.Model
                             }
                             break;
                         }
+
+
+                       
+
+                           case "LoopGetStatus":
+                        {
+
+                            DateTime startTime = DateTime.Now;
+
+                            var tempReture = false;
+
+                            while ((DateTime.Now - startTime).TotalSeconds < 60)
+                            {
+
+                                var cmd = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 0103000C00014409";
+                                string re = RunDosCmd(cmd, 3);
+
+                                var data = GetMidStr(re, "[", "]");
+                                if (data.Length >= 14)
+                                {
+
+                                    loggerDebug("返回:" + data);
+                                    if (data.Contains("01030200017984"))
+                                    {
+
+                                        tempReture = true;
+                                        break;
+                                    }
+                                    else {
+
+                                        loggerDebug("继续查找");
+                                    }
+
+
+                                }
+                                Thread.Sleep(300);
+                            }
+
+                            if (!tempReture)
+                            {
+                                loggerError("测试超时");
+
+                            }
+                            else {
+
+                                rReturn = tempReture;
+                            }
+                          
+
+                        }
+                        break;
+
+
+
+
                     case "LoopGetLeakValue":
                         {
 
