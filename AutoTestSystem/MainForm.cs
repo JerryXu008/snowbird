@@ -193,6 +193,17 @@ namespace AutoTestSystem
         public bool isTesting = false;
 
 
+
+        //ALK 气压值和 泄漏值
+
+        public static int Pressure2 = -1;
+        public static int AirLeakValue = -1;
+
+
+        public static List<string> ALKBaoYAValueList = new List<string>();
+
+        public static List<string> ALKBaoYATimeList = new List<string>();
+
         //新版扫码软件管理器
         ScanManager scanManager;
         public static string ZhuBoPath = "";
@@ -231,14 +242,10 @@ namespace AutoTestSystem
             ABORT = 4,
         }
 
+
+    
         public MainForm()
         {
-
-           
-
-
-           
-
 
 
 
@@ -1615,13 +1622,13 @@ namespace AutoTestSystem
 
            var Name = Environment.MachineName;
 
-         //  Name = "ALK-1640";
-          // Name = "BURNIN-0001";
+            //  Name = "ALK-1640";
+            // Name = "BURNIN-0001";
+
+            //Name = "SetDHCP-1000";
 
 
-
-
-            if (Name.Contains("BURNIN") || Name.Contains("ALK")) {
+            if (Name.Contains("BURNIN") || Name.Contains("ALK") || Name.Contains("SetDHCP")) {
                 if (Name.Contains("-"))
                 {
                     Global.STATIONNO = Name;
@@ -1629,6 +1636,13 @@ namespace AutoTestSystem
 
                     int lastIndex = Global.STATIONNO.LastIndexOf('-');
                     Global.STATIONNAME = Global.STATIONNO.Substring(0, lastIndex);
+
+                    if (Name.Contains("ALK"))
+                    {
+                        iniConfig.Writeini("Station", "FAIL_CONTINUE", "1");
+                        Global.FAIL_CONTINUE = "1";
+
+                    }
 
                     return;
 
@@ -1882,7 +1896,13 @@ namespace AutoTestSystem
             retry = 0;
             WorkOrder = "1";
 
-            BURNINWAITTIME = Global.BURNINWAITTIME;
+           Pressure2 = -1;
+           AirLeakValue = -1;
+            ALKBaoYAValueList = new List<string>();
+            ALKBaoYATimeList = new List<string>();
+
+
+        BURNINWAITTIME = Global.BURNINWAITTIME;
 
             if (Global.STATIONNAME == "BURNIN" && Global.TESTMODE == "production") {
                 WorkOrder = "2";
@@ -2134,7 +2154,7 @@ namespace AutoTestSystem
                                 if (Global.STATIONNAME == "MBLT")
                                 {
                                     string recvStr = "";
-                                    DUTCOMM.SendCommand($"umount /mnt", ref recvStr, Global.PROMPT, 10);
+                                  //  DUTCOMM.SendCommand($"umount /mnt", ref recvStr, Global.PROMPT, 10);
                                 }
 
                                 
@@ -2170,14 +2190,28 @@ namespace AutoTestSystem
 
                                         if (Global.STATIONNAME == "MBLT") {
                                             FixSerialPort.SendCommandToFix("AT+USB_PWROFF%", ref recvStr, "OK", 5);
+
+
+                                            PoeConfigSetting(Global.POE_PORT, "disable");
                                         }
-                                        
+
                                         //FixSerialPort.SendCommandToFix("AT+VBUS_OFF%", ref recvStr, "OK", 5);
 
-                                        loggerInfo("pop up fixture");
-                                        FixSerialPort.SendCommandToFix("AT+TESTEND%", ref recvStr, "OK", 5);
+                                        if (testStatus == TestStatus.FAIL || testStatus == TestStatus.PASS) {
+                                            loggerInfo("pop up fixture");
+                                            FixSerialPort.SendCommandToFix("AT+TESTEND%", ref recvStr, "OK", 5);
+                                        }
+
+                                        if (Global.STATIONNAME == "MBFT")
+                                        {
+                                           // FixSerialPort.SendCommandToFix("AT+BLOW_OFF%", ref recvStr, "", 5);
+                                        }
+
+
+                                      
+                                      
                                     }
-                                   
+
 
                                 };
 
@@ -2190,9 +2224,24 @@ namespace AutoTestSystem
                                    // PingIP("192.168.1.1", 10);
                                 }
 
+
+
+
+
                             }
 
+                            if (Global.STATIONNAME == "RTT")
+                            {
 
+                                loggerDebug("reboot Sample");
+                                var STAComm = new Telnet(new TelnetInfo { _Address = "192.168.1.200" });
+                                string revStr = "";
+                                STAComm.Open("root@OpenWrt:/#");
+                                Thread.Sleep(1000);
+                                STAComm.SendCommand("reboot", ref revStr, "", 10);
+
+
+                            }
 
 
 

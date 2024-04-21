@@ -2151,13 +2151,13 @@ namespace AutoTestSystem.Model
                                         try
                                         {
                                             ErrorList = temp[2].Trim().Split(new string[] { "\n" }, 0);
-                                            return rReturn;
+                                           // return rReturn;
                                         }
                                         catch (Exception ex)
                                         {
                                             loggerError(ex.Message);
                                             ErrorList = item.error_code.Trim().Split(new string[] { "\n" }, 0);
-                                            return rReturn;
+                                           // return rReturn;
                                         }
 
                                     }
@@ -2201,15 +2201,24 @@ namespace AutoTestSystem.Model
                                     else
                                     {
                                         loggerInfo("MinVlaue:" + item.Limit_min + " MaxValue:" + item.Limit_max + " value:" + item.testValue);
-                                        rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                                        try
+                                        {
+                                            rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                                        }
+                                        catch (Exception ex) {
+                                            rReturn = false;
+                                            loggerError("未知异常:" + ex.Message);
+
+                                        }
 
                                     }
 
-                                    if (!rReturn) {
+                                    //if (!rReturn) {
                                         
-                                        ErrorList = temp[2].Trim().Split(new string[] { "\n" }, 0);
+                                    //    if(ErrorList==null || ErrorList)
+                                    //    ErrorList = temp[2].Trim().Split(new string[] { "\n" }, 0);
  
-                                    }
+                                    //}
                                        
 
                                     return rReturn;
@@ -3632,6 +3641,40 @@ namespace AutoTestSystem.Model
                             rReturn = true;
                         }
                         break;
+
+                    case "SumP2AndLeakValue": {
+
+
+                            if (Pressure2 != -1 && AirLeakValue != -1)
+                            {
+                                var P1 = Pressure2 + AirLeakValue;
+
+                                item.testValue = P1.ToString();
+
+                                loggerInfo("P1:" + item.testValue);
+
+                                if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max))
+                                {
+
+                                    rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                                    loggerDebug("返回结果:" + (rReturn ? "True" : "False"));
+                                }
+
+
+
+
+                            }
+                            else {
+
+                                loggerError("计算结果异常");
+                                
+                            
+                            }
+
+
+                        }
+                        break;
+
                     case "LoopGetDelataValue": {
 
                             loggerInfo("治具测试完成，开始读Delta值..");
@@ -3655,6 +3698,8 @@ namespace AutoTestSystem.Model
                                 
 
                                 item.testValue = decimalNumber.ToString();
+
+                                AirLeakValue = decimalNumber;
 
                                 if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max))
                                 {
@@ -3683,7 +3728,7 @@ namespace AutoTestSystem.Model
 
                             var tempReture = false;
 
-                            while ((DateTime.Now - startTime).TotalSeconds < 60)
+                            while ((DateTime.Now - startTime).TotalSeconds < 120)
                             {
 
                                 var cmd = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 0103000C00014409";
@@ -3727,6 +3772,133 @@ namespace AutoTestSystem.Model
 
 
 
+                    case "LoopGetStatus2":
+                        {
+
+                            DateTime startTime = DateTime.Now;
+
+                            var tempReture = false;
+                            bool BaoyaFinish = false;
+                            ALKBaoYAValueList = new List<string>();
+                            ALKBaoYATimeList = new List<string>();
+                            bool isFirst = false;
+                            int i = 0;
+                            while ((DateTime.Now - startTime).TotalSeconds < 120)
+                            {
+
+                                var cmd = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 0103000C00014409";
+                                string re = RunDosCmd(cmd, 3);
+
+                                var data = GetMidStr(re, "[", "]");
+                                if (data.Length >= 14)
+                                {
+
+                                    loggerDebug("AAA返回:" + data);
+                                    if (data.Contains("0103020003f845") || data.Contains("0103020004b987"))
+                                    {
+                                        if (data.Contains("0103020003f845")){
+                                            loggerInfo("到达保压阶段,开始读值");
+                                        }
+                                        else {
+                                            loggerInfo("到达测试阶段,继续读值");
+                                        }
+                                        BaoyaFinish = true;
+                                       
+
+                                        cmd = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 0103168800024069";
+                                        re = RunDosCmd(cmd, 3);
+                                        var data2 = GetMidStr(re, "[", "]");
+                                        if (data2.Length >= 18) {
+
+                                            if (isFirst == false)
+                                            {
+                                                isFirst = true;
+                                               
+
+
+                                            }
+
+
+                                            loggerDebug(">>>>>>>>>返回:" + data2);
+                                            string hexNumber = data2.Substring(6, 8);  // 提取 "05aa0000"
+                                            loggerInfo("提取出数据:" + hexNumber);
+
+
+                                            var subString = hexNumber.Substring(4, 4) + hexNumber.Substring(0, 4);
+
+                                            int decimalNumber = Convert.ToInt32(subString, 16);  // 将十六进制字符串转换为十进制数
+
+                                            loggerInfo("转换后数据:" + decimalNumber);
+
+                                            var EndTime = DateTime.Now;
+
+                                            
+                                          
+                                            ALKBaoYAValueList.Add( decimalNumber.ToString());
+
+                                            ALKBaoYATimeList.Add((i*300).ToString()+" ms");
+
+                                            i++;
+
+                                        }
+
+
+                                        
+                                    }
+                                    else if (BaoyaFinish   && (data.Contains("01030200063846") || data.Contains("01030200057847")))
+                                    {
+                                        loggerDebug("保压-测试阶段结束:" + data);
+                                        tempReture = true;
+                                        break;
+
+                                    }
+                                    else
+                                    {
+
+                                        loggerDebug("继续查找");
+                                    }
+
+
+                                }
+                                Thread.Sleep(10);
+                            }
+
+                            if (!tempReture)
+                            {
+                                loggerError("测试超时");
+
+                            }
+                            else
+                            {
+
+                                rReturn = tempReture;
+                            }
+
+
+                            if (ALKBaoYAValueList.Count != 0) {
+
+                                string csvPath = $@"{Global.LogPath}\LeakPhaseData.csv";
+
+                                ALKBaoYATimeList.Insert(0, "SN");
+                                ALKBaoYAValueList.Insert(0, SN);
+
+
+                                WriteToCsvForALKLeak(csvPath, ALKBaoYATimeList, ALKBaoYAValueList);
+
+
+
+
+                            }
+
+
+
+                        }
+                        break;
+
+
+
+
+
                     case "LoopGetLeakValue":
                         {
 
@@ -3737,7 +3909,7 @@ namespace AutoTestSystem.Model
                             while ((DateTime.Now - startTime).TotalSeconds < 60)
                             {
 
-                                var cmd = @"python ./Config/testLeak.py -p "+Global.LeakCOM+" -cmd 0103000C00014409";
+                                var cmd = @"python ./Config/testLeak.py -p "+Global.LeakCOM+" -cmd 0103000C00014409 -d 1";
                                 string re = RunDosCmd(cmd, 2);
 
                                 var data = GetMidStr(re, "[", "]");
@@ -3777,6 +3949,9 @@ namespace AutoTestSystem.Model
                                     int decimalNumber = Convert.ToInt32(subString, 16);  // 将十六进制字符串转换为十进制数
 
                                     loggerInfo("转换后数据:" + decimalNumber);
+
+
+                                    Pressure2 = decimalNumber;
 
 
                                     item.testValue = decimalNumber.ToString();

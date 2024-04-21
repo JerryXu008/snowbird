@@ -384,7 +384,9 @@ namespace AutoTestSystem.BLL
                     var files = Directory.GetFileSystemEntries(filepath);
                     foreach (var file in files)
                     {
-                        if (file.Contains(str) && file.EndsWith(".csv"))
+                       var name = Path.GetFileName(file);
+
+                        if (name.Contains(str) && name.EndsWith(".csv"))
                         {
                             loggerDebug($"find csv File:{file}");
                             //Thread.Sleep(3000);
@@ -651,6 +653,30 @@ namespace AutoTestSystem.BLL
             }
  
         }
+
+        public static void WriteToCsvForALKLeak(string filename, List<string> headers, List<string> data)
+        {
+            // 读取现有的文件
+            var lines = File.Exists(filename) ? File.ReadAllLines(filename).ToList() : new List<string>();
+
+            // 如果文件是空的或者表头需要更新，那么更新表头
+            if (lines.Count == 0 || lines[0].Split(',').Length < headers.Count)
+            {
+                if (lines.Count > 0)
+                {
+                    lines.RemoveAt(0);  // 删除旧的表头
+                }
+                lines.Insert(0, string.Join(",", headers));  // 插入新的表头
+            }
+
+            // 添加数据
+            lines.Add(string.Join(",", data));
+
+            // 写入文件
+            File.WriteAllLines(filename, lines);
+        }
+
+
         public static string GetMD5HashFromFile(string fileName)
         {
             using (var md5 = MD5.Create())
