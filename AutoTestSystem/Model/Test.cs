@@ -3473,6 +3473,16 @@ namespace AutoTestSystem.Model
 
                             }
 
+                            if (retry != 0 && rReturn==false && Global.STATIONNAME == "BURNIN") {
+                                loggerInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>.restart iperfServer");
+
+                                RunDosCmd("taskkill /IM " + "iperf3" + ".exe" + " /F");
+                                StartSFTPSever();
+
+                            }
+
+ 
+
                         }
                         break;
 

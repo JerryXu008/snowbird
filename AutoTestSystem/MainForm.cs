@@ -248,11 +248,10 @@ namespace AutoTestSystem
         {
 
 
+ 
 
 
-
-
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi; //设定按分辨率来缩放控件
+                this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi; //设定按分辨率来缩放控件
             InitializeComponent();
 
 
