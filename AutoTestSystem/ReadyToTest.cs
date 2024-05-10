@@ -65,6 +65,14 @@ namespace AutoTestSystem
             label1.Text = "确定开始/Được rồi để bắt đầu";
 
         }
+
+        public void ShowTip(string text)
+        {
+            label1.Text = text;
+
+        }
+
+
         private void label1_Click(object sender, EventArgs e)
         {
 

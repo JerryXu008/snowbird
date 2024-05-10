@@ -1318,6 +1318,9 @@ namespace AutoTestSystem
 
 
 
+
+
+
             isTestAgain = false;
 
 
@@ -1621,7 +1624,7 @@ namespace AutoTestSystem
 
            var Name = Environment.MachineName;
 
-            //  Name = "ALK-1640";
+           //  Name = "ALK-1640";
             // Name = "BURNIN-0001";
 
             //Name = "SetDHCP-1000";
@@ -4642,6 +4645,26 @@ namespace AutoTestSystem
             catch (Exception ex)
             {
                 loggerFatal($"Export test results to CSVFilePath error!:{ ex.Message} ");
+
+                ReadyToTest usbDialog = new ReadyToTest();
+
+                usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                usbDialog.ShowTip("请检查CSV是否打开，如果打开请关闭\r\nPlease check if CSV is open, if so please close it");
+
+
+
+                usbDialog.TopMost = true;
+                //// 设置窗体为无边框样式
+                usbDialog.FormBorderStyle = FormBorderStyle.None;
+                // 最大化窗体
+                usbDialog.WindowState = FormWindowState.Maximized;
+
+
+                usbDialog.ShowDialog();
+
+                return;
+
+
             }
         }
 
@@ -5144,12 +5167,8 @@ namespace AutoTestSystem
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-          
 
 
-
-
- 
 
         }
     }

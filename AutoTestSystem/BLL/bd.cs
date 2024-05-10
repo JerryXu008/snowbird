@@ -1934,12 +1934,43 @@ namespace AutoTestSystem.BLL
 #else
             KillProcess("Excel");
 #endif
+
+
+
             if (File.Exists(filePathName))
             {
-                var fileWriter = new StreamWriter(filePathName, append, Encoding.GetEncoding(-0));
-                foreach (var strArr in ls) fileWriter.WriteLine(string.Join(",", strArr));
-                fileWriter.Flush();
-                fileWriter.Close();
+
+                try
+                {
+                    var fileWriter = new StreamWriter(filePathName, append, Encoding.GetEncoding(-0));
+                    foreach (var strArr in ls) fileWriter.WriteLine(string.Join(",", strArr));
+                    fileWriter.Flush();
+                    fileWriter.Close();
+                }
+                catch (Exception ex)
+                {
+                    ReadyToTest usbDialog = new ReadyToTest();
+
+                    usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                    usbDialog.ShowTip("请检查CSV是否打开，如果打开请关闭");
+
+
+
+                    usbDialog.TopMost = true;
+                    //// 设置窗体为无边框样式
+                    usbDialog.FormBorderStyle = FormBorderStyle.None;
+                    // 最大化窗体
+                    usbDialog.WindowState = FormWindowState.Maximized;
+
+
+                    usbDialog.ShowDialog();
+
+                    return;
+
+                }
+                
+
+                
             }
             else
             {

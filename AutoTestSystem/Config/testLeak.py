@@ -32,7 +32,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Audio Test.')
     parser.add_argument('-p', '--serialport', help='Serial port name.', type=str, default=False, required=True)
     parser.add_argument('-cmd', '--cmd', help='cmd.', type=str, default="", required=True)
-    parser.add_argument('-d', '--delay', help='Delay time.', type=float, default=0.01, required=False)  # 添加新的参数
+    parser.add_argument('-d', '--delay', help='Delay time.', type=float, default=1, required=False)  # 添加新的参数
    
     args = parser.parse_args()
     test(portname=args.serialport, cmd=args.cmd, delay=args.delay)  # 传入新的参数

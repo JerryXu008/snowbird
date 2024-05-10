@@ -3727,12 +3727,67 @@ namespace AutoTestSystem.Model
                             }
                             break;
                         }
-
-
-                       
-
-                           case "LoopGetStatus":
+                        
+                     case "ClearALKData":
                         {
+
+                            DateTime startTime = DateTime.Now;
+
+                           // var tempReture = false;
+
+                           
+
+                              
+
+
+
+                          
+
+                            //    var data = GetMidStr(re, "[", "]");
+                            //    if (data.Length >= 16)
+                            //    {
+
+                            //        loggerDebug("返回:" + data);
+                            //        if (data.Contains("01050008ff000df8")  )
+                            //        {
+
+                            //            tempReture = true;
+                            //            break;
+                            //        }
+                            //        else
+                            //        {
+
+
+                            //        }
+
+
+                            //    }
+                            //    Thread.Sleep(300);
+
+
+                            //if (!tempReture)
+                            //{
+                            //    loggerError("返回结果错误");
+
+                            //}
+                            //else
+                            //{
+
+                            //    rReturn = tempReture;
+                            //}
+
+
+                        }
+                        break;
+
+
+
+                    case "LoopGetStatus":
+                        {
+
+
+                            var cmd2 = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 01050008ff000df8";
+                            RunDosCmd(cmd2, 3);
 
                             DateTime startTime = DateTime.Now;
 
@@ -3784,6 +3839,10 @@ namespace AutoTestSystem.Model
 
                     case "LoopGetStatus2":
                         {
+                            //清空数据
+                            var cmd2 = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 01050008ff000df8";
+                            RunDosCmd(cmd2, 3);
+
 
                             DateTime startTime = DateTime.Now;
 
@@ -3796,14 +3855,14 @@ namespace AutoTestSystem.Model
                             while ((DateTime.Now - startTime).TotalSeconds < 120)
                             {
 
-                                var cmd = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 0103000C00014409";
+                                var cmd = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 0103000C00014409 -d 0.1";
                                 string re = RunDosCmd(cmd, 3);
 
                                 var data = GetMidStr(re, "[", "]");
                                 if (data.Length >= 14)
                                 {
 
-                                    loggerDebug("AAA返回:" + data);
+                                    loggerDebug("返回:" + data);
                                     if (data.Contains("0103020003f845") || data.Contains("0103020004b987"))
                                     {
                                         if (data.Contains("0103020003f845")){
@@ -3815,7 +3874,7 @@ namespace AutoTestSystem.Model
                                         BaoyaFinish = true;
                                        
 
-                                        cmd = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 0103168800024069";
+                                        cmd = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 0103168800024069 -d 0.1";
                                         re = RunDosCmd(cmd, 3);
                                         var data2 = GetMidStr(re, "[", "]");
                                         if (data2.Length >= 18) {
