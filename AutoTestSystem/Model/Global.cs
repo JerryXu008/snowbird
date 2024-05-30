@@ -26,6 +26,14 @@ namespace AutoTestSystem.Model
         public static string JsonFilePath;
         public static Process processInfo;
 
+
+
+        //MBFT或SRF临时数组保存，为了优化时间
+
+        public static Dictionary<string, List<Items>> RFSequenceDict = new Dictionary<string, List<Items>>();
+
+
+
         ///**************************ini配置文件测试Station全局配置变量**********************/
         public static string DEBUTBUTTON;
         public static string STATIONNAME;               //!工站名
@@ -123,7 +131,7 @@ namespace AutoTestSystem.Model
 
         public static string UploadImageIP;
 
-
+        public static string SkipSweep;
       
 
         /// <summary>
@@ -279,9 +287,14 @@ namespace AutoTestSystem.Model
                     }
                     Global.Sequences = JsonConvert.DeserializeObject<List<Sequence>>(jsonStr);
 
-                    var ff = Global.Sequences;
+                   
 
-                    int iii = 0;
+
+                    HandleSpecialSweepRFItem();
+
+
+
+                    
 
                 }
                 else
@@ -302,6 +315,7 @@ namespace AutoTestSystem.Model
                                 jsonStr = sr.ReadToEnd();
                             }
                             Global.Sequences = JsonConvert.DeserializeObject<List<Sequence>>(jsonStr);
+                              HandleSpecialSweepRFItem();
                         }
                         else
                         {
@@ -327,12 +341,85 @@ namespace AutoTestSystem.Model
             }
         }
 
+        private static void HandleSpecialSweepRFItem()
+        {
+            if (Global.SkipSweep == "1")
+            {
+
+                if (STATIONNAME == "MBFT" || STATIONNAME == "SRF")
+                {
+
+
+                    for (var i = 0; i < Global.Sequences.Count; i++)
+                    {
+                        var Sequence = Global.Sequences[i];
+                        if (
+                            
+                          (STATIONNAME=="MBFT" &&  ( Sequence.SeqName == "RadioValidation_5G" || Sequence.SeqName == "RadioValidation_2G" || Sequence.SeqName == "RadioValidation_6G"))
+                          ||
+                          (STATIONNAME == "SRF" && (Sequence.SeqName == "WiFiTransmitPower" || Sequence.SeqName == "DesenseTest_WiFi"))
+                          ||
+                          (Sequence.SeqName == "RadioValidation_Zigbee")
+                          
+                          )
+                          
+                        {
+
+                            List<Items> SeqItemsTemp = new List<Items>();
+
+                            for (var j = 0; j < Sequence.SeqItems.Count; j++)
+                            {
+
+                                SeqItemsTemp.Add(Sequence.SeqItems[j]);
+                            }
+
+                            if (!RFSequenceDict.ContainsKey(Sequence.SeqName))
+                            {
+                                RFSequenceDict.Add(Sequence.SeqName, SeqItemsTemp);
+                            }
+
+
+                            Sequence.SeqItems = new List<Items>();
+
+                            Sequence.SeqItems.Add(new Items()
+                            {
+
+                                EeroName = $"{Sequence.SeqName}Compile",
+                                ItemName = $"{Sequence.SeqName}Compile",
+                                TestKeyword = $"{Sequence.SeqName}_Simple",
+                                IfElse = "",
+                                ErrorCode = "",
+                                TimeOut = "300000",
+                                ByPassFail = "",
+                                Json = "y",
+
+
+                                RetryTimes = ""
+
+
+
+                            }); ;
+
+
+
+
+
+                        }
+                      
+                    }
 
 
 
 
 
 
+                }
+
+
+
+            }
+
+        }
 
         public static bool InitStation()
         {
@@ -381,6 +468,10 @@ namespace AutoTestSystem.Model
 #else
                 TESTMODE = iniConfig.Readini("Station", "TESTMODE").Trim();
 #endif
+
+
+                SkipSweep = iniConfig.Readini("Station", "SkipSweep").Trim();
+
                 TestCasePath = iniConfig.Readini("Station", "TestCasePath").Trim();
                 PySCRIPT = iniConfig.Readini("Station", "PySCRIPT").Trim();
                 PROMPT = iniConfig.Readini("Station", "PROMPT").Trim();

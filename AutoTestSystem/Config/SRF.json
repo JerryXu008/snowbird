@@ -744,7 +744,7 @@
         "start_time_json": "0001-01-01T00:00:00",
         "start_time": "0001-01-01T00:00:00",
         "ItemName": "LOAD_BZT",
-        "ErrorCode": "17.11: Version.BZTBootloader",
+        "ErrorCode": "3.5.3:Device.Bluetooth.Version",
         "RetryTimes": "0",
         "TimeOut": "10",
         "SubStr1": "",
@@ -781,7 +781,7 @@
         "start_time_json": "0001-01-01T00:00:00",
         "start_time": "0001-01-01T00:00:00",
         "ItemName": "QorvoPTC",
-        "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
+        "ErrorCode": "3.5.3:Device.Bluetooth.Version",
         "RetryTimes": "0",
         "TimeOut": "30",
         "SubStr1": "",
@@ -893,7 +893,7 @@
         "Mode": "",
         "ComdOrParam": "E:\\Eero_snowbird_P1_LUX_SRF_WIFI_ATSuite\\QCATestSuite.exe",
         "ExpectStr": "",
-        "CheckStr1": "3e4160e96973a3f68f823175fa275573",
+        "CheckStr1": "0b1bb545423b4336e8ad3d0d7199c19d",
         "CheckStr2": "",
         "Limit_max": "",
         "testValue": null,
@@ -1028,7 +1028,7 @@
     "finish_time": null
   },
   {
-    "SeqName": "WiFiTransmitPowerTest",
+    "SeqName": "StartProcess",
     "IsTest": true,
     "IsTestFinished": false,
     "TestResult": true,
@@ -1597,7 +1597,7 @@
     "finish_time": null
   },
   {
-    "SeqName": "WiFiTransmitPowerTest",
+    "SeqName": "WiFiTransmitPower",
     "IsTest": true,
     "IsTestFinished": false,
     "TestResult": true,

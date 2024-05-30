@@ -122,12 +122,17 @@ namespace AutoTestSystem
         bool isTestAgain = false;
         int AUTOTESTNOFIXUTRE_COUNT = -1;
 
+      
+
+      
+
+
         //SRF/MBFT RF 数据缓存
 
-        public static Dictionary<string, string> RFCSV_Cache = new Dictionary<string, string>();
+        public static Dictionary<string, List<Items>> RFTempSequenceDict = new Dictionary<string, List<Items>>();
 
-
-
+        public static Dictionary<string,string> RFTempFailItemNameDict = new Dictionary<string, string>();
+         
         ///***************************  定义DUT产品相关全局变量  ********************************\\
         public const string regexp_GATEWAY = @"^((N)([1-9]|[A-Z])([1-9]|[A-C])([A-HJ-KM-NP-TV-Z]|[1-9]))([A-HJ-KM-NP-TV-Z]|[0-9]){4}$";
         public const string regexp_LEAF = @"^((Q)([1-9]|[A-Z])([1-9]|[A-C])([A-HJ-KM-NP-TV-Z]|[1-9]))([A-HJ-KM-NP-TV-Z]|[0-9]){4}$";
@@ -248,10 +253,25 @@ namespace AutoTestSystem
         {
 
 
- 
+            //var jsonString = @"C:\Users\17114024\Desktop\test.json";
+            //var text = File.ReadAllText(jsonString);
+            //// 反序列化JSON字符串为Station对象
+            //var station = JsonConvert.DeserializeObject<Station>(text);
 
 
-                this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi; //设定按分辨率来缩放控件
+            ////移除tests中的重复项
+            //station.tests = station.tests
+            //    .GroupBy(test => test.test_name)
+            //    .Select(group => group.Last())
+            //    .ToList();
+
+
+            //int ii = 0;
+
+
+
+
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi; //设定按分辨率来缩放控件
             InitializeComponent();
 
 
@@ -358,21 +378,36 @@ namespace AutoTestSystem
            
         }
 
-        private bool CheckPathloss(string type)
+
+
+
+
+
+
+
+        private bool CheckPathloss(string type, string jizhong)
         {
             try
             {
                 var client = new HttpClient();
                 client.Timeout = TimeSpan.FromSeconds(3);
-             
 
-                var url = $@"http://10.90.122.80:9000/pathloss/checkpathloss/snowbird/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}";
 
-                //loggerInfo("是否存在接口:" + url);
+                var url = $@"http://{Global.LOGSERVER}:9000/pathloss/checkpathloss/{jizhong}/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}";
+
+                // var url = $@"http://172.23.43.43:9000/pathloss/checkpathloss/firefly/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}";
+
+
+                //  logger.Info("是否存在接口:" + url);
 
                 HttpResponseMessage httpResponse = client.GetAsync(url).GetAwaiter().GetResult();
                 string responseBody = httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 var dataSet = JsonToDictionary(responseBody);
+
+
+
+                var lastUpdateTimeStr = "";
+
                 var exist = "";
                 if (dataSet != null)
                 {
@@ -381,17 +416,81 @@ namespace AutoTestSystem
                         if (item.Key.ToString() == "exist")//获取header数据
                         {
                             exist = (string)item.Value;
-                          
+                            if (dataSet.ContainsKey("lastupdatime"))
+                            {
+
+                                lastUpdateTimeStr = dataSet["lastupdatime"].ToString();
+
+                                DateTime lastUpdateTime = DateTime.Parse(lastUpdateTimeStr);
+
+                                // 获取当前时间
+                                DateTime currentTime = DateTime.Now;
+
+                                // 计算时间间隔
+                                TimeSpan timeDifference = currentTime - lastUpdateTime;
+
+
+
+                                // 定义时间间隔常量
+                                TimeSpan oneWeek = TimeSpan.FromDays(7);
+                                TimeSpan oneMonth = TimeSpan.FromDays(30);
+
+
+ 
+
+
+
+
+                                // 检查时间间隔并执行逻辑
+                                if (timeDifference < oneMonth && timeDifference > oneMonth - oneWeek)
+                                {
+                                    ShowFixtureTip2 usbDialog = new ShowFixtureTip2();
+                                    usbDialog.TextHandler = (str) => { };
+                                    usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                                    usbDialog.ShowTip("pathloss上传时间距离到期时间超过1周了，请注意");
+
+
+                                    //// 设置窗体为无边框样式
+                                    usbDialog.FormBorderStyle = FormBorderStyle.None;
+                                    // 最大化窗体
+                                    usbDialog.WindowState = FormWindowState.Maximized;
+                                    usbDialog.ShowDialog();
+
+                                }
+                                else if (timeDifference >= oneMonth)
+                                {
+                                    ShowFixtureTip2 usbDialog = new ShowFixtureTip2();
+                                    usbDialog.TextHandler = (str) => { };
+                                    usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                                    usbDialog.ShowTip("pathloss上传时间距离到期时间超过1个月了，程序无法运行");
+
+
+                                    //// 设置窗体为无边框样式
+                                    usbDialog.FormBorderStyle = FormBorderStyle.None;
+                                    // 最大化窗体
+                                    usbDialog.WindowState = FormWindowState.Maximized;
+                                    usbDialog.ShowDialog();
+
+                                    Application.Exit();
+
+                                }
+
+
+
+                            }
                             break;
                         }
                     }
                 }
-                loggerInfo("pathloss 是否存在:" + exist);
+
+
+
+                logger.Info("pathloss 是否存在:" + exist);
                 return exist == "1";
             }
             catch
             {
-                loggerInfo("check Pathloss error");
+                logger.Info("check Pathloss error");
                 return false;
             }
 
@@ -404,7 +503,7 @@ namespace AutoTestSystem
             try
             {
                // var url = $@"http://localhost:9000/upload/public/snowbird/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
-                var url = $@"http://10.90.122.80:9000/upload/public/snowbird/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
+                var url = $@"http://{Global.LOGSERVER}:9000/upload/public/snowbird/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
 
 
                // MessageBox.Show("下载地址:" + url);
@@ -442,7 +541,7 @@ namespace AutoTestSystem
             {
                
                 
-                var url = $@"http://10.90.122.80:9000/upload/public/snowbird/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
+                var url = $@"http://{Global.LOGSERVER}:9000/upload/public/snowbird/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
 
 
                 // var url = $@"http://172.23.241.211:9000/upload/public/snowbird/SRF/SRF-8402/wifi/path_loss.csv";
@@ -523,12 +622,46 @@ namespace AutoTestSystem
                 loggerError("error1:"+ex.Message);
             }
         }
+        void DownLoadPathlossFile()
+        {
+            //下载pathloss文件
+            if (Global.STATIONNAME == "MBFT")
+            {
+                if (Global.IsDownloadPathloss == "1")
+                {
 
+                    if (CheckPathloss("wifi","snowbird") && CheckPathloss("bluetooth", "snowbird"))
+                    {
+                        DownloadPathloss("wifi");
+                        DownloadPathloss("bluetooth");
+                    }
+
+                }
+
+
+
+            }
+            else if (Global.STATIONNAME == "SRF")
+            {
+                if (Global.IsDownloadPathloss == "1")
+                {
+                    if (CheckPathloss("wifi", "snowbird") && CheckPathloss("bluetooth", "snowbird"))
+                    {
+                        DownloadPathloss2("wifi");
+                        DownloadPathloss2("bluetooth");
+                    }
+
+                }
+
+            }
+
+
+        }
         private void MainForm_Shown(object sender, EventArgs e)
         {
 
 
-
+            DisableUSB();
 
             //先进行线上版本检测
 
@@ -597,6 +730,10 @@ namespace AutoTestSystem
 #else
             GetFixName();  //!获取治具号和MES工站编号，更新主界面Lable。
 #endif
+
+            DownLoadPathlossFile();
+
+
             Global.LoadSequnces();                                     //!从表格加载测试用例序列
             loggerDebug($"upload test-case form {Global.JsonFilePath}.");
             sequences = Global.Sequences;                              //!浅复制测试用例序列对象
@@ -650,46 +787,15 @@ namespace AutoTestSystem
                 }
                 
                
-           
             
             
-            
+     
             }
 
 
 
           
-            //下载pathloss文件
-            if (Global.STATIONNAME == "MBFT")
-            {
-                if (Global.IsDownloadPathloss == "1")
-                {
-
-                    if (CheckPathloss("wifi") && CheckPathloss("bluetooth"))
-                    {
-                        DownloadPathloss("wifi");
-                        DownloadPathloss("bluetooth");
-                    }
-
-                }
-
-
-
-            }
-            else if (Global.STATIONNAME == "SRF")
-            {
-                if (Global.IsDownloadPathloss == "1")
-                {
-                    if (CheckPathloss("wifi") && CheckPathloss("bluetooth"))
-                    {
-                        DownloadPathloss2("wifi");
-                        DownloadPathloss2("bluetooth");
-                    }
-
-                }
-
-            }
-
+           
 
          
 
@@ -847,7 +953,7 @@ namespace AutoTestSystem
             //如果正在测试，扫码无效
             if (isTesting) {
 
-                logger.Error("程序测试中，扫码无效");
+                logger.Error("testing ,scan not work");
                 return false;
             
             }
@@ -1615,8 +1721,139 @@ namespace AutoTestSystem
             return rReturn;
         }
 
-
         public void GetFixName()
+        {
+            //return;
+
+
+
+            var Name = Environment.MachineName;
+
+           //  Name = "SRF-1640";
+            // Name = "BURNIN-0001";
+
+            //Name = "SetDHCP-1000";
+
+
+
+
+
+
+
+
+            ///////////////////////////这里改了，记得改回来
+            if (Name.Contains("BURNIN") || Name.Contains("ALK") || Name.Contains("SetDHCP"))
+            {
+                if (Name.Contains("-"))
+                {
+                    Global.STATIONNO = Name;
+                    Global.FIXTURENAME = Global.STATIONNO;
+
+                    int lastIndex = Global.STATIONNO.LastIndexOf('-');
+                    Global.STATIONNAME = Global.STATIONNO.Substring(0, lastIndex);
+
+                    if (Name.Contains("ALK"))
+                    {
+                        iniConfig.Writeini("Station", "FAIL_CONTINUE", "1");
+                        Global.FAIL_CONTINUE = "1";
+
+                    }
+
+                    return;
+
+                }
+                else
+                {
+
+                    MessageBox.Show($"请检查机台名字是否正确!");
+                    System.Environment.Exit(0);
+                    return;
+                }
+
+            }
+
+
+
+
+
+
+
+            if (Global.FIXTUREFLAG == "0")
+            {
+                FixSerialPort = new Comport(FixCOMinfo);
+                FixSerialPort.OpenCOM();
+
+
+                return;
+            }
+            try
+            {
+
+                FixSerialPort = new Comport(FixCOMinfo);
+                FixSerialPort.OpenCOM();
+
+
+
+
+                string recvStr = "";
+                for (int i = 0; i < 3; i++)
+                {
+                    loggerDebug($"READ_FIXNUM {i}");
+                    if (FixSerialPort.SendCommandToFix("AT+READ_FIXNUM%", ref recvStr, "\r\n", 1))
+
+                    {
+
+
+                        Global.FIXTURENAME = recvStr.Replace("\r\n", "").Trim();
+                        lbl_StationNo.Text = Global.FIXTURENAME;
+                        Global.STATIONNO = Global.FIXTURENAME;
+                        Global.STATIONNAME = Global.FIXTURENAME.Substring(0, Global.FIXTURENAME.IndexOf("-"));
+                        iniConfig.Writeini("Station", "STATIONNAME", Global.STATIONNAME);
+                        iniConfig.Writeini("Station", "STATIONNO", Global.STATIONNO);
+                        // iniConfig.Writeini("Station", "FIXTURENAME", Global.FIXTURENAME);
+                        logger.Debug($"Read fix number success,stationName:{ Global.STATIONNAME}");
+                        break;
+                    }
+
+                    if (i == 2)
+                    {
+
+                        if (!Environment.MachineName.Contains("CCT") && !Environment.MachineName.Contains("ALK"))
+                        {
+                            MessageBox.Show($"Read FixNum error,Please check it!");
+                            System.Environment.Exit(0);
+
+                        }
+
+
+
+
+                        ////CCT
+                        //lbl_StationNo.Text = "CCT-1630";
+                        //Global.STATIONNO = "CCT-1630";
+                        //Global.STATIONNAME = "CCT";
+                        //Global.FIXTURENAME = "CCT-1630";
+                        //iniConfig.Writeini("Station", "STATIONNAME", Global.STATIONNAME);
+                        //iniConfig.Writeini("Station", "STATIONNO", Global.STATIONNO);
+                        //iniConfig.Writeini("Station", "FIXTURENAME", Global.FIXTURENAME);
+
+                    }
+
+                }
+
+                if (Global.STATIONNAME != "CCT" && Global.STATIONNAME != ("ALK"))
+                {
+                    GetPoePort();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}");
+                Application.Exit();
+            }
+        }
+        public void GetFixName2()
         {
             //return;
 
@@ -1624,13 +1861,13 @@ namespace AutoTestSystem
 
            var Name = Environment.MachineName;
 
-           //  Name = "ALK-1640";
+           // Name = "MBFT-1640";
             // Name = "BURNIN-0001";
 
             //Name = "SetDHCP-1000";
 
 
-            if (Name.Contains("BURNIN") || Name.Contains("ALK") || Name.Contains("SetDHCP")) {
+            if (Name.Contains("MBFT") || Name.Contains("ALK") || Name.Contains("SetDHCP")) {
                 if (Name.Contains("-"))
                 {
                     Global.STATIONNO = Name;
@@ -1858,7 +2095,7 @@ namespace AutoTestSystem
             SetTestStatus(TestStatus.START);
         }
 
-        void ResetData() {
+        void ResetData(bool needresetTime = true) {
             mesPhases = new MesPhases();
             stationObj = new Station(SN, Global.FIXTURENAME, Global.STATIONNAME, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Global.TESTMODE, Global.QSDKVER, Global.Version.ToString());
             InitCreateDirs();
@@ -1883,7 +2120,13 @@ namespace AutoTestSystem
             ImageVer = QSDKVER.Substring(QSDKVER.LastIndexOf(".") + 1).ToLower();
             UploadImageIP = Global.UploadImageIP; 
             CSN = "";
-            sec = 0;
+
+            if (needresetTime) {
+                sec = 0;
+            }
+           
+
+
             seqNo = 0;
             itemsNo = 0;
             stationStatus = true;
@@ -1904,7 +2147,7 @@ namespace AutoTestSystem
             ALKBaoYATimeList = new List<string>();
 
 
-        BURNINWAITTIME = Global.BURNINWAITTIME;
+           BURNINWAITTIME = Global.BURNINWAITTIME;
 
             if (Global.STATIONNAME == "BURNIN" && Global.TESTMODE == "production") {
                 WorkOrder = "2";
@@ -1914,11 +2157,10 @@ namespace AutoTestSystem
             CalibrationFail = false;
             uploadJsonSpecialFail = false;
 
-            RFCSV_Cache = new Dictionary<string, string>();
+            RFTempSequenceDict = new Dictionary<string, List<Items>>();
+            RFTempFailItemNameDict = new Dictionary<string, string>();
 
-
-
-               PowerToTelnetStartTime = new DateTime();
+            PowerToTelnetStartTime = new DateTime();
                PowerToTelnetEndTime = new DateTime();
 
             DataManager.ShareInstance.ClearData();
@@ -1941,15 +2183,16 @@ namespace AutoTestSystem
             if (Online_Limit != null) {
                
                 loggerInfo("not get online data");
+
                 return true;
             }
             try
             {
                 if (Global.OnlineLimit.Trim()=="1")
                 {
-                    
-                    
-                    loggerInfo("begin get online data");
+
+
+                    loggerDebug(">>>>>>>>>>>>>>>>>>>>> begin get information");
                     var cookies = new CookieContainer();
                     var client = GetClient(cookies, "luxshare", "bento");
 
@@ -1965,7 +2208,7 @@ namespace AutoTestSystem
                     var response_content = result.Content.ReadAsByteArrayAsync().Result;
                     var responseStr = System.Text.Encoding.UTF8.GetString(response_content);
 
-                    loggerDebug(responseStr);
+                    loggerDebug(">>>>>>>>>>>>>>>>>>>>> res:" + responseStr);
 
 
 
@@ -1989,6 +2232,8 @@ namespace AutoTestSystem
                             rReturn = true;
                         else
                             loggerError($"online limit model or station_type is wrong!");
+
+
                     }
                     else
                         loggerError($"Get online limit fail! statusCode:{result.StatusCode}");
@@ -2002,6 +2247,8 @@ namespace AutoTestSystem
             }
             catch (Exception ex)
             {
+                Online_Limit = null;
+                rReturn = false;
                 loggerFatal($"GetLimit Exception:{ex}");
             }
             return rReturn;
@@ -2059,7 +2306,7 @@ namespace AutoTestSystem
                         break;
 
                     case TestStatus.FAIL:
-                        logger.Info(">>>>>>>>>>>>>>:跳到fail");
+                        logger.Info(">>>>>>>>>>>>>>: jump to fail");
                         if (testStatus == TestStatus.FAIL && SetIPflag)
                         {//SRF 测试失败设回默认IP重测
                             if (DUTCOMM != null) {
@@ -2114,7 +2361,7 @@ namespace AutoTestSystem
                         break;
 
                     case TestStatus.PASS:
-                        logger.Info(">>>>>>>>>>>>>>:跳到pass");
+                        logger.Info(">>>>>>>>>>>>>>:jump to  pass");
                         Global.Total_Pass_Num++;
                         SetButton(this.bt_Status, "PASS", Color.Green);
                         SetButton(this.bt_errorCode, sec.ToString(), Color.Green);
@@ -2159,7 +2406,17 @@ namespace AutoTestSystem
                                   //  DUTCOMM.SendCommand($"umount /mnt", ref recvStr, Global.PROMPT, 10);
                                 }
 
-                                
+
+                                if (Global.STATIONNAME == "RTT" && 
+                                    (Cycle_Count != -1 || AUTOTESTNOFIXUTRE_COUNT!=-1)
+                                    
+                                    )
+                                {
+                                    var revStr = "";
+                                    DUTCOMM.SendCommand("reboot", ref revStr, "", 10);
+                                    Thread.Sleep(30000);
+                                }
+
 
 
 
@@ -2243,6 +2500,15 @@ namespace AutoTestSystem
                                 STAComm.SendCommand("reboot", ref revStr, "", 10);
 
 
+
+
+
+
+
+
+
+
+
                             }
 
 
@@ -2280,6 +2546,8 @@ namespace AutoTestSystem
                                 KillProcessNoRes("QPSTConfig"); //SRF
                                 KillProcessNoRes("BTTestSuite");//SRF
                                 KillProcessNoRes("QPSTServer");//SRF
+                        
+                                
 
                             }
 
@@ -2433,7 +2701,7 @@ namespace AutoTestSystem
 
                                     //找到时间戳最新的那一个，肯定就是刚测试的
                                     var newesFullPath = getNewestFile(snList);
-                                    loggerInfo("<<<<<<<<<<<<<最新的路径:" + newesFullPath);
+                                    loggerInfo("<<<<<<<<<<<<<new path:" + newesFullPath);
                                     var newesName = Path.GetFileName(newesFullPath);
                                     if (newesFullPath.Contains("pass"))
                                     {
@@ -2496,7 +2764,7 @@ namespace AutoTestSystem
                             if (Global.AUTOTESTNOFIXUTRE_COUNT != "-1" && AUTOTESTNOFIXUTRE_COUNT>0)
                             {
                                 AUTOTESTNOFIXUTRE_COUNT = AUTOTESTNOFIXUTRE_COUNT - 1;
-                                logger.Info("等待1s");
+                                logger.Info("wati 1s");
                                 Thread.Sleep(1000);
 
                                 isTestAgain = true;
@@ -2586,7 +2854,7 @@ namespace AutoTestSystem
 
             try
             {
-                loggerInfo("开始上传SFTP");
+                loggerInfo("begin upload SFTP");
                 var CSVFilePath = $@"{Global.LOGFOLDER}\CsvData\{DateTime.Now.AddDays(0).ToString("yyyy-MM-dd")}_{Global.STATIONNO}.csv";
 
                 if (File.Exists(CSVFilePath))
@@ -2611,10 +2879,10 @@ namespace AutoTestSystem
                             sFTP.CreateDir($"/{Global.STATIONNAME}/{Global.STATIONNO}/{Global.TESTMODE.ToLower()}/{day}/{WorkOrder}");
                             sFTP.CreateDir($"/{Global.STATIONNAME}/{Global.STATIONNO}/{Global.TESTMODE.ToLower()}/{day}/{WorkOrder}/{finalTestResult}");
 
-                            logger.Info("上传测试程序csv");
+                            logger.Info("upload csv");
                             sFTP.PutNoClose(CSVFilePath, $"/{Global.STATIONNAME}/{Global.STATIONNO}/{Global.TESTMODE.ToLower()}/{day}/{WorkOrder}/{finalTestResult}/{csvFileName}");
 
-                            logger.Info("上传测试程序log");
+                            logger.Info("upload log");
                             var logName = Path.GetFileName(cellLogPath);
 
                             sFTP.PutNoClose(cellLogPath, $"/{Global.STATIONNAME}/{Global.STATIONNO}/{Global.TESTMODE.ToLower()}/{day}/{WorkOrder}/{finalTestResult}/{logName}");
@@ -2626,7 +2894,7 @@ namespace AutoTestSystem
 
                                 if (ZhuBoPath != null && ZhuBoPath != "")
                                 {
-                                    logger.Info("上传驻波文件");
+                                    logger.Info("upload zhubo files");
                                     sFTP.PutNoClose(ZhuBoPath, $"/{Global.STATIONNAME}/{Global.STATIONNO}/{Global.TESTMODE.ToLower()}/{day}/{WorkOrder}/{finalTestResult}/{Path.GetFileName(ZhuBoPath)}");
                                 }
 
@@ -2646,12 +2914,12 @@ namespace AutoTestSystem
                 }
                 else {
 
-                    loggerError("没有找到csv:"+ CSVFilePath);
+                    loggerError("not find csv:"+ CSVFilePath);
                 }
             }
             catch (Exception ex)
             {
-                loggerInfo("SFTP异常:" + ex.Message);
+                loggerInfo("SFTP Exception:" + ex.Message);
             }
 
         }
@@ -2724,8 +2992,18 @@ namespace AutoTestSystem
                             sequences[seqNo].start_time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                             loggerDebug($"---------Start testSuite:{sequences[seqNo].SeqName}  starttime:{ sequences[seqNo].start_time}----------");
                         }
+                        
+                        
+                        
+                        
                         // 当前测试用例项
                         Items tempItem = sequences[seqNo].SeqItems[itemsNo];
+                      
+                        
+                        
+                        
+                        
+                        
                         // 用于保存item测试结果，生成JSON格式文件
                         phase_items phase_item = new phase_items();
                         // 把测试结果置真,所有的测试步的结果,如果有一个假的测试项结果就会为假
@@ -2868,6 +3146,7 @@ namespace AutoTestSystem
 
                                 for (retry = retryTimes; retry > -1; retry--)
                                 {
+                                    //TestPhase 忽略不计
                                     if (test.StepTest(TestPhase, tempItem, retry, phase_item,ref retry))
                                     {
                                         result = true;
@@ -3024,6 +3303,58 @@ namespace AutoTestSystem
                                     // 测试fail停止测试,生成结果or fail继续测试。
                                     if (!tempItem.tResult && !fail_continue)
                                     {
+
+
+                                        if (Global.STATIONNAME == "RTT")
+                                        {
+                                            if (tempItem.ItemName == "WiFi_SPEED_5650_TX_SERIAL_Repeat"
+                                                ||
+                                               tempItem.ItemName == "WiFi_SPEED_5650_RX_SERIAL_Repeat"
+                                               ||
+                                               tempItem.ItemName == "WiFi_SPEED__TX_SERIAL_Repeat"
+                                               ||
+                                               tempItem.ItemName == "WiFi_SPEED__RX_SERIAL_Repeat"
+                                               ||
+                                               tempItem.ItemName == "PING_GU"
+
+                                                )
+                                            {
+
+                                                RTT_PING_RETRY--;
+                                                if (RTT_PING_RETRY >= 0)
+                                                {
+
+
+                                                    var rr = "";
+                                                    loggerDebug("special fail,begin reboot>>>>>>>>>>>>");
+                                                    DUTCOMM.SendCommand("reboot", ref rr, "", 120);
+
+
+                                                    var STAComm = new Telnet(new TelnetInfo { _Address = "192.168.1.200" });
+                                                    string revStr = "";
+                                                    STAComm.Open("root@OpenWrt:/#");
+                                                    Thread.Sleep(1000);
+                                                    STAComm.SendCommand("reboot", ref revStr, "", 10);
+
+
+
+                                                    //loggerDebug("waiting 35s");
+                                                   // Thread.Sleep(35000);
+                                                   
+
+                                                    sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
+                                                    seqNo = 2;
+                                                    itemsNo = 0;
+                                                    ResetData(false);
+
+                                                    Thread.Sleep(2000);
+                                                    goto TX_RX_RETRY;
+
+                                                }
+
+                                            }
+                                        }
+
                                         //if (Global.STATIONNAME == "SFT")
                                         //{
                                         //    if (tempItem.ItemName == "ETH0_SPEED_TX_Special"
@@ -3075,115 +3406,115 @@ namespace AutoTestSystem
 
 
                                         // if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF")
-                                       //else  if (Global.STATIONNAME == "MBFT")
-                                       // {
-                                       //     if (
-                                       //         tempItem.ErrorCode == "1.4.1.1: Equipment.DUT.Initiate"
-                                       //          || 
-                                       //         tempItem.ErrorCode.Contains("1.4.3.8:")
-                                       //         ) //这种类型的错误要重新开始测试
-                                       //       {
-                                       //         if (
-                                       //             Global.STATIONNAME == "SRF"
-                                       //             ||
-                                       //             (
-                                       //               Global.STATIONNAME == "MBFT" &&
-                                       //               (
-                                       //                 tempItem.ItemName == "Calibration_0_5180"
-                                       //                 ||
-                                       //                 tempItem.ItemName == "Calibration_1_5180"
-                                       //                 ||
-                                       //                 tempItem.ItemName == "Calibration_0_5320"
-                                       //                  ||
-                                       //                 tempItem.ItemName == "Calibration_1_5320"
-                                       //                  ||
-                                       //                 tempItem.ItemName == "Calibration_0_5500"
-                                       //                  ||
-                                       //                 tempItem.ItemName == "Calibration_1_5500"
-                                       //                  ||
-                                       //                 tempItem.ItemName == "Calibration_0_5745"
-                                       //                  ||
-                                       //                 tempItem.ItemName == "Calibration_1_5745"
-                                       //                  ||
-                                       //                 tempItem.ItemName == "WIFI_5G_TX_CAL"
-                                       //                  ||
-                                       //                 tempItem.ItemName == "WIFI_5G_RX_CAL"
-                                       //                  ||
-                                       //                 tempItem.ItemName == "WIFI_2G_RX_CAL"
-                                       //             ||
-                                       //                 tempItem.ItemName == "WIFI_RX_PER_F2412_BW20_MCS0_P-91_C0"
-                                       //             ||
-                                       //                 tempItem.ItemName == "WIFI_RX_PER_F2412_BW20_MCS0_P-91_C1"
-                                       //             ||
-                                       //                 tempItem.ItemName == "WIFI_RX_PER_F2437_BW20_MCS0_P-91_C0"
-                                       //             ||
-                                       //                 tempItem.ItemName == "WIFI_RX_PER_F2437_BW20_MCS0_P-91_C1"
+                                        //else  if (Global.STATIONNAME == "MBFT")
+                                        // {
+                                        //     if (
+                                        //         tempItem.ErrorCode == "1.4.1.1: Equipment.DUT.Initiate"
+                                        //          || 
+                                        //         tempItem.ErrorCode.Contains("1.4.3.8:")
+                                        //         ) //这种类型的错误要重新开始测试
+                                        //       {
+                                        //         if (
+                                        //             Global.STATIONNAME == "SRF"
+                                        //             ||
+                                        //             (
+                                        //               Global.STATIONNAME == "MBFT" &&
+                                        //               (
+                                        //                 tempItem.ItemName == "Calibration_0_5180"
+                                        //                 ||
+                                        //                 tempItem.ItemName == "Calibration_1_5180"
+                                        //                 ||
+                                        //                 tempItem.ItemName == "Calibration_0_5320"
+                                        //                  ||
+                                        //                 tempItem.ItemName == "Calibration_1_5320"
+                                        //                  ||
+                                        //                 tempItem.ItemName == "Calibration_0_5500"
+                                        //                  ||
+                                        //                 tempItem.ItemName == "Calibration_1_5500"
+                                        //                  ||
+                                        //                 tempItem.ItemName == "Calibration_0_5745"
+                                        //                  ||
+                                        //                 tempItem.ItemName == "Calibration_1_5745"
+                                        //                  ||
+                                        //                 tempItem.ItemName == "WIFI_5G_TX_CAL"
+                                        //                  ||
+                                        //                 tempItem.ItemName == "WIFI_5G_RX_CAL"
+                                        //                  ||
+                                        //                 tempItem.ItemName == "WIFI_2G_RX_CAL"
+                                        //             ||
+                                        //                 tempItem.ItemName == "WIFI_RX_PER_F2412_BW20_MCS0_P-91_C0"
+                                        //             ||
+                                        //                 tempItem.ItemName == "WIFI_RX_PER_F2412_BW20_MCS0_P-91_C1"
+                                        //             ||
+                                        //                 tempItem.ItemName == "WIFI_RX_PER_F2437_BW20_MCS0_P-91_C0"
+                                        //             ||
+                                        //                 tempItem.ItemName == "WIFI_RX_PER_F2437_BW20_MCS0_P-91_C1"
 
-                                       //                ||            
-                                       //                 tempItem.ItemName == "BLE_TX_POWER_F2402"
-                                                       
-                                       //               )
-                                                    
+                                        //                ||            
+                                        //                 tempItem.ItemName == "BLE_TX_POWER_F2402"
 
-                                       //             )
-                                       //             ) { 
-                                               
-
-                                       //         SRF_POP_RETRY--;
-                                       //         if (SRF_POP_RETRY >= 0)
-                                       //         {
+                                        //               )
 
 
-                                       //             sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
-                                       //             seqNo = 0;
-                                       //             itemsNo = 0;
+                                        //             )
+                                        //             ) { 
 
 
-                                       //             ResetData();
+                                        //         SRF_POP_RETRY--;
+                                        //         if (SRF_POP_RETRY >= 0)
+                                        //         {
 
 
-                                       //             if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF") {
-                                       //                 //插拔重启
-                                       //                 var recvStr = "";
-                                                         
-
-                                       //                 FixSerialPort.SendCommandToFix("AT+PORTEJECT%", ref recvStr, "OK", 10);
-
-                                       //                 Sleep(500);
-                                       //                 FixSerialPort.SendCommandToFix("AT+PRESSUP%", ref recvStr, "OK", 10);
-                                       //                 Sleep(500);
-                                       //                 FixSerialPort.SendCommandToFix("AT+PRESSDOWN%", ref recvStr, "OK", 10);
-                                       //                 Sleep(500);
-                                       //                 FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
-                                       //             }
-                                                  
+                                        //             sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
+                                        //             seqNo = 0;
+                                        //             itemsNo = 0;
 
 
-                                       //             if (Global.STATIONNAME == "SRF")
-                                       //             {
-                                       //                 KillProcessNoResForce("QCATestSuite"); //SRF
-                                       //                 KillProcessNoResForce("QPSTConfig"); //SRF
-                                       //                 KillProcessNoResForce("BTTestSuite");//SRF
-                                       //             }
+                                        //             ResetData();
 
-                                       //             if (Global.STATIONNAME == "MBFT")
-                                       //             {
-                                       //                 KillProcessNoResForce("ATSuite"); //MBFT
-                                       //                 KillProcessNoResForce("BTTestSuiteRD");//MBFT
-                                       //                 KillProcessNoResForce("QPSTConfig"); //MBFT
-                                       //             }
 
-                                       //             Thread.Sleep(2000);
-                                       //             goto TX_RX_RETRY;
-                                       //         }
-                                       //         }
-                                       //     }
+                                        //             if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF") {
+                                        //                 //插拔重启
+                                        //                 var recvStr = "";
 
-                                       // }
-                                      
-                                        
-                                        
-                                        
+
+                                        //                 FixSerialPort.SendCommandToFix("AT+PORTEJECT%", ref recvStr, "OK", 10);
+
+                                        //                 Sleep(500);
+                                        //                 FixSerialPort.SendCommandToFix("AT+PRESSUP%", ref recvStr, "OK", 10);
+                                        //                 Sleep(500);
+                                        //                 FixSerialPort.SendCommandToFix("AT+PRESSDOWN%", ref recvStr, "OK", 10);
+                                        //                 Sleep(500);
+                                        //                 FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
+                                        //             }
+
+
+
+                                        //             if (Global.STATIONNAME == "SRF")
+                                        //             {
+                                        //                 KillProcessNoResForce("QCATestSuite"); //SRF
+                                        //                 KillProcessNoResForce("QPSTConfig"); //SRF
+                                        //                 KillProcessNoResForce("BTTestSuite");//SRF
+                                        //             }
+
+                                        //             if (Global.STATIONNAME == "MBFT")
+                                        //             {
+                                        //                 KillProcessNoResForce("ATSuite"); //MBFT
+                                        //                 KillProcessNoResForce("BTTestSuiteRD");//MBFT
+                                        //                 KillProcessNoResForce("QPSTConfig"); //MBFT
+                                        //             }
+
+                                        //             Thread.Sleep(2000);
+                                        //             goto TX_RX_RETRY;
+                                        //         }
+                                        //         }
+                                        //     }
+
+                                        // }
+
+
+
+
                                         //else if (Global.STATIONNAME == "RTT")
                                         //{
 
@@ -3229,7 +3560,7 @@ namespace AutoTestSystem
 
                                         //    FixSerialPort.OpenCOM();
                                         //    for (var i = 0; i < 5; i++) {
-                                                
+
                                         //        string recvStr = "";
                                         //        loggerDebug("ENTER_UBOOT Fail,Send LED_W cmd");
                                         //        if (FixSerialPort.SendCommandToFix("AT+LEDSTATUS%", ref recvStr, "%END", 5))
@@ -3255,13 +3586,13 @@ namespace AutoTestSystem
                                         //            {
                                         //                UBOOT_LED_W_ReMSG5 = recvStr;
                                         //            }
-                                                    
+
                                         //        }
                                         //        Thread.Sleep(1000);
                                         //    }
-                                            
 
- 
+
+
                                         //}
 
                                         //if(Global.STATIONNAME=="SFT" && tempItem.ItemName== "ETH0_SPEED_TX")
@@ -3273,7 +3604,7 @@ namespace AutoTestSystem
                                         //    string rr = "";
                                         //    loggerInfo("开始连续ping 10次");
                                         //    if (DUTCOMM.SendCommand("ping -c 10 -I eth0 192.168.1.10", ref rr, "root@OpenWrt:/#", 30)) { 
-                                            
+
                                         //    }
 
                                         //}
@@ -3303,8 +3634,15 @@ namespace AutoTestSystem
                                         //if (tempItem.Json != null && tempItem.Json.ToLower() == "y")
                                         //{ stationObj.tests.Add(phase_item); loggerDebug($"{tempItem.ItemName} add test item to station"); }
                                         // 把testPhase初始化
+                                       
+                                        
+                                        
+                                        
                                         TestPhase = new test_phases();
                                         AddStationResult(false, error_code_firstfail, error_details_firstfail);
+                                      
+                                        
+                                        
                                         if (sequences[seqNo].IsTest)
                                         {
                                             // 上传测试时间到EMS
@@ -3356,8 +3694,6 @@ namespace AutoTestSystem
                                                     PostAsyncJsonToMes();
                                                 }
                                             }
-
-
 
                                            
                                         }
@@ -4004,6 +4340,113 @@ namespace AutoTestSystem
                 }
 
 
+                if (Global.SkipSweep == "1" && (Global.STATIONNAME=="MBFT" ||  Global.STATIONNAME=="SRF"))
+                {
+
+                    for (var i = 0; i < stationObj.tests.Count; i++)
+                    {
+                        var test = stationObj.tests[i];
+
+                        if (test.test_name.Contains("RadioValidation_") || test.test_name.Contains("WiFiTransmitPower")
+                            || test.test_name.Contains("DesenseTest_WiFi")
+                            || test.test_name.Contains("RadioValidation_Zigbee")
+
+                            ) {
+
+                            var Name = Regex.Replace(test.test_name, "Compile", "");
+
+
+                            if (RFTempSequenceDict.ContainsKey(Name)) {
+
+                                foreach (var testItem in RFTempSequenceDict[Name]) {
+                                   phase_items phaseItems = new phase_items();
+                                   phaseItems.CopyFrom(true, testItem, true);
+                                   phaseItems.start_time = test.start_time;
+                                   phaseItems.finish_time = test.finish_time;
+                                   if (RFTempFailItemNameDict.ContainsKey(Name)) {
+                                        var value = RFTempFailItemNameDict[Name];
+                                        if (phaseItems.test_name == value) {
+
+                                            phaseItems.status = "failed";
+                                        
+                                        }
+
+                                   }
+                        
+                                   stationObj.tests.Add(phaseItems);
+
+                                   
+                                }
+                            
+                            }
+
+                        }
+
+                    }
+                    if (Global.STATIONNAME == "MBFT")
+                    {
+                        //移除辅助测试项
+                        stationObj.tests.RemoveAll(test => test.test_name.Contains("RadioValidation_"));
+                    }
+                    else {
+
+                        //移除辅助测试项
+                        stationObj.tests.RemoveAll(test => test.test_name.Contains("WiFiTransmitPower"));
+                        //移除辅助测试项
+                        stationObj.tests.RemoveAll(test => test.test_name.Contains("DesenseTest_WiFi"));
+
+                    }
+                    stationObj.tests.RemoveAll(test => test.test_name.Contains("RadioValidation_Zigbee"));
+
+
+                }
+
+
+ 
+                //如果是失败，进一步过滤一下，防止出现重复的测试项
+                if (stationObj.status == "failed") {
+                    //移除tests中的重复项
+                    stationObj.tests = stationObj.tests
+                    .GroupBy(test => test.test_name)
+                    .Select(group => group.Last())
+                    .ToList();
+
+
+                    //进一步处理，防止uploadjson fail
+
+                    foreach (var item in stationObj.tests)
+                    {
+
+                        if (item.status == "failed")
+                        {
+
+
+                            var r = false;
+                            var limit = UpdateLimitFromOnline(item.test_name, ref r);
+                            if (r)
+                            {
+                                logger.Debug($"更新limit,upperlimit={limit.upper_limit},lowerlimit={limit.lower_limit}");
+                                item.upper_limit = limit.upper_limit;
+                                item.lower_limit = limit.lower_limit;
+
+                            }
+
+                        }
+
+
+                    }
+
+
+
+                }
+
+
+
+
+
+
+
+
                 if (!JsonSerializer(stationObj, out string JsonStr, JsonPath))
                 {
                     loggerError("Serialize station Json info error!!!...");
@@ -4068,7 +4511,32 @@ namespace AutoTestSystem
 
             return result;
         }
+        public Limit UpdateLimitFromOnline(string itemName, ref bool findFlag)
+        {
 
+            Limit limit = null;
+            foreach (var lim in Online_Limit.limits)
+            {
+                if (lim.test_name == itemName)
+                {
+                    if (lim.model.ToLower() == DutMode.ToLower() && lim.station_type.ToLower() == Global.STATIONNAME.ToLower())
+                    {
+
+                        limit = lim;
+                        findFlag = true;
+                        break;
+                    }
+                    else
+                        logger.Info($"{itemName} found, but {lim.model},{lim.station_type} is match.");
+                }
+            }
+            if (!findFlag)
+            {
+                logger.Info($"{itemName} not found in online limit");
+            }
+            return limit;
+
+        }
         public bool UploadJson(string JsonFilePath)
         {
             if (Global.STATIONNAME == "BURNIN" || Global.STATIONNAME.ToLower() == "revert")
@@ -4452,75 +4920,7 @@ namespace AutoTestSystem
             }
         }
 
-        /// <summary>
-        /// 收集测试数据到CSV文件.
-        /// </summary>
-        //private void CollectResultToCsv()
-        //{
-        //    List<string[]> testDataList = new List<String[]>();
-        //    //CSVFilePath = $@"{Global.LOGFOLDER}\CsvData\{DateTime.Now.ToString("yyyy-MM-dd--HH")}-00-00_{Global.STATIONNO}.csv";
-        //    string csvColumnPath = $@"{Environment.CurrentDirectory}\Config\CSV_COLUMN.txt";
-        //    //CSVFilePath = $@"{Environment.CurrentDirectory}\Output\{DateTime.Now.ToString("yyyy-MM-dd")}_{Global.STATIONNO}.csv";
-        //    CSVFilePath = $@"{Global.LOGFOLDER}\CsvData\{DateTime.Now.ToString("yyyy-MM-dd")}_{Global.STATIONNO}.csv";
-        //    try
-        //    {
-        //        SetButtonPro(buttonBegin, Properties.Resources.start);
-        //        SetButtonPro(buttonExit, Properties.Resources.close);
-
-        //        ArrayListCsvHeader.InsertRange(0, new string[] {
-        //         "UBOOT_LED_W_ReMSG1","UBOOT_LED_W_ReMSG2","UBOOT_LED_W_ReMSG3","UBOOT_LED_W_ReMSG4","UBOOT_LED_W_ReMSG5","FIXTURE_CLOSE","DUT_PING" , "AT-ScanTimeSpan","DEVICE_TYPE", "STATION_TYPE", "FACILITY_ID", "LINE_ID", "FIXTURE_ID", "DUT_POSITION", "SN", "FW_VERSION",  "HW_REVISION", "SW_VERSION",  "START_TIME", "TEST_DURATION","DUT_TEST_RESULT", "FIRST_FAIL", "ERROR_CODE", "TIME_ZONE", "TEST_DEBUG", "JSON_UPLOAD", "MES_UPLOAD",
-        //            });
-        //        File.Delete(csvColumnPath);
-        //        using (StreamWriter sw = new StreamWriter(csvColumnPath, true, Encoding.Default))
-        //        {
-        //            foreach (var item in ArrayListCsvHeader)
-        //                sw.Write(item + "\t");
-        //        }
-        //        bool updateColumn = finalTestResult.ToUpper() == "PASS" && !IsDebug;
-        //        CreatCSVFile(CSVFilePath, csvColumnPath, updateColumn);
-
-
-        //        TimeSpan timeSpan = Global.time1.Subtract(Global.time2).Duration();
-        //        var timeSpanStr = timeSpan.TotalMilliseconds + " ms";
-        //        // loggerInfo(">>>>>>>>>>>>>>治具按下-获取SN时间间隔:" + timeSpan.TotalMilliseconds + " ms");
-        //        UBOOT_LED_W_ReMSG1 = Regex.Replace(UBOOT_LED_W_ReMSG1, " ", "");
-        //        UBOOT_LED_W_ReMSG2 = Regex.Replace(UBOOT_LED_W_ReMSG2, " ", "");
-        //        UBOOT_LED_W_ReMSG3 = Regex.Replace(UBOOT_LED_W_ReMSG3, " ", "");
-        //        UBOOT_LED_W_ReMSG4 = Regex.Replace(UBOOT_LED_W_ReMSG4, " ", "");
-        //        UBOOT_LED_W_ReMSG5 = Regex.Replace(UBOOT_LED_W_ReMSG5, " ", "");
-
-
-        //        UBOOT_LED_W_ReMSG1 = Regex.Replace(UBOOT_LED_W_ReMSG1, "\r", "");
-        //        UBOOT_LED_W_ReMSG2 = Regex.Replace(UBOOT_LED_W_ReMSG2, "\r", "");
-        //        UBOOT_LED_W_ReMSG3 = Regex.Replace(UBOOT_LED_W_ReMSG3, "\r", "");
-        //        UBOOT_LED_W_ReMSG4 = Regex.Replace(UBOOT_LED_W_ReMSG4, "\r", "");
-        //        UBOOT_LED_W_ReMSG5 = Regex.Replace(UBOOT_LED_W_ReMSG5, "\r", "");
-
-        //        UBOOT_LED_W_ReMSG1 = Regex.Replace(UBOOT_LED_W_ReMSG1, "\n", "");
-        //        UBOOT_LED_W_ReMSG2 = Regex.Replace(UBOOT_LED_W_ReMSG2, "\n", "");
-        //        UBOOT_LED_W_ReMSG3 = Regex.Replace(UBOOT_LED_W_ReMSG3, "\n", "");
-        //        UBOOT_LED_W_ReMSG4 = Regex.Replace(UBOOT_LED_W_ReMSG4, "\n", "");
-        //        UBOOT_LED_W_ReMSG5 = Regex.Replace(UBOOT_LED_W_ReMSG5, "\n", "");
-
-        //        UBOOT_LED_W_ReMSG1 = Regex.Replace(UBOOT_LED_W_ReMSG1, ",", "$");
-        //        UBOOT_LED_W_ReMSG2 = Regex.Replace(UBOOT_LED_W_ReMSG2, ",", "$");
-        //        UBOOT_LED_W_ReMSG3 = Regex.Replace(UBOOT_LED_W_ReMSG3, ",", "$");
-        //        UBOOT_LED_W_ReMSG4 = Regex.Replace(UBOOT_LED_W_ReMSG4, ",", "$");
-        //        UBOOT_LED_W_ReMSG5 = Regex.Replace(UBOOT_LED_W_ReMSG5, ",", "$");
-
-        //        ArrayListCsv.InsertRange(0, new string[] {
-        //         UBOOT_LED_W_ReMSG1,UBOOT_LED_W_ReMSG2,UBOOT_LED_W_ReMSG3,UBOOT_LED_W_ReMSG4,UBOOT_LED_W_ReMSG5 ,MainForm.f1.FIXTURE_TIME,MainForm.f1.DUT_PING_TIME   , timeSpanStr,  DutMode, Global.STATIONNAME, "Luxshare", WorkOrder, Global.FIXTURENAME, "1", SN, mesPhases.FW_VERSION, mesPhases.HW_REVISION, mesPhases.test_software_version, startTime.ToString("yyyy/MM/dd HH:mm:ss"), sec.ToString(), finalTestResult, mesPhases.FIRST_FAIL, error_details_firstfail, "UTC", (Global.TESTMODE == "debug" || Global.TESTMODE.ToLower() == "fa") ? "1" : "0", mesPhases.JSON_UPLOAD, mesPhases.MES_UPLOAD,
-        //            });
-        //        testDataList.Add(ArrayListCsv.ToArray());
-        //        WriteCSV(CSVFilePath, true, testDataList);
-        //        testDataList.Clear();
-        //        loggerDebug($"Export test results to {CSVFilePath} succeed");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        loggerFatal($"Export test results to CSVFilePath error!:{ ex.Message} ");
-        //    }
-        //}
+       
 
         private void CollectResultToCsv()
         {

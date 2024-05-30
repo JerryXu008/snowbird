@@ -2,7 +2,9 @@
 using InTheHand.Net;
 using InTheHand.Net.Bluetooth;
 using InTheHand.Net.Sockets;
+using KAutoHelper;
 using log4net;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using PDUSPAPI;
 using System;
@@ -33,8 +35,9 @@ namespace AutoTestSystem.BLL
 
         public  static string  TempCellLogPath = "\\Temp.txt";
 
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern int GetWindowText(IntPtr hWnd, IntPtr lpString, int nMaxCount);
 
-        
 
 
         /// <summary>
@@ -148,6 +151,76 @@ namespace AutoTestSystem.BLL
         {
             logger.Fatal(txt);
             SaveLog(txt);
+        }
+
+
+        public static void MonitorClickZhuBo(string processName) {
+
+            string windows_title = null;
+            Process[] processes = Process.GetProcesses();
+
+            foreach (Process process in processes)
+            {
+                if (process.ProcessName.Equals(processName, StringComparison.OrdinalIgnoreCase))
+                {
+                    IntPtr mainWindowHandle = process.MainWindowHandle;
+                    if (mainWindowHandle != IntPtr.Zero)
+                    {
+                        const int nChars = 256;
+                        IntPtr buffer = Marshal.AllocHGlobal(nChars * 2);
+                        GetWindowText(mainWindowHandle, buffer, nChars);
+                        windows_title = Marshal.PtrToStringUni(buffer);
+                        Marshal.FreeHGlobal(buffer);
+                    }
+                }
+                else {
+                    loggerDebug("can not find " + processName);
+                }
+            }
+
+            IntPtr hWnd = IntPtr.Zero;
+            hWnd = AutoControl.FindWindowHandle(null, windows_title);
+            if (hWnd != null && hWnd != IntPtr.Zero)
+            {
+                var childhWnd = AutoControl.FindHandle(hWnd, null, "Stop");
+                if (childhWnd != null && childhWnd != IntPtr.Zero)
+                {
+                    logger.Debug($"模拟{processName} 点击Stop");
+
+                    AutoControl.SendClickOnControlByHandle(childhWnd);
+                }
+            }
+            else {
+
+                logger.Debug($"未找到{processName} 句柄");
+            }
+            
+           
+
+        }
+
+        public static void DisableUSB()
+        {
+
+            //禁用USB
+            const string keyName = "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\USBSTOR";
+            const string valueName = "Start";
+
+
+            try
+            {
+                // 设置注册表键值为 4，禁用 USB 存储设备
+                Registry.SetValue(keyName, valueName, 4, RegistryValueKind.DWord);
+                logger.Info("usb disabled ok");
+
+            }
+            catch (Exception ex)
+            {
+                logger.Info("usb disabled Error:" + ex.Message);
+
+            }
+
+
         }
 
         public static void SaveLog(string log, int type = 1)
@@ -747,7 +820,7 @@ namespace AutoTestSystem.BLL
         ///     结束进程
         /// </summary>
         /// <param name="processName"></param>
-        public static bool KillProcess(string processName)
+        public static bool KillProcess(string processName,string fileName = "")
         {
             try
             {
@@ -762,9 +835,15 @@ namespace AutoTestSystem.BLL
                   //  loggerDebug($"准备杀死程序 :{processName}...");
                     thisProc.Kill();
                     loggerDebug($"Kill process: {processName}...");
-                   
+
+                    if (fileName != "") {
+                        loggerDebug($"another way kill again");
+                        RunDosCmd($"taskkill /IM { Path.GetFileName(fileName)} /F");
+                    }
+                    
+
                     if (processName == "userspace_speedtest") {
-                        loggerDebug($"dos 命令再杀一次");
+                        loggerDebug($"dos kill agagin");
                         RunDosCmd("taskkill /IM userspace_speedtest.exe /F");
                     }
                     
@@ -788,8 +867,7 @@ namespace AutoTestSystem.BLL
 
         public static void KillProcessNoResForce(string processName)
         {
-            loggerInfo("准备要杀死:" + processName);
-
+          
              
             RunDosCmd("taskkill /IM " + processName + ".exe" + " /F");
             RunDosCmd("taskkill /IM " + processName + ".exe" + " /F");
@@ -805,9 +883,16 @@ namespace AutoTestSystem.BLL
 
         public static bool KillProcessNoRes(string processName)
         {
-            loggerInfo("准备杀死:" + processName);
+            loggerInfo("ready to kill:" + processName);
             try
             {
+
+                if (processName == "BTTestSuiteRD" || processName == "ATSuite" || processName == "QCATestSuite" || processName == "BTTestSuite") {
+                    MonitorClickZhuBo(processName);
+                    Thread.Sleep(1000);
+                }
+
+             
                 //Process[] localAll = Process.GetProcesses();
                 var myProc = Process.GetProcessesByName(processName); //获取所有进程
                 //if (myProc.Length == 0) return true;
@@ -823,7 +908,7 @@ namespace AutoTestSystem.BLL
 
                     if (processName == "userspace_speedtest")
                     {
-                        loggerDebug($"dos 命令再杀一次");
+                        loggerDebug($"dos kill again");
                         RunDosCmd("taskkill /IM userspace_speedtest.exe /F");
                     }
                     if (processName == "QCATestSuite") {
@@ -833,7 +918,7 @@ namespace AutoTestSystem.BLL
 
 
                     if (Global.STATIONNAME == "SRF" || Global.STATIONNAME == "MBFT") {
-                        loggerDebug($"dos 命令再杀一次");
+                        loggerDebug($"dos kill again");
                         RunDosCmd("taskkill /IM "+ processName+ ".exe" + " /F");
                     }
                     
@@ -857,7 +942,7 @@ namespace AutoTestSystem.BLL
 
         public static bool KillProcessHaveRes(string processName)
         {
-            loggerInfo("准备杀死:" + processName);
+            loggerInfo("ready to kill:" + processName);
             try
             {
                 //Process[] localAll = Process.GetProcesses();
@@ -875,13 +960,13 @@ namespace AutoTestSystem.BLL
 
                     if (processName == "userspace_speedtest")
                     {
-                        loggerDebug($"dos 命令再杀一次");
+                        loggerDebug($"dos kill again");
                         RunDosCmd("taskkill /IM userspace_speedtest.exe /F");
                     }
 
                     if (Global.STATIONNAME == "SRF" || Global.STATIONNAME == "MBFT")
                     {
-                        loggerDebug($"dos 命令再杀一次");
+                        loggerDebug($"dos kill again");
                         RunDosCmd("taskkill /IM " + processName + ".exe" + " /F");
                     }
 
@@ -957,7 +1042,7 @@ namespace AutoTestSystem.BLL
             try
             {
                 FileInfo fileInfo = new FileInfo(fileName);
-                if (KillProcess(processName))
+                if (KillProcess(processName,fileName))
                 {
                     if (fileInfo.Directory != null)
                     {
@@ -1253,7 +1338,7 @@ namespace AutoTestSystem.BLL
         }
         public static void StartSFTPSever(string ip = "", string port = "8090")
         {
-            loggerInfo($">>>>>>>>>>启动: iperf3 -B {ip} -s -p{port}");
+            loggerInfo($">>>>>>>>>>start: iperf3 -B {ip} -s -p{port}");
             Process SFTPSeverProcess = new Process();
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;

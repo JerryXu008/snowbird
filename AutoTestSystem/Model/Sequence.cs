@@ -79,6 +79,57 @@ namespace AutoTestSystem.Model
             start_time_json = new DateTime();
             start_time = new DateTime();
         }
+
+
+        public void CopyFrom(Items model) {
+
+
+            this.testNumber = model.testNumber;                                //!当前测试项序列号
+            this.tResult = model.tResult;                               //!测试项测试结果
+            this.isTest = model.isTest;                                //!是否测试,不测试的跳过
+            this.startIndex = model.startIndex;                                //!需要执行的step index
+            this.start_time_json = model.start_time_json;               //!测试项的开始时间
+            this.start_time = model.start_time;
+
+            this.ItemName = model.ItemName;   //当前测试step名字
+            this.ErrorCode = model.ErrorCode;  //测试错误码
+            this.RetryTimes = model.RetryTimes; //测试失败retry次数
+            this.TimeOut = model.TimeOut;    //测试步骤超时时间
+            this.SubStr1 = model.SubStr1;    //截取字符串 如截取abc中的b SubStr1=a，SubStr2=c
+            this.SubStr2 = model.SubStr2;
+            this.IfElse = model.IfElse;     //测试步骤结果是否做为if条件，决定else步骤是否执行
+            this.For = model.For;        //循环测试for(6)开始6次循环，ENDFOR结束
+            this.Mode = model.Mode;       //机种，根据机种决定哪些用例不跑，哪些用例需要跑
+            this.ComdOrParam = model.ComdOrParam;   //发送的测试命令
+            this.ExpectStr = model.ExpectStr;  //期待的提示符，用来判断反馈是不是结束了
+            this.CheckStr1 = model.CheckStr1;  //检查反馈是否包含CheckStr1
+            this.CheckStr2 = model.CheckStr2;  //检查反馈是否包含CheckStr2
+            this.Limit_max = model.Limit_max;  //最小限值
+            this.testValue = model.testValue;  //测试得到的值
+            this.Limit_min = model.Limit_min;  //最大限值
+            this.ElapsedTime = model.ElapsedTime; //测试步骤耗时
+            this.ErrorDetails = model.ErrorDetails; //测试错误码详细描述
+            this.Unit = model.Unit;       //测试值单位
+            this.MES_var = model.MES_var;    //上传MES信息的变量名字
+            this.ByPassFail = model.ByPassFail;     //手动人为控制测试结果 1=pass，0||空=fail
+            this.FTC = model.FTC;        //失败继续 fail to continue。1=继续，0||空=不继续
+            this.TestKeyword = model.TestKeyword;  //测试步骤对应的关键字，执行对应关键字下的代码段         
+            this.Spec = model.Spec;        //测试定义的Spec值
+            this.error_code = model.error_code;
+            this.Json = model.Json;
+            this.EeroName = model.EeroName;
+            this.NoContain = model.NoContain;
+            this.SpecStatic = model.SpecStatic;
+
+
+    }
+
+
+
+
+
+
+
     }
 
     public class MesInfo

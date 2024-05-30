@@ -892,7 +892,7 @@
         "start_time_json": "0001-01-01T00:00:00",
         "start_time": "0001-01-01T00:00:00",
         "ItemName": "LoadBZTFirmware",
-        "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
+        "ErrorCode": "3.5.3 Device.Bluetooth.Version",
         "RetryTimes": "0",
         "TimeOut": "30",
         "SubStr1": "",
@@ -929,7 +929,7 @@
         "start_time_json": "0001-01-01T00:00:00",
         "start_time": "0001-01-01T00:00:00",
         "ItemName": "QorvoPTC",
-        "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
+        "ErrorCode": "3.5.3 Device.Bluetooth.Version",
         "RetryTimes": "0",
         "TimeOut": "30",
         "SubStr1": "",
@@ -12378,7 +12378,7 @@
     "IsTest": true,
     "IsTestFinished": false,
     "TestResult": true,
-    "TotalNumber": 9,
+    "TotalNumber": 3,
     "TestSerial": 17,
     "TestVersion": null,
     "SystemName": null,
@@ -12493,9 +12493,23 @@
         "EeroName": "BZT_TEST_INSTRUMENT_OK",
         "NoContain": "",
         "SpecStatic": ""
-      },
+      }
+    ],
+    "start_time": null,
+    "finish_time": null
+  },
+  {
+    "SeqName": "RadioValidation_Zigbee",
+    "IsTest": true,
+    "IsTestFinished": false,
+    "TestResult": true,
+    "TotalNumber": 12,
+    "TestSerial": 18,
+    "TestVersion": null,
+    "SystemName": null,
+    "SeqItems": [
       {
-        "testNumber": 3,
+        "testNumber": 0,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -12532,7 +12546,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 4,
+        "testNumber": 1,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -12569,7 +12583,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 5,
+        "testNumber": 2,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -12606,7 +12620,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 6,
+        "testNumber": 3,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -12643,7 +12657,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 7,
+        "testNumber": 4,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -12680,7 +12694,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 8,
+        "testNumber": 5,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -12715,23 +12729,9 @@
         "EeroName": "BLE_RX_PER_F2480_P-91",
         "NoContain": "",
         "SpecStatic": ""
-      }
-    ],
-    "start_time": null,
-    "finish_time": null
-  },
-  {
-    "SeqName": "RadioValidation_Zigbee",
-    "IsTest": true,
-    "IsTestFinished": false,
-    "TestResult": true,
-    "TotalNumber": 6,
-    "TestSerial": 18,
-    "TestVersion": null,
-    "SystemName": null,
-    "SeqItems": [
+      },
       {
-        "testNumber": 0,
+        "testNumber": 6,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -12768,7 +12768,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 1,
+        "testNumber": 7,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -12805,7 +12805,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 2,
+        "testNumber": 8,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -12842,7 +12842,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 3,
+        "testNumber": 9,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -12879,7 +12879,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 4,
+        "testNumber": 10,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -12916,7 +12916,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 5,
+        "testNumber": 11,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,

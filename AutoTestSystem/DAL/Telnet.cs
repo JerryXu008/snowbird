@@ -623,7 +623,7 @@ namespace AutoTestSystem.DAL
                             return true;
                         }
 
-                        loggerError($"Send command:{command},waiting for:{dataToWaitFor},TimeOut({timeout}), FAIL!!!");
+                        loggerError($"Send command:{command},waiting for:{dataToWaitFor},TimeOut({timeout}), FAIL2!!!");
                         PingIP(HostIP, 10);
                         strWorkingData = "";
                         return false;
@@ -715,7 +715,9 @@ namespace AutoTestSystem.DAL
             }
             catch (ObjectDisposedException)
             {
-                if (Open(Global.PROMPT))
+
+                loggerError(">>>>>>>>>>>>>连接出现异常，开始尝试重新连接telnet");
+                if (Open(Global.PROMPT)) 
                 {
                     return SendCommand(cmd, ref recvStr, waitforStr, timeout);
                 }
