@@ -2524,7 +2524,7 @@ namespace AutoTestSystem.Model
                           }
                         break;
 
-
+                        
 
 
 
@@ -2656,10 +2656,6 @@ namespace AutoTestSystem.Model
 
                                         else if (itemSingle.ItemName.ToLower().Contains("tx_power"))
                                         {
-
-
-
-
 
 
                                             try
@@ -3132,8 +3128,6 @@ namespace AutoTestSystem.Model
                                 item.ItemName = item.ItemName + "-" + item.CheckStr1;
                             }
 
-
-
                             /// MBFT
                             for (int i = 1; i < csvLines.Length; i++)
                             {
@@ -3142,6 +3136,8 @@ namespace AutoTestSystem.Model
                             
                                     //5G ,  TX   , 0/1 ,   5775 ,    HE_SU-MCS13/NA ,  
                                     if ((temp[0] == item.TestKeyword.Substring(0, 2) && temp[1] == item.SubStr1 && temp[4] == item.SubStr2 && temp[5].Trim() == item.ComdOrParam && temp[6].Trim() == item.ExpectStr)
+                                    
+                                    
                                     && (temp[21].Trim() == item.CheckStr1 || IsNullOrEmpty(item.CheckStr1)))
                                 {
                                     loggerInfo($"find test result in csv line{i + 1}.testResult={temp[46]}");
@@ -4101,7 +4097,35 @@ namespace AutoTestSystem.Model
                         break;
 
 
-                     
+                    case "SRFTempScrap":
+                        bool found2 = false;
+                        for (int i = 0; i < csvLines.Length; i++)
+                        {
+                            string[] temp = csvLines[i].Split(new char[] { ',' }, StringSplitOptions.None);
+                            if (temp[0].Trim() == item.ItemName.Trim())
+                            {
+                                found2 = true;
+                                loggerDebug($"Get tempSensorTest:{temp[0]},{temp[1]}");
+                                item.testValue = Math.Round(double.Parse(temp[1].Trim())).ToString();
+                                rReturn = true;
+                                // 需要比较Limit
+                                if (!String.IsNullOrEmpty(item.Limit_min) || !String.IsNullOrEmpty(item.Limit_max))
+                                {
+                                    rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                                }
+
+                                break;
+
+                            }
+                        }
+                        if (found2 == false)
+                        {
+                            loggerDebug($"not found {item.ItemName}");
+                        }
+
+
+
+                        break;
 
 
 
@@ -4821,8 +4845,14 @@ namespace AutoTestSystem.Model
                                         return rReturn = false;
                                     }
                                     else {
-                                        //item.testValue = Math.Round(double.Parse(item.testValue)).ToString(); //取整
-                                        item.testValue = Math.Round(double.Parse(item.testValue)/1000).ToString();
+                                        if (item.ComdOrParam.Trim() == "cat /sys/class/thermal/thermal_zone3/temp")
+                                        {
+                                            item.testValue = Math.Round(double.Parse(item.testValue) / 1000).ToString();
+                                        }
+                                        else
+                                        {
+                                            item.testValue = Math.Round(double.Parse(item.testValue)).ToString(); //取整
+                                        }
                                     }
                                         
                                 }
@@ -5562,15 +5592,52 @@ namespace AutoTestSystem.Model
             phaseItem.CopyFrom(specFlag, item, rReturn);
             stationObj.tests.Add(phaseItem);
             loggerDebug($"{item.ItemName} add test item to station");
-            if (Global.SkipSweep == "1" && (item.ItemName == "RadioValidation_5GTest" || item.ItemName == "RadioValidation_6GTest" || item.ItemName == "RadioValidation_2GTest"))
+
+
+
+            if (Global.SkipSweep == "1"
+
+                 &&
+
+                 (
+
+
+                 item.ItemName == "RadioValidation_5GCompile"
+
+                 ||
+                 item.ItemName == "RadioValidation_2GCompile"
+
+
+                 ||
+
+                 item.ItemName == "RadioValidation_6GCompile"
+
+                 ||
+
+                 item.ItemName == "WiFiTransmitPowerCompile"
+
+                 ||
+                 item.ItemName == "DesenseTest_WiFiCompile"
+
+
+                 ||
+
+                 item.ItemName == "RadioValidation_ZigbeeCompile")
+
+
+
+
+                 )
             {
 
+
             }
-            else {
+            else
+            {
                 CollectionCSVRowData(item);
 
             }
-           
+
 
 
         }

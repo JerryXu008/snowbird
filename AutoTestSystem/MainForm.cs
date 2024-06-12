@@ -447,7 +447,8 @@ namespace AutoTestSystem
                                     ShowFixtureTip2 usbDialog = new ShowFixtureTip2();
                                     usbDialog.TextHandler = (str) => { };
                                     usbDialog.StartPosition = FormStartPosition.CenterScreen;
-                                    usbDialog.ShowTip("pathloss上传时间距离到期时间超过1周了，请注意");
+                                    usbDialog.ShowTip("pathloss到期时间还剩下1周，请注意\r\nCòn 1 tuần nữa là hết hạn pathloss, các bạn lưu ý nhé");
+
 
 
                                     //// 设置窗体为无边框样式
@@ -462,7 +463,7 @@ namespace AutoTestSystem
                                     ShowFixtureTip2 usbDialog = new ShowFixtureTip2();
                                     usbDialog.TextHandler = (str) => { };
                                     usbDialog.StartPosition = FormStartPosition.CenterScreen;
-                                    usbDialog.ShowTip("pathloss上传时间距离到期时间超过1个月了，程序无法运行");
+                                    usbDialog.ShowTip("pathloss已过期，程序将无法使用\r\npathloss đã hết hạn và chương trình sẽ không thể sử dụng được");
 
 
                                     //// 设置窗体为无边框样式

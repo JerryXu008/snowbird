@@ -174,7 +174,7 @@ namespace AutoTestSystem.BLL
                     }
                 }
                 else {
-                    loggerDebug("can not find " + processName);
+                    //loggerDebug("can not find " + processName);
                 }
             }
 

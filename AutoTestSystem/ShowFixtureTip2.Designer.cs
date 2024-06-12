@@ -30,7 +30,6 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
-            this.btnNo = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -46,35 +45,23 @@
             // btnOK
             // 
             this.btnOK.Location = new System.Drawing.Point(238, 829);
-            this.btnOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnOK.Margin = new System.Windows.Forms.Padding(4);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(172, 84);
+            this.btnOK.Size = new System.Drawing.Size(609, 84);
             this.btnOK.TabIndex = 2;
             this.btnOK.Text = "YES";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.确定_Click);
             // 
-            // btnNo
-            // 
-            this.btnNo.Location = new System.Drawing.Point(508, 829);
-            this.btnNo.Margin = new System.Windows.Forms.Padding(4);
-            this.btnNo.Name = "btnNo";
-            this.btnNo.Size = new System.Drawing.Size(172, 84);
-            this.btnNo.TabIndex = 3;
-            this.btnNo.Text = "NO";
-            this.btnNo.UseVisualStyleBackColor = true;
-            this.btnNo.Click += new System.EventHandler(this.btnNo_Click);
-            // 
-            // ShowFixtureTip
+            // ShowFixtureTip2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1230, 957);
-            this.Controls.Add(this.btnNo);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.label1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.Name = "ShowFixtureTip";
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Name = "ShowFixtureTip2";
             this.Text = "按钮下压提示";
             this.Load += new System.EventHandler(this.USBConfirmDialog_Load);
             this.ResumeLayout(false);
@@ -87,6 +74,5 @@
         #endregion
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Button btnNo;
     }
 }
