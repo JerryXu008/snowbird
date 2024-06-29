@@ -666,7 +666,7 @@ namespace AutoTestSystem
             // lbl_failCount
             // 
             this.lbl_failCount.AutoEllipsis = true;
-           // this.lbl_failCount.AutoSize = true;
+            // this.lbl_failCount.AutoSize = true;
             this.lbl_failCount.BackColor = System.Drawing.Color.White;
             this.lbl_failCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lbl_failCount.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -731,9 +731,9 @@ namespace AutoTestSystem
             // contextMenuStripRightKey
             // 
             this.contextMenuStripRightKey.ImageScalingSize = new System.Drawing.Size(20, 20);
-            
-            
-            
+
+
+
             this.contextMenuStripRightKey.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
                   this.ConsumbleMenuItem,
                   this.ConsumbleMenuItem2,

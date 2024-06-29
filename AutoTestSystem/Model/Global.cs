@@ -117,6 +117,11 @@ namespace AutoTestSystem.Model
 
         public static string LeakCOM;
 
+
+        public static string LeakTwoCOM1;
+        public static string LeakTwoCOM2;
+
+
         public static DateTime time1;
         public static DateTime time2;
 
@@ -132,7 +137,12 @@ namespace AutoTestSystem.Model
         public static string UploadImageIP;
 
         public static string SkipSweep;
-      
+
+
+        public static string NoiseLowLimit;
+
+        public static string NoiseUpperLimit;
+
 
         /// <summary>
         /// 把STATIONALL所有Excel测试用例转换成Json文件格式
@@ -534,8 +544,20 @@ namespace AutoTestSystem.Model
                 CalTreeName = iniConfig.Readini("TMORFTest", "CalTreeName").Trim();
                 VerTreeName = iniConfig.Readini("TMORFTest", "CalTreeName").Trim();
 
-                LeakCOM = iniConfig.Readini("LEAKTEST", " LeakCOM").Trim();
+                LeakCOM = iniConfig.Readini("LEAKTEST", "LeakCOM").Trim();
 
+
+                LeakTwoCOM1 = iniConfig.Readini("LEAKTEST", "LeakTwoCOM1").Trim();
+
+                LeakTwoCOM2 = iniConfig.Readini("LEAKTEST", "LeakTwoCOM2").Trim();
+
+
+
+                NoiseLowLimit = iniConfig.Readini("NOISETEST", "NoiseLowLimit").Trim();
+
+                NoiseUpperLimit = iniConfig.Readini("NOISETEST", "NoiseUpperLimit").Trim();
+
+ 
 
                 //#if DEBUG
                 try

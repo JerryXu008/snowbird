@@ -92,9 +92,6 @@
     <None Include="GGC3510233370103_P1_Cal_ver_sweep_Test_Report.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="test222.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="test.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

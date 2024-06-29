@@ -574,12 +574,63 @@
     "finish_time": null
   },
   {
-    "SeqName": "ReadLuxQsdkVersion",
+    "SeqName": "ReadBoardRegisterValue",
     "IsTest": true,
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 1,
     "TestSerial": 4,
+    "TestVersion": null,
+    "SystemName": null,
+    "SeqItems": [
+      {
+        "testNumber": 0,
+        "tResult": true,
+        "isTest": true,
+        "startIndex": 0,
+        "start_time_json": "0001-01-01T00:00:00",
+        "start_time": "0001-01-01T00:00:00",
+        "ItemName": "NODEPROPERTY_BOARD_REGISTER_VALUE",
+        "ErrorCode": "8.9:UBootError.BRV",
+        "RetryTimes": "5",
+        "TimeOut": "3",
+        "SubStr1": "OK!",
+        "SubStr2": "root",
+        "IfElse": "",
+        "For": "",
+        "Mode": "",
+        "ComdOrParam": "luxshare_tool -v hw",
+        "ExpectStr": "root@OpenWrt:/#",
+        "CheckStr1": "OK!",
+        "CheckStr2": "",
+        "Limit_max": "",
+        "testValue": null,
+        "Limit_min": "",
+        "ElapsedTime": null,
+        "ErrorDetails": null,
+        "Unit": "",
+        "MES_var": "HW_REVISION",
+        "ByPassFail": "",
+        "FTC": "",
+        "TestKeyword": "ReadBoardRegisterValue",
+        "Spec": "00001",
+        "error_code": "",
+        "Json": "y",
+        "EeroName": "NODEPROPERTY_BOARD_REGISTER_VALUE",
+        "NoContain": null,
+        "SpecStatic": ""
+      }
+    ],
+    "start_time": null,
+    "finish_time": null
+  },
+  {
+    "SeqName": "ReadLuxQsdkVersion",
+    "IsTest": true,
+    "IsTestFinished": false,
+    "TestResult": true,
+    "TotalNumber": 1,
+    "TestSerial": 5,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -630,7 +681,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 2,
-    "TestSerial": 5,
+    "TestSerial": 6,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -718,7 +769,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 1,
-    "TestSerial": 6,
+    "TestSerial": 7,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -769,7 +820,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 4,
-    "TestSerial": 7,
+    "TestSerial": 8,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -931,7 +982,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 9,
-    "TestSerial": 8,
+    "TestSerial": 9,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -1278,7 +1329,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 12,
-    "TestSerial": 9,
+    "TestSerial": 10,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -1736,7 +1787,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 2,
-    "TestSerial": 10,
+    "TestSerial": 11,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -1823,8 +1874,8 @@
     "IsTest": true,
     "IsTestFinished": false,
     "TestResult": true,
-    "TotalNumber": 26,
-    "TestSerial": 11,
+    "TotalNumber": 29,
+    "TestSerial": 12,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -1897,13 +1948,124 @@
         "TestKeyword": "default",
         "Spec": "",
         "error_code": "",
-        "Json": "y",
+        "Json": "",
         "EeroName": "ENABLE_5G_WIFI",
         "NoContain": null,
         "SpecStatic": ""
       },
       {
         "testNumber": 2,
+        "tResult": true,
+        "isTest": true,
+        "startIndex": 0,
+        "start_time_json": "0001-01-01T00:00:00",
+        "start_time": "0001-01-01T00:00:00",
+        "ItemName": "SampleTelnetLogin",
+        "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
+        "RetryTimes": "3-1",
+        "TimeOut": "10",
+        "SubStr1": "",
+        "SubStr2": "",
+        "IfElse": "",
+        "For": "",
+        "Mode": "",
+        "ComdOrParam": "192.168.1.200",
+        "ExpectStr": "root@OpenWrt:/#",
+        "CheckStr1": "",
+        "CheckStr2": "",
+        "Limit_max": "",
+        "testValue": null,
+        "Limit_min": "",
+        "ElapsedTime": null,
+        "ErrorDetails": null,
+        "Unit": "",
+        "MES_var": "",
+        "ByPassFail": "",
+        "FTC": "",
+        "TestKeyword": "SampleTelnetLogin",
+        "Spec": "",
+        "error_code": "",
+        "Json": "",
+        "EeroName": "ENABLE_5G_WIFI",
+        "NoContain": null,
+        "SpecStatic": ""
+      },
+      {
+        "testNumber": 3,
+        "tResult": true,
+        "isTest": true,
+        "startIndex": 0,
+        "start_time_json": "0001-01-01T00:00:00",
+        "start_time": "0001-01-01T00:00:00",
+        "ItemName": "ENABLE_5G_WIFI_GU",
+        "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
+        "RetryTimes": "3-1",
+        "TimeOut": "30",
+        "SubStr1": "",
+        "SubStr2": "",
+        "IfElse": "",
+        "For": "",
+        "Mode": "",
+        "ComdOrParam": "ifconfig ath0 down",
+        "ExpectStr": "root@OpenWrt:/#",
+        "CheckStr1": "",
+        "CheckStr2": "",
+        "Limit_max": "",
+        "testValue": null,
+        "Limit_min": "",
+        "ElapsedTime": null,
+        "ErrorDetails": null,
+        "Unit": "",
+        "MES_var": "",
+        "ByPassFail": "",
+        "FTC": "",
+        "TestKeyword": "SampleTelnetCmd",
+        "Spec": "",
+        "error_code": "",
+        "Json": "",
+        "EeroName": "ENABLE_5G_WIFI",
+        "NoContain": null,
+        "SpecStatic": ""
+      },
+      {
+        "testNumber": 4,
+        "tResult": true,
+        "isTest": true,
+        "startIndex": 0,
+        "start_time_json": "0001-01-01T00:00:00",
+        "start_time": "0001-01-01T00:00:00",
+        "ItemName": "ENABLE_5G_WIFI_2_GU",
+        "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
+        "RetryTimes": "3-1",
+        "TimeOut": "30",
+        "SubStr1": "",
+        "SubStr2": "",
+        "IfElse": "",
+        "For": "",
+        "Mode": "",
+        "ComdOrParam": "ifconfig ath1 up",
+        "ExpectStr": "root@OpenWrt:/#",
+        "CheckStr1": "",
+        "CheckStr2": "",
+        "Limit_max": "",
+        "testValue": null,
+        "Limit_min": "",
+        "ElapsedTime": null,
+        "ErrorDetails": null,
+        "Unit": "",
+        "MES_var": "",
+        "ByPassFail": "",
+        "FTC": "",
+        "TestKeyword": "SampleTelnetCmd",
+        "Spec": "",
+        "error_code": "",
+        "Json": "y",
+        "EeroName": "ENABLE_5G_WIFI",
+        "NoContain": null,
+        "SpecStatic": ""
+      },
+      {
+        "testNumber": 5,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1940,7 +2102,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 3,
+        "testNumber": 6,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1977,7 +2139,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 4,
+        "testNumber": 7,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2014,7 +2176,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 5,
+        "testNumber": 8,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2051,7 +2213,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 6,
+        "testNumber": 9,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2088,7 +2250,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 7,
+        "testNumber": 10,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2125,7 +2287,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 8,
+        "testNumber": 11,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2162,7 +2324,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 9,
+        "testNumber": 12,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2199,7 +2361,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 10,
+        "testNumber": 13,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2236,7 +2398,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 11,
+        "testNumber": 14,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2273,7 +2435,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 12,
+        "testNumber": 15,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2310,7 +2472,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 13,
+        "testNumber": 16,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2347,7 +2509,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 14,
+        "testNumber": 17,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2384,7 +2546,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 15,
+        "testNumber": 18,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2421,7 +2583,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 16,
+        "testNumber": 19,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2458,7 +2620,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 17,
+        "testNumber": 20,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2495,7 +2657,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 18,
+        "testNumber": 21,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2532,7 +2694,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 19,
+        "testNumber": 22,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2569,7 +2731,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 20,
+        "testNumber": 23,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2606,7 +2768,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 21,
+        "testNumber": 24,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2643,7 +2805,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 22,
+        "testNumber": 25,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2680,7 +2842,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 23,
+        "testNumber": 26,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2717,7 +2879,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 24,
+        "testNumber": 27,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2754,7 +2916,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 25,
+        "testNumber": 28,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2799,8 +2961,8 @@
     "IsTest": true,
     "IsTestFinished": false,
     "TestResult": true,
-    "TotalNumber": 25,
-    "TestSerial": 12,
+    "TotalNumber": 28,
+    "TestSerial": 13,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -2873,13 +3035,124 @@
         "TestKeyword": "default",
         "Spec": "",
         "error_code": "",
-        "Json": "y",
+        "Json": "",
         "EeroName": "ENABLE_2G_WIFI",
         "NoContain": null,
         "SpecStatic": ""
       },
       {
         "testNumber": 2,
+        "tResult": true,
+        "isTest": true,
+        "startIndex": 0,
+        "start_time_json": "0001-01-01T00:00:00",
+        "start_time": "0001-01-01T00:00:00",
+        "ItemName": "SampleTelnetLogin",
+        "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
+        "RetryTimes": "3-1",
+        "TimeOut": "10",
+        "SubStr1": "",
+        "SubStr2": "",
+        "IfElse": "",
+        "For": "",
+        "Mode": "",
+        "ComdOrParam": "192.168.1.200",
+        "ExpectStr": "root@OpenWrt:/#",
+        "CheckStr1": "",
+        "CheckStr2": "",
+        "Limit_max": "",
+        "testValue": null,
+        "Limit_min": "",
+        "ElapsedTime": null,
+        "ErrorDetails": null,
+        "Unit": "",
+        "MES_var": "",
+        "ByPassFail": "",
+        "FTC": "",
+        "TestKeyword": "SampleTelnetLogin",
+        "Spec": "",
+        "error_code": "",
+        "Json": "",
+        "EeroName": "ENABLE_2G_WIFI",
+        "NoContain": null,
+        "SpecStatic": ""
+      },
+      {
+        "testNumber": 3,
+        "tResult": true,
+        "isTest": true,
+        "startIndex": 0,
+        "start_time_json": "0001-01-01T00:00:00",
+        "start_time": "0001-01-01T00:00:00",
+        "ItemName": "ENABLE_2G_WIFI_GU",
+        "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
+        "RetryTimes": "3-1",
+        "TimeOut": "30",
+        "SubStr1": "",
+        "SubStr2": "",
+        "IfElse": "",
+        "For": "",
+        "Mode": "",
+        "ComdOrParam": "ifconfig ath0 up",
+        "ExpectStr": "root@OpenWrt:/#",
+        "CheckStr1": "",
+        "CheckStr2": "",
+        "Limit_max": "",
+        "testValue": null,
+        "Limit_min": "",
+        "ElapsedTime": null,
+        "ErrorDetails": null,
+        "Unit": "",
+        "MES_var": "",
+        "ByPassFail": "",
+        "FTC": "",
+        "TestKeyword": "SampleTelnetCmd",
+        "Spec": "",
+        "error_code": "",
+        "Json": "",
+        "EeroName": "ENABLE_2G_WIFI",
+        "NoContain": null,
+        "SpecStatic": ""
+      },
+      {
+        "testNumber": 4,
+        "tResult": true,
+        "isTest": true,
+        "startIndex": 0,
+        "start_time_json": "0001-01-01T00:00:00",
+        "start_time": "0001-01-01T00:00:00",
+        "ItemName": "ENABLE_2G_WIFI_2_GU",
+        "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
+        "RetryTimes": "3-1",
+        "TimeOut": "30",
+        "SubStr1": "",
+        "SubStr2": "",
+        "IfElse": "",
+        "For": "",
+        "Mode": "",
+        "ComdOrParam": "ifconfig ath1 down",
+        "ExpectStr": "root@OpenWrt:/#",
+        "CheckStr1": "",
+        "CheckStr2": "",
+        "Limit_max": "",
+        "testValue": null,
+        "Limit_min": "",
+        "ElapsedTime": null,
+        "ErrorDetails": null,
+        "Unit": "",
+        "MES_var": "",
+        "ByPassFail": "",
+        "FTC": "",
+        "TestKeyword": "SampleTelnetCmd",
+        "Spec": "",
+        "error_code": "",
+        "Json": "y",
+        "EeroName": "ENABLE_2G_WIFI",
+        "NoContain": null,
+        "SpecStatic": ""
+      },
+      {
+        "testNumber": 5,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2916,7 +3189,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 3,
+        "testNumber": 6,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2953,7 +3226,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 4,
+        "testNumber": 7,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2990,7 +3263,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 5,
+        "testNumber": 8,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3027,7 +3300,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 6,
+        "testNumber": 9,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3064,7 +3337,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 7,
+        "testNumber": 10,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3101,7 +3374,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 8,
+        "testNumber": 11,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3138,7 +3411,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 9,
+        "testNumber": 12,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3175,7 +3448,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 10,
+        "testNumber": 13,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3212,7 +3485,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 11,
+        "testNumber": 14,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3249,7 +3522,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 12,
+        "testNumber": 15,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3286,7 +3559,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 13,
+        "testNumber": 16,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3323,7 +3596,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 14,
+        "testNumber": 17,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3360,7 +3633,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 15,
+        "testNumber": 18,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3397,7 +3670,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 16,
+        "testNumber": 19,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3434,7 +3707,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 17,
+        "testNumber": 20,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3471,7 +3744,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 18,
+        "testNumber": 21,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3508,7 +3781,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 19,
+        "testNumber": 22,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3545,7 +3818,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 20,
+        "testNumber": 23,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3582,7 +3855,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 21,
+        "testNumber": 24,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3619,7 +3892,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 22,
+        "testNumber": 25,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3656,7 +3929,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 23,
+        "testNumber": 26,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3693,7 +3966,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 24,
+        "testNumber": 27,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -3739,7 +4012,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 1,
-    "TestSerial": 13,
+    "TestSerial": 14,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -3790,7 +4063,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 3,
-    "TestSerial": 14,
+    "TestSerial": 15,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -3915,7 +4188,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 20,
-    "TestSerial": 15,
+    "TestSerial": 16,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [
@@ -4669,7 +4942,7 @@
     "IsTestFinished": false,
     "TestResult": true,
     "TotalNumber": 10,
-    "TestSerial": 16,
+    "TestSerial": 17,
     "TestVersion": null,
     "SystemName": null,
     "SeqItems": [

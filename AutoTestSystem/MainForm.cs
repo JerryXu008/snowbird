@@ -122,7 +122,7 @@ namespace AutoTestSystem
         bool isTestAgain = false;
         int AUTOTESTNOFIXUTRE_COUNT = -1;
 
-      
+        public  static bool NoiseGlobalReturn = false;
 
       
 
@@ -201,8 +201,17 @@ namespace AutoTestSystem
 
         //ALK 气压值和 泄漏值
 
-        public static int Pressure2 = -1;
+        public static int Pressure2 = -1;   
         public static int AirLeakValue = -1;
+
+
+
+        public static int Machine1_Pressure2 = -1;
+        public static double Machine1_Freq = -1;
+
+
+        public static int Machine2_Pressure2 = -1;
+        public static int Machine2_AirLeakValue = -1;
 
 
         public static List<string> ALKBaoYAValueList = new List<string>();
@@ -253,20 +262,72 @@ namespace AutoTestSystem
         {
 
 
-            //var jsonString = @"C:\Users\17114024\Desktop\test.json";
-            //var text = File.ReadAllText(jsonString);
-            //// 反序列化JSON字符串为Station对象
-            //var station = JsonConvert.DeserializeObject<Station>(text);
 
 
-            ////移除tests中的重复项
-            //station.tests = station.tests
-            //    .GroupBy(test => test.test_name)
-            //    .Select(group => group.Last())
-            //    .ToList();
+            ////先输入数值
+            //InutMEASPOP usbDialog2 = new InutMEASPOP();
+
+            //usbDialog2.lowLimit = "35.1";
+            //usbDialog2.highLimit = "89.9";
+            //double value = -1;
+            //usbDialog2.TextHandler = (str) => {
+
+            //    value = double.Parse(str);
+            //};
+            //usbDialog2.StartPosition = FormStartPosition.CenterScreen;
+            //usbDialog2.TopMost = true;
+            //usbDialog2.ShowTip("Please record sound level");
+            //usbDialog2.ShowDialog();
 
 
-            //int ii = 0;
+
+
+
+            //// 获取当前可执行文件的路径
+            //string exeFilePath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            //// 配置文件路径（假设在同一目录下）
+            //string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory+"/config", "config.ini");
+
+            //// 计算当前可执行文件的MD5校验码
+            //string exeMd5 = GetMD5HashFromFile(exeFilePath);
+            //// 计算配置文件的MD5校验码
+            //string configMd5 = GetMD5HashFromFile(configFilePath);
+
+            //// 打印MD5校验码
+            //Console.WriteLine("Executable MD5: " + exeMd5);
+            //Console.WriteLine("Config.ini MD5: " + configMd5);
+
+            //// 将两个或更多MD5校验码组合起来，计算最终的MD5校验码
+            //string combinedMd5 = GetCombinedMd5(exeMd5, configMd5);
+
+            //// 打印最终的MD5校验码
+            //Console.WriteLine("Final Combined MD5: " + combinedMd5);
+
+
+
+
+            //TestingNoise usbDialog = new TestingNoise();
+
+            //var result = "";
+            //usbDialog.TextHandler = (str) => {
+
+            //    result = str;
+            //};
+
+            //usbDialog.StartPosition = FormStartPosition.CenterScreen;
+            //usbDialog.ShowTip();
+
+
+            ////// 设置窗体为无边框样式
+            //usbDialog.FormBorderStyle = FormBorderStyle.None;
+            //// 最大化窗体
+            //usbDialog.WindowState = FormWindowState.Maximized;
+
+            //usbDialog.TopMost = true;
+
+            //usbDialog.ShowDialog();
+
+
 
 
 
@@ -306,7 +367,14 @@ namespace AutoTestSystem
             f1.Text = f1.Text + " V" + Global.Version;
             string LocalIP = Bd.GetAllIpv4Address("10.90."); //电脑时区设置，显示本机IP地址，方便远程桌面。
             lb_IPaddress.Text += LocalIP;
-            this.textBox1.MaxLength = Global.SN_LENGTH;
+
+
+
+             
+
+               // this.textBox1.MaxLength = Global.SN_LENGTH;
+           
+            
 #if DEBUG
 #else
             if (!RunDosCmd("tzutil /g").Contains("China Standard"))
@@ -852,9 +920,22 @@ namespace AutoTestSystem
             }
               
         }
+        private bool CheckALKBSN(string ScanSN)
+        {
 
+            if (ScanSN.Trim().Length != 21) {
+                MessageBox.Show($"SN matching rule is wrong ,Please find TE!", "SN Match Rule", 0, MessageBoxIcon.Error);
+                return false;
+            }
+            if (!ScanSN.StartsWith("353")) {
+                MessageBox.Show($"SN matching rule is wrong ,Please find TE!", "SN Match Rule", 0, MessageBoxIcon.Error);
+                return false;
+            }
+         
+            return true;
+        }
 
-        private bool CheckSNRole(string ScanSN)
+            private bool CheckSNRole(string ScanSN)
         {
 
 
@@ -862,22 +943,22 @@ namespace AutoTestSystem
             ScanSN = ScanSN.Replace('\n', ' ');
             ScanSN = ScanSN.Trim();
 
-            // 检查扫描的SN的长度
-            if (ScanSN.Length != Global.SN_LENGTH && !IsDebug)
-            {
-                MessageBox.Show($"SN:{ScanSN} length {ScanSN.Length} is wrong,{Global.SN_LENGTH} is right.Please Scan again!", "SN Length Fail", 0, MessageBoxIcon.Error);
+            //// 检查扫描的SN的长度
+            //if (ScanSN.Length != Global.SN_LENGTH && !IsDebug)
+            //{
+            //    MessageBox.Show($"SN:{ScanSN} length {ScanSN.Length} is wrong,{Global.SN_LENGTH} is right.Please Scan again!", "SN Length Fail", 0, MessageBoxIcon.Error);
 
 
-                //this.Invoke((MethodInvoker)delegate {
-                //    lblErrorMsg.Text = $"SN:{ScanSN} length {ScanSN.Length} is wrong,{Global.SN_LENGTH} is right.Please Scan again!";
+            //    //this.Invoke((MethodInvoker)delegate {
+            //    //    lblErrorMsg.Text = $"SN:{ScanSN} length {ScanSN.Length} is wrong,{Global.SN_LENGTH} is right.Please Scan again!";
 
-                //});
-
-
+            //    //});
 
 
-                return false;
-            }
+
+
+            //    return false;
+            //}
             // 根据扫描的SN判断机种
             if (!JudgeProdMode(ScanSN))
             {
@@ -992,20 +1073,30 @@ namespace AutoTestSystem
             }
 
                  
-
-
-
-          
-
+       
 
             // 扫描SN
             string ScanSN = textBox1.Text.Trim().TrimEnd(new char[] { '\n', '\t', '\r' }).ToUpper();
 
 
-            if (!CheckSNRole(ScanSN))
+
+            if (Global.STATIONNAME != "ALKB")
             {
-                return false;
+                if (!CheckSNRole(ScanSN)) 
+                {
+                    return false;
+                }
+
             }
+            else {
+
+                if (!CheckALKBSN(ScanSN))
+                {
+                    return false;
+                }
+                
+            }
+            
 
             StartScanFlag = false;
 
@@ -1423,17 +1514,41 @@ namespace AutoTestSystem
                 return;
             }
 
-
-
-
-
-
             isTestAgain = false;
+
+
+
+
+
+   
+
+
 
 
 
             // 扫描SN
             string ScanSN = textBox1.Text.Trim().TrimEnd(new char[] { '\n', '\t', '\r' }).ToUpper();
+
+
+            if (Global.STATIONNAME != "ALKB")
+            {
+                if (!CheckSNRole(ScanSN))
+                {
+                    return;
+                }
+
+            }
+            else
+            {
+
+                if (!CheckALKBSN(ScanSN))
+                {
+                    return;
+                }
+
+            }
+
+
 
 
             if (Global.STATIONNAME == "BURNIN" && Global.TESTMODE == "production")
@@ -1515,11 +1630,13 @@ namespace AutoTestSystem
             
            
             // 检查扫描的SN的长度
-            if (ScanSN.Length != Global.SN_LENGTH && !IsDebug)
-            {
-                MessageBox.Show($"SN:{ScanSN} length {ScanSN.Length} is wrong,{Global.SN_LENGTH} is right.Please Scan again!", "SN Length Fail", 0, MessageBoxIcon.Error);
-                SetTextBox(textBox1); return;
-            }
+            //if (ScanSN.Length != Global.SN_LENGTH && !IsDebug)
+            //{
+            //    MessageBox.Show($"SN:{ScanSN} length {ScanSN.Length} is wrong,{Global.SN_LENGTH} is right.Please Scan again!", "SN Length Fail", 0, MessageBoxIcon.Error);
+            //    SetTextBox(textBox1); return;
+            //}
+
+
             // 根据扫描的SN判断机种
             if (!JudgeProdMode(ScanSN)) return;
             // 检查SN规则是否正确
@@ -1671,6 +1788,12 @@ namespace AutoTestSystem
         /// </summary>
         public bool JudgeProdMode(string sn, bool isJudge = true)
         {
+
+
+            if (sn.Length == 21) {
+                return true;
+            }
+
             bool rReturn = true;
             if (isJudge && !string.IsNullOrEmpty(sn))
             {
@@ -1730,20 +1853,24 @@ namespace AutoTestSystem
 
             var Name = Environment.MachineName;
 
-           //  Name = "SRF-1640";
+
             // Name = "BURNIN-0001";
 
             //Name = "SetDHCP-1000";
 
+            //Name = "NOISETEST-1111";
 
+            //Global.STATIONNO = Name;
+            //Global.FIXTURENAME = Global.STATIONNO;
 
+            //int lastIndex2 = Global.STATIONNO.LastIndexOf('-');
+            //Global.STATIONNAME = Global.STATIONNO.Substring(0, lastIndex2);
 
+            //return;
 
-
-
-
+            //MessageBox.Show(Name);
             ///////////////////////////这里改了，记得改回来
-            if (Name.Contains("BURNIN") || Name.Contains("ALK") || Name.Contains("SetDHCP"))
+            if (Name.Contains("BURNIN") || Name.Contains("ALK") || Name.Contains("SETDHCP") || Name.Contains("NOISETEST"))
             {
                 if (Name.Contains("-"))
                 {
@@ -2137,6 +2264,11 @@ namespace AutoTestSystem
             ZhuBoPath = "";
             SSID_2G = "2G_" + Global.STATIONNO;
             SSID_5G = "5G_" + Global.STATIONNO;
+
+           // SSID_2G = "2G_FA"  ;
+           // SSID_5G = "5G_FA";
+
+
             MD52G = "xxx";
             MD55G = "xxx";
             retry = 0;
@@ -2144,6 +2276,17 @@ namespace AutoTestSystem
 
            Pressure2 = -1;
            AirLeakValue = -1;
+
+
+            Machine1_Pressure2 = -1;
+            Machine1_Freq = -1;
+
+
+            Machine2_Pressure2 = -1;
+            Machine2_AirLeakValue = -1;
+
+
+
             ALKBaoYAValueList = new List<string>();
             ALKBaoYATimeList = new List<string>();
 
@@ -2164,6 +2307,8 @@ namespace AutoTestSystem
             PowerToTelnetStartTime = new DateTime();
                PowerToTelnetEndTime = new DateTime();
 
+            NoiseGlobalReturn = false;
+
             DataManager.ShareInstance.ClearData();
         }
 
@@ -2172,7 +2317,7 @@ namespace AutoTestSystem
         {
 
             
-            if (Global.STATIONNAME == "BURNIN" || Global.STATIONNAME.ToLower() == "revert")
+            if (Global.STATIONNAME == "BURNIN" || Global.STATIONNAME.ToLower() == "revert" || Global.STATIONNAME.ToLower() == "noisetest")
             {
 
                 return true;
@@ -2416,6 +2561,7 @@ namespace AutoTestSystem
                                     var revStr = "";
                                     DUTCOMM.SendCommand("reboot", ref revStr, "", 10);
                                     Thread.Sleep(30000);
+
                                 }
 
 
@@ -2423,6 +2569,12 @@ namespace AutoTestSystem
 
                                 DUTCOMM.Close();
                             }
+
+                            if (Global.STATIONNAME == "NOISETEST")
+                            {
+                               // PowerCycleOutletWPS(int.Parse(Global.WPSPortNum));
+                            }
+
                             // 无论测试pass/fail，都弹出治具
                             if (Global.FIXTUREFLAG == "1")
                             {
@@ -2459,7 +2611,13 @@ namespace AutoTestSystem
 
                                         if (testStatus == TestStatus.FAIL || testStatus == TestStatus.PASS) {
                                             loggerInfo("pop up fixture");
-                                            FixSerialPort.SendCommandToFix("AT+TESTEND%", ref recvStr, "OK", 5);
+
+
+                                           // if (testStatus == TestStatus.PASS) {
+                                                FixSerialPort.SendCommandToFix("AT+TESTEND%", ref recvStr, "OK", 5);
+                                           // }
+                                           
+                                           
                                         }
 
                                         if (Global.STATIONNAME == "MBFT")
@@ -2480,11 +2638,14 @@ namespace AutoTestSystem
                             if (testStatus != TestStatus.PASS) {
                                 if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF" || Global.STATIONNAME == "BURNIN")
                                 {
-                                   // loggerInfo("失败了连续ping 10次");
-                                   // PingIP("192.168.1.1", 10);
+                                     loggerInfo("失败了连续ping 10次");
+                                     PingIP("192.168.1.1", 10);
                                 }
+                                else if(Global.STATIONNAME=="MBLT") {
 
-
+                                  //  loggerInfo("失败了连续ping 10次");
+                                  //  PingIP("192.168.1.10", 10);
+                                }
 
 
 
@@ -2493,22 +2654,67 @@ namespace AutoTestSystem
                             if (Global.STATIONNAME == "RTT")
                             {
 
-                                loggerDebug("reboot Sample");
-                                var STAComm = new Telnet(new TelnetInfo { _Address = "192.168.1.200" });
-                                string revStr = "";
-                                STAComm.Open("root@OpenWrt:/#");
-                                Thread.Sleep(1000);
-                                STAComm.SendCommand("reboot", ref revStr, "", 10);
+                                try
+                                {
+
+
+                                    
+                                    var STAComm = new Telnet(new TelnetInfo { _Address = "192.168.1.200" });
+                                    string revStr = "";
+                                    STAComm.Open("root@OpenWrt:/#");
+                                    Thread.Sleep(1000);
+
+
+                                    STAComm.SendCommand("cat /sys/class/thermal/thermal_zone3/temp", ref revStr, "root@OpenWrt:/#", 10);
+
+
+                                    var testValue = GetValue(revStr, "temp", "root");
+
+                                    if (testValue == "") {
+                                        testValue = "0";
+                                    }
+
+                                    testValue = Math.Round(double.Parse(testValue) / 1000).ToString();
+
+                                    var CSVFilePathRTTTemp = $@"{Global.LOGFOLDER}\CsvData\{DateTime.Now.ToString("yyyy-MM-dd")}_{Global.STATIONNO}_RTTGUTemp.csv";
 
 
 
+                                    string sn = SN;
+                                    string result = testStatus == TestStatus.PASS ? "PASS" : "FAIL";
+
+
+                                    string temperature = testValue;
 
 
 
+                                    string errorCode = testStatus == TestStatus.PASS ? "" : error_details_firstfail;
+
+                                    // 检查文件是否存在
+                                    bool fileExists = File.Exists(CSVFilePathRTTTemp);
+
+                                    // 打开文件
+                                    using (StreamWriter writer = new StreamWriter(CSVFilePathRTTTemp, true, Encoding.UTF8))
+                                    {
+                                        // 如果文件不存在，写入列头
+                                        if (!fileExists)
+                                        {
+                                            writer.WriteLine("SN,Result,Temp,errocode");
+                                        }
+
+                                        // 写入数据
+                                        writer.WriteLine($"{sn},{result},{temperature},{errorCode}");
+                                    }
 
 
+                                   // loggerDebug("reboot Sample");
+                                   // STAComm.SendCommand("reboot", ref revStr, "", 10);
+                                }
+                                catch (Exception ex) {
 
-
+                                    loggerError("RTT GU Read Temp Fail: " + ex.Message);
+                                
+                                }
 
                             }
 
@@ -2849,7 +3055,7 @@ namespace AutoTestSystem
         {
 
 
-            if (Global.STATIONNAME == "CCT") {
+            if (Global.STATIONNAME == "CCT" || Global.STATIONNAME== "NOISETEST") {
                 return;
             }
 
@@ -3322,6 +3528,7 @@ namespace AutoTestSystem
                                             {
 
                                                 RTT_PING_RETRY--;
+                                                RTT_PING_RETRY = -1;
                                                 if (RTT_PING_RETRY >= 0)
                                                 {
 
@@ -4514,6 +4721,10 @@ namespace AutoTestSystem
         }
         public Limit UpdateLimitFromOnline(string itemName, ref bool findFlag)
         {
+            if (Online_Limit == null) {
+
+                return null;
+            }
 
             Limit limit = null;
             foreach (var lim in Online_Limit.limits)
@@ -4540,7 +4751,13 @@ namespace AutoTestSystem
         }
         public bool UploadJson(string JsonFilePath)
         {
-            if (Global.STATIONNAME == "BURNIN" || Global.STATIONNAME.ToLower() == "revert")
+            if (Global.STATIONNAME == "BURNIN" 
+                || Global.STATIONNAME.ToLower() == "revert" 
+                || Global.STATIONNAME == "NOISETEST"
+
+                 || Global.STATIONNAME == "ALKB"
+
+                )
             {
 
                 return true;
@@ -4763,8 +4980,16 @@ namespace AutoTestSystem
                 }
                 else
                 {
+                    if (Global.STATIONNAME != "NOISETEST")
+                    {
+                        mesUrl = $"http://{Global.MESIP}:{Global.MESPORT}/api/2/serial/{SN}/station/{Global.FIXTURENAME}/info";
+                    }
+                    else {
+                        var ip = "172.23.33.132";
+                        var port =  Global.MESPORT ;
+                        mesUrl = $"http://{ip}:{port}/api/2/serial/{SN}/station/{Global.FIXTURENAME}/info";
 
-                    mesUrl = $"http://{Global.MESIP}:{Global.MESPORT}/api/2/serial/{SN}/station/{Global.FIXTURENAME}/info";
+                    }
                 }
                 
                 
@@ -4820,7 +5045,15 @@ namespace AutoTestSystem
                 {
                     SetLables(lbl_failCount, responseBody.ToString(), Color.Red);
                 }
-                else if (responseBody.ToLower().Contains("未将对象引用设置到对象的实例"))
+                else if (responseBody.Contains("未将对象引用设置到对象的实例"))
+                {
+                    SetLables(lbl_failCount, responseBody.ToString(), Color.Red);
+                    mesPhases.MES_UPLOAD = "FALSE";
+                    result = false;
+
+
+                }
+                else if (responseBody.Contains("SN HOLD"))
                 {
                     SetLables(lbl_failCount, responseBody.ToString(), Color.Red);
                     mesPhases.MES_UPLOAD = "FALSE";

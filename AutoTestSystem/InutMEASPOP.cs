@@ -16,8 +16,16 @@ namespace AutoTestSystem
         public delegate void TextEventHandler(string strText);
 
         public TextEventHandler TextHandler;
+        static int initTimeCount = 60;
+
+        System.Windows.Forms.Timer countdownTimer = new System.Windows.Forms.Timer();
+        int counter;
 
 
+
+
+        public string lowLimit = "";
+        public string highLimit = "";
         public InutMEASPOP()
         {
             InitializeComponent();
@@ -72,15 +80,51 @@ namespace AutoTestSystem
             label1.Font = new Font("Arial", 24, FontStyle.Bold);
 
 
+            lblTime.Text = initTimeCount.ToString();
+            lblTime.TextAlign = ContentAlignment.MiddleCenter;
 
+            // 设置标签的位置和大小，这里的100, 50是标签的宽度和高度
+            lblTime.SetBounds(textBox1.Bounds.X+100,textBox1.Bounds.Y+30,textBox1.Bounds.Width,textBox1.Bounds.Height);
+
+            // 设置标签的字体和大小
+            lblTime.Font = new Font("Arial", 12, FontStyle.Bold);
+
+
+
+            counter = initTimeCount;
+
+            countdownTimer.Interval = 1000; // Timer will tick every second
+            countdownTimer.Tick += new EventHandler(countdownTimer_Tick);
+            countdownTimer.Start(); // Start the timer
 
         }
 
-
-
-        public void ShowTip()
+        private void countdownTimer_Tick(object sender, EventArgs e)
         {
-            label1.Text = "请输入阻抗值\r\nVui lòng nhập giá trị trở kháng:";
+            if (counter > 0)
+            {
+                counter--;
+                lblTime.Text = counter.ToString();
+            }
+            else
+            {
+                countdownTimer.Stop();
+                
+
+            }
+        }
+
+
+        public void ShowTip(string text="")
+        {
+            if (text == "")
+            {
+                label1.Text = "请输入阻抗值\r\nVui lòng nhập giá trị trở kháng:";
+            }
+            else {
+                label1.Text = text;
+
+            }
 
         }
         private void label1_Click(object sender, EventArgs e)
@@ -123,15 +167,36 @@ namespace AutoTestSystem
 
                 if (double.TryParse(input, out doubleValue))
                 {
+
+                    if (lowLimit != "") {
+                        if (doubleValue < double.Parse(lowLimit)) {
+                            return;
+                        }
+                    
+                    }
+
+
+                    if (highLimit != "")
+                    {
+                        if (doubleValue > double.Parse(highLimit))
+                        {
+                            return;
+                        }
+
+                    }
+
+
+
                     TextHandler.Invoke(input);
                     DialogResult = DialogResult.OK;
+                    countdownTimer.Stop();
                 }
                 else
                 {
                     Console.WriteLine(input + " 不是一个数字");
                 }
+               
 
-                
             }
         }
     }

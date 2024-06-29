@@ -807,11 +807,11 @@ namespace TestConsole
 
 
 
-            Task.Run(() => {
+            //Task.Run(() => {
 
-                TestLoopLeakValue();
+            //    TestLoopLeakValue();
 
-            });
+            //});
 
            
 
@@ -831,9 +831,9 @@ namespace TestConsole
 
 
 
-            //  CreateCSVDataMerciAndSnowBirdMBFT();
+              CreateCSVDataMerciAndSnowBirdMBFT();
 
-            //   CreateCSVDataSnowbirdSRF();
+           //   CreateCSVDataSnowbirdSRF();
             // POESwtichPortSpeed();
 
             //  TestPort();

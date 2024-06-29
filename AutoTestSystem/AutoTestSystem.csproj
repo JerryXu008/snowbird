@@ -245,6 +245,12 @@
     <Compile Include="ShowFixtureTip2.Designer.cs">
       <DependentUpon>ShowFixtureTip2.cs</DependentUpon>
     </Compile>
+    <Compile Include="TestingNoise.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestingNoise.Designer.cs">
+      <DependentUpon>TestingNoise.cs</DependentUpon>
+    </Compile>
     <Compile Include="USBConfirmDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -458,8 +464,14 @@
     <EmbeddedResource Include="ReadyToTest.resx">
       <DependentUpon>ReadyToTest.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ShowFixtureTip.resx">
+      <DependentUpon>ShowFixtureTip.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ShowFixtureTip2.resx">
       <DependentUpon>ShowFixtureTip2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestingNoise.resx">
+      <DependentUpon>TestingNoise.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="USBConfirmDialog.resx">
       <DependentUpon>USBConfirmDialog.cs</DependentUpon>

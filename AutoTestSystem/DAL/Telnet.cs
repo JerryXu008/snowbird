@@ -611,7 +611,8 @@ namespace AutoTestSystem.DAL
             {
                 var lngStart = DateTime.Now.AddSeconds(timeout).Ticks;
 
-                while (strWorkingData.ToLower().IndexOf(dataToWaitFor.ToLower(), StringComparison.Ordinal) == -1)
+                //while (strWorkingData.ToLower().IndexOf(dataToWaitFor.ToLower(), StringComparison.Ordinal) == -1)
+                while (SessionLog.ToString().ToLower().IndexOf(dataToWaitFor.ToLower(), StringComparison.Ordinal) == -1)
                 {
                     var lngCurTime = DateTime.Now.Ticks;
                     if (lngCurTime > lngStart)

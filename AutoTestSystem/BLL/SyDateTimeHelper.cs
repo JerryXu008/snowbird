@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using AutoTestSystem.Model;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -247,7 +248,16 @@ namespace AutoTestSystem.BLL
             try
             {
                 // request = WebRequest.Create("http://www.google.com");
-                request = WebRequest.Create("http://10.90.116.15");
+
+
+                if (Global.STATIONNAME == "BURNIN")
+                {
+                    request = WebRequest.Create("http://172.23.241.211:9000");
+                }
+                else {
+                    request = WebRequest.Create("http://10.90.116.15");
+                }
+                
 
                 request.Timeout = 1000;
 

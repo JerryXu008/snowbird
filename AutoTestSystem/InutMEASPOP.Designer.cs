@@ -31,6 +31,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.lblTime = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -61,11 +62,22 @@
             this.textBox1.Size = new System.Drawing.Size(369, 35);
             this.textBox1.TabIndex = 3;
             // 
+            // lblTime
+            // 
+            this.lblTime.AutoSize = true;
+            this.lblTime.Location = new System.Drawing.Point(424, 141);
+            this.lblTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblTime.Name = "lblTime";
+            this.lblTime.Size = new System.Drawing.Size(22, 24);
+            this.lblTime.TabIndex = 4;
+            this.lblTime.Text = "0";
+            // 
             // InutMEASPOP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(908, 484);
+            this.Controls.Add(this.lblTime);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.label1);
@@ -86,5 +98,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label lblTime;
     }
 }

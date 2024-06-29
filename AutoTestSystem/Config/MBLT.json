@@ -6899,7 +6899,7 @@
         "start_time": "0001-01-01T00:00:00",
         "ItemName": "Check Console is functional",
         "ErrorCode": "21.1.1: Check Console fail",
-        "RetryTimes": "0",
+        "RetryTimes": "10-1",
         "TimeOut": "3",
         "SubStr1": "",
         "SubStr2": "",

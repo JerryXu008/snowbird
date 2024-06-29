@@ -29,6 +29,11 @@ namespace AutoTestSystem.Model
         /// DUT IP address
         public string DUTIP;// { get; private set; }
 
+
+        private static CancellationTokenSource cts = new CancellationTokenSource();
+
+      
+
         public Test()
         {
         }
@@ -1018,6 +1023,14 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
+
+                    case "WPS_PowerON":
+                        {
+                            rReturn = Power_OnOff_WPS(int.Parse(Global.WPSPortNum), true);
+
+                        }
+                        break;
+
                     case "HardwareResetWPS":
                         {
                             //#if DEBUG
@@ -1380,6 +1393,172 @@ namespace AutoTestSystem.Model
                             }
                         }
                         break;
+
+                    case "CheckNoising":
+                        {
+                            rReturn = NoiseGlobalReturn;
+                            return rReturn;
+
+
+                        }
+                        break;
+
+                      case "TestingNoise":
+                        {
+
+
+                            // 定义局部函数
+                            void ExecuteTask()
+                            {
+                                Task.Run(() =>
+                                {
+                                    try
+                                    {
+                                        if (SampleComm != null)
+                                        {
+                                            var revStr = "";
+                                            SampleComm.SendCommand("killall iperf3", ref revStr, "root@OpenWrt:/#", 10);
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        loggerError(">>>:" + ex.Message);
+                                    }
+                                });
+                            }
+
+
+                            Task.Run(async () => {
+                                try
+                                {
+                                    loggerDebug("开始打流");
+                                   
+                                
+                                    Task sendCommandTask = Task.Run(() => {
+                                      
+                                        var revStr = "";
+                                        dosCmd.SendCommand(item.ComdOrParam, ref revStr, item.ExpectStr, short.Parse(item.TimeOut));
+                                                
+                                    }, cts.Token);
+
+                                    // 等待任务完成或取消请求
+                                    await Task.WhenAny(sendCommandTask, Task.Delay(Timeout.Infinite, cts.Token));
+
+                                    // 如果取消标记被触发，则抛出取消异常
+                                    cts.Token.ThrowIfCancellationRequested();
+
+                                    // 检查任务是否因为异常而完成
+                                    if (sendCommandTask.IsFaulted)
+                                    {
+                                        throw sendCommandTask.Exception;
+                                    }
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    
+                                   
+                                    // 任务被取消
+                                    loggerError("Task was cancelled.");
+                                }
+                                catch (Exception ex)
+                                {
+                                  
+                                    loggerError(ex.Message);
+                                }
+                            }, cts.Token);
+
+
+                            //先输入数值
+                            InutMEASPOP usbDialog2 = new InutMEASPOP();
+
+                            usbDialog2.lowLimit = Global.NoiseLowLimit.Trim();
+                            usbDialog2.highLimit = Global.NoiseUpperLimit.Trim();
+                            double value = -1;
+                            usbDialog2.TextHandler = (str) => {
+
+                                value = double.Parse(str);
+                            };
+                            usbDialog2.StartPosition = FormStartPosition.CenterScreen;
+                            usbDialog2.TopMost = true;
+                            usbDialog2.ShowTip("Please record sound level");
+                            usbDialog2.ShowDialog();
+
+                            loggerInfo("输入的值:" + value);
+                            item.testValue = value.ToString();
+                            //rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                            rReturn = true;
+
+                            //if (rReturn == false) {
+
+                                cts.Cancel();
+                                cts = new CancellationTokenSource();
+
+                                ExecuteTask();
+
+                             //   return rReturn;
+                          //  }
+
+
+                            //TestingNoise usbDialog = new TestingNoise();
+
+                            //var result = "";
+                            //usbDialog.TextHandler = (str) => {
+
+                            //    result = str;
+                            //};
+
+                            //usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                            //usbDialog.ShowTip();
+
+
+                            ////// 设置窗体为无边框样式
+                            //usbDialog.FormBorderStyle = FormBorderStyle.None;
+                            //// 最大化窗体
+                            // usbDialog.WindowState = FormWindowState.Maximized;
+
+                            //usbDialog.TopMost = true;
+
+                            //usbDialog.ShowDialog();
+
+                            //if (result == "0")
+                            //{
+                               
+                            //    NoiseGlobalReturn = false;
+                            //    cts.Cancel();
+                            //    cts = new CancellationTokenSource();
+
+                            //    ExecuteTask();
+
+
+                            //}
+                            //else if (result == "1")
+                            //{
+                            //    NoiseGlobalReturn = true;
+                               
+                                
+                            //    cts.Cancel();
+                            //    cts = new CancellationTokenSource();
+                            //    ExecuteTask();
+                            //    //  rReturn = true;
+                                
+                            //}
+                            //else {
+
+
+                            //    rReturn = false;
+                            //    NoiseGlobalReturn = false;
+
+                            //    cts.Cancel();
+                            //    cts = new CancellationTokenSource();
+                            //    ExecuteTask();
+                                
+                            //    retry++;
+                            //}
+                             
+
+                        }
+                        break;
+
 
                     case "GROUND_POINT_MEAS": {
                             InutMEASPOP usbDialog = new InutMEASPOP();
@@ -4367,26 +4546,41 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
+                    #region 气密性测试相关方法
+
+
                     case "SumP2AndLeakValue": {
 
 
-                            if (Pressure2 != -1 && AirLeakValue != -1)
+                            var PressureInit = -1;
+                            var AirLeakValueInit = -1;
+
+                             if (item.ComdOrParam == "2")
                             {
-                                var P1 = Pressure2 + AirLeakValue;
+                                PressureInit = Machine2_Pressure2;
+                                AirLeakValueInit = Machine2_AirLeakValue;
+                            }
+                            else {
+
+                                PressureInit = Pressure2;
+                                AirLeakValueInit = AirLeakValue;
+                            }
+
+
+                            if (PressureInit != -1 && AirLeakValueInit != -1)
+                            {
+                                var P1 = PressureInit + AirLeakValueInit;
 
                                 item.testValue = P1.ToString();
 
                                 loggerInfo("P1:" + item.testValue);
-
+                                rReturn = true;
                                 if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max))
                                 {
 
                                     rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
                                     loggerDebug("返回结果:" + (rReturn ? "True" : "False"));
                                 }
-
-
-
 
                             }
                             else {
@@ -4395,16 +4589,19 @@ namespace AutoTestSystem.Model
                                 
                             
                             }
-
-
                         }
                         break;
 
                     case "LoopGetDelataValue": {
 
+
+
+                            var LeakCOM = item.ComdOrParam == "1" ? Global.LeakTwoCOM1 : item.ComdOrParam == "2" ? Global.LeakTwoCOM2 : Global.LeakCOM;
+
+
                             loggerInfo("治具测试完成，开始读Delta值..");
 
-                            var cmd = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 010316900002C06E";
+                            var cmd = @"python ./Config/testLeak.py -p " + LeakCOM + " -cmd 010316900002C06E";
                             string re = RunDosCmd(cmd, 2);
                             loggerInfo("Delta反馈信息" + re);
                             var data = GetMidStr(re, "[", "]");
@@ -4420,11 +4617,23 @@ namespace AutoTestSystem.Model
                                 int decimalNumber = Convert.ToInt32(subString, 16);  // 将十六进制字符串转换为十进制数
 
                                 loggerInfo("转换后数据:" + decimalNumber);
-                                
+
+
+
+                                 if (item.ComdOrParam == "2")
+                                {
+                                    Machine2_AirLeakValue = decimalNumber;
+                                }
+                                else
+                                {
+                                    AirLeakValue = decimalNumber;
+
+                                }
+
 
                                 item.testValue = decimalNumber.ToString();
 
-                                AirLeakValue = decimalNumber;
+                                rReturn = true;
 
                                 if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max))
                                 {
@@ -4442,8 +4651,67 @@ namespace AutoTestSystem.Model
                             }
                             break;
                         }
-                        
-                     case "ClearALKData":
+
+
+
+                    case "LoopGetFreqValue":
+                        {
+
+
+                            var LeakCOM = item.ComdOrParam == "1" ? Global.LeakTwoCOM1 : item.ComdOrParam == "2" ? Global.LeakTwoCOM2 : Global.LeakCOM;
+
+
+                            loggerInfo("治具测试完成，开始读Freq值..");
+
+                            var cmd = @"python ./Config/testLeak.py -p " + LeakCOM + " -cmd 010316CC0002007C";
+                            string re = RunDosCmd(cmd, 2);
+                            loggerInfo("Freq反馈信息" + re);
+                            var data = GetMidStr(re, "[", "]");
+                            if (data.Length >= 18)
+                            {
+
+                                string hexNumber = data.Substring(6, 8);  // 提取 "05aa0000"
+                                loggerInfo("提取出数据:" + hexNumber);
+
+
+                                var subString = hexNumber.Substring(4, 4) + hexNumber.Substring(0, 4);
+
+                                int decimalNumber = Convert.ToInt32(subString, 16);  // 将十六进制字符串转换为十进制数
+
+                                loggerInfo("转换后数据:" + decimalNumber);
+
+
+                                double decimalNumber2 = ((double)decimalNumber) / 1000;
+
+                                if (item.ComdOrParam == "1")
+                                {
+                                    Machine1_Freq = decimalNumber2;
+                                }
+                               
+
+
+
+                                item.testValue = decimalNumber2.ToString();
+
+                                rReturn = true;
+
+                                if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max))
+                                {
+
+                                    rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                                    loggerDebug("返回结果:" + (rReturn ? "True" : "False"));
+                                }
+
+                            }
+                            else
+                            {
+                                loggerError("提取数据:" + data + " 有问题");
+                            }
+                            
+                        }
+                        break;
+
+                    case "ClearALKData":
                         {
 
 
@@ -4456,8 +4724,15 @@ namespace AutoTestSystem.Model
                         {
 
 
-                            var cmd2 = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 01050008ff000df8";
-                            RunDosCmd(cmd2, 3);
+                            var LeakCOM = item.ComdOrParam == "1" ? Global.LeakTwoCOM1 : item.ComdOrParam == "2" ? Global.LeakTwoCOM2 : Global.LeakCOM;
+
+
+
+                            if (item.ComdOrParam != "1") {
+                                var cmd2 = @"python ./Config/testLeak.py -p " + LeakCOM + " -cmd 01050008ff000df8";
+                                RunDosCmd(cmd2, 3);
+                            }
+                         
 
                             DateTime startTime = DateTime.Now;
 
@@ -4466,7 +4741,7 @@ namespace AutoTestSystem.Model
                             while ((DateTime.Now - startTime).TotalSeconds < 120)
                             {
 
-                                var cmd = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 0103000C00014409";
+                                var cmd = @"python ./Config/testLeak.py -p " + LeakCOM + " -cmd 0103000C00014409";
                                 string re = RunDosCmd(cmd, 3);
 
                                 var data = GetMidStr(re, "[", "]");
@@ -4505,8 +4780,187 @@ namespace AutoTestSystem.Model
                         break;
 
 
+                    case "LoopGetLeakValue":
+                        {
 
 
+
+                            var LeakCOM = item.ComdOrParam == "1" ? Global.LeakTwoCOM1 : item.ComdOrParam == "2" ? Global.LeakTwoCOM2: Global.LeakCOM;
+
+
+                            DateTime startTime = DateTime.Now;
+
+                            var tempReture = false;
+
+
+                           
+                            while ((DateTime.Now - startTime).TotalSeconds < 60)
+                            {
+
+                                var cmd = @"python ./Config/testLeak.py -p "+LeakCOM+" -cmd 0103000C00014409 -d 1";
+                                string re = RunDosCmd(cmd, 2);
+
+                                var data = GetMidStr(re, "[", "]");
+                                if (data.Length >= 14)
+                                {
+                                   
+
+                                    if (data.Contains("46") || data.Contains("47"))
+                                    {
+
+                                        tempReture = true;
+                                        break;
+                                    }
+
+                                   
+                                }
+                                Thread.Sleep(1000);
+                            }
+
+                            if (tempReture)
+                            {
+                                loggerInfo("治具测试完成，开始读压力值..");
+
+                                var cmd = @"python ./Config/testLeak.py -p " + LeakCOM + " -cmd 010316dc000201b9";
+                                string re = RunDosCmd(cmd, 2);
+                                loggerInfo("气压值反馈信息" + re);
+                                var data = GetMidStr(re, "[", "]");
+                                if (data.Length >= 18)
+                                {
+
+                                    string hexNumber = data.Substring(6, 8);  // 提取 "05aa0000"
+                                    loggerInfo("提取出数据:" + hexNumber);
+
+
+                                    var subString = hexNumber.Substring(4, 4) + hexNumber.Substring(0, 4);
+                            
+                                    int decimalNumber = Convert.ToInt32(subString, 16);  // 将十六进制字符串转换为十进制数
+
+                                    loggerInfo("转换后数据:" + decimalNumber);
+
+
+                                    if (item.ComdOrParam == "1") {
+
+                                        Machine1_Pressure2 = decimalNumber;
+                                    }
+                                    else if (item.ComdOrParam == "2")
+                                    {
+                                        Machine2_Pressure2 = decimalNumber;
+                                    }
+                                    else {
+                                        Pressure2 = decimalNumber;
+
+                                    }
+                                                         
+                                    item.testValue = decimalNumber.ToString();
+
+                                    rReturn = true;
+                                    if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max))
+                                    {
+
+                                        rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                                        loggerDebug("返回结果:" + (rReturn ? "True" : "False"));
+                                    }
+                                  
+                                }
+                                else
+                                {
+                                    loggerError("提取数据:" + data + " 有问题");
+                                }
+
+
+                            }
+                            else
+                            {
+                                loggerError("测试超时");
+                            }
+
+                        }
+                        break;
+                    case "Machine_LoopGetStatusConcurrent":
+                        {
+
+
+                           
+
+                            DateTime startTime = DateTime.Now;
+
+                            var tempReture = false;
+                            var r1 = false;
+                            var r2 = false;
+
+                            while ((DateTime.Now - startTime).TotalSeconds < 120)
+                            {
+
+
+                                if (r1 == false) {
+                                    var cmd = @"python ./Config/testLeak.py -p " + Global.LeakTwoCOM1 + " -cmd 0103000C00014409";
+                                    string re = RunDosCmd(cmd, 3);
+
+                                    var data = GetMidStr(re, "[", "]");
+                                    if (data.Length >= 14)
+                                    {
+
+                                        loggerDebug($"{Global.LeakTwoCOM1}返回:" + data);
+                                        if (data.Contains("01030200017984") || data.Contains("01030200023985"))
+                                        {
+
+                                            r1 = true;
+
+                                        }
+
+
+
+                                    } 
+                                }
+
+                                Thread.Sleep(10);
+
+                                if (r2 == false) {
+                                    var cmd = @"python ./Config/testLeak.py -p " + Global.LeakTwoCOM2 + " -cmd 0103000C00014409";
+                                    var re = RunDosCmd(cmd, 3);
+
+                                    var data = GetMidStr(re, "[", "]");
+                                    if (data.Length >= 14)
+                                    {
+
+                                        loggerDebug($"{Global.LeakTwoCOM2}返回:" + data);
+                                        if (data.Contains("01030200017984") || data.Contains("01030200023985"))
+                                        {
+
+                                            r2 = true;
+                                          
+                                        }
+
+
+
+                                    }
+                                }
+
+                                tempReture = r1 && r2;
+
+                                if (tempReture) {
+                                    break;
+                                }
+
+
+                                Thread.Sleep(300);
+                            }
+
+                            if (!tempReture)
+                            {
+                                loggerError("测试超时");
+
+                            }
+                            else
+                            {
+
+                                rReturn = tempReture;
+                            }
+
+
+                        }
+                        break;
                     case "LoopGetStatus2":
                         {
                             //清空数据
@@ -4535,24 +4989,27 @@ namespace AutoTestSystem.Model
                                     loggerDebug("返回:" + data);
                                     if (data.Contains("0103020003f845") || data.Contains("0103020004b987"))
                                     {
-                                        if (data.Contains("0103020003f845")){
+                                        if (data.Contains("0103020003f845"))
+                                        {
                                             loggerInfo("到达保压阶段,开始读值");
                                         }
-                                        else {
+                                        else
+                                        {
                                             loggerInfo("到达测试阶段,继续读值");
                                         }
                                         BaoyaFinish = true;
-                                       
+
 
                                         cmd = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 0103168800024069 -d 0.1";
                                         re = RunDosCmd(cmd, 3);
                                         var data2 = GetMidStr(re, "[", "]");
-                                        if (data2.Length >= 18) {
+                                        if (data2.Length >= 18)
+                                        {
 
                                             if (isFirst == false)
                                             {
                                                 isFirst = true;
-                                               
+
 
 
                                             }
@@ -4571,20 +5028,20 @@ namespace AutoTestSystem.Model
 
                                             var EndTime = DateTime.Now;
 
-                                            
-                                          
-                                            ALKBaoYAValueList.Add( decimalNumber.ToString());
 
-                                            ALKBaoYATimeList.Add((i*300).ToString()+" ms");
+
+                                            ALKBaoYAValueList.Add(decimalNumber.ToString());
+
+                                            ALKBaoYATimeList.Add((i * 300).ToString() + " ms");
 
                                             i++;
 
                                         }
 
 
-                                        
+
                                     }
-                                    else if (BaoyaFinish   && (data.Contains("01030200063846") || data.Contains("01030200057847")))
+                                    else if (BaoyaFinish && (data.Contains("01030200063846") || data.Contains("01030200057847")))
                                     {
                                         loggerDebug("保压-测试阶段结束:" + data);
                                         tempReture = true;
@@ -4614,7 +5071,8 @@ namespace AutoTestSystem.Model
                             }
 
 
-                            if (ALKBaoYAValueList.Count != 0) {
+                            if (ALKBaoYAValueList.Count != 0)
+                            {
 
                                 string csvPath = $@"{Global.LogPath}\LeakPhaseData.csv";
 
@@ -4636,89 +5094,7 @@ namespace AutoTestSystem.Model
 
 
 
-
-
-                    case "LoopGetLeakValue":
-                        {
-
-                            DateTime startTime = DateTime.Now;
-
-                            var tempReture = false;
-                           
-                            while ((DateTime.Now - startTime).TotalSeconds < 60)
-                            {
-
-                                var cmd = @"python ./Config/testLeak.py -p "+Global.LeakCOM+" -cmd 0103000C00014409 -d 1";
-                                string re = RunDosCmd(cmd, 2);
-
-                                var data = GetMidStr(re, "[", "]");
-                                if (data.Length >= 14)
-                                {
-                                   
-
-                                    if (data.Contains("46") || data.Contains("47"))
-                                    {
-
-                                        tempReture = true;
-                                        break;
-                                    }
-
-                                   
-                                }
-                                Thread.Sleep(1000);
-                            }
-
-                            if (tempReture)
-                            {
-                                loggerInfo("治具测试完成，开始读压力值..");
-
-                                var cmd = @"python ./Config/testLeak.py -p " + Global.LeakCOM + " -cmd 010316dc000201b9";
-                                string re = RunDosCmd(cmd, 2);
-                                loggerInfo("气压值反馈信息" + re);
-                                var data = GetMidStr(re, "[", "]");
-                                if (data.Length >= 18)
-                                {
-
-                                    string hexNumber = data.Substring(6, 8);  // 提取 "05aa0000"
-                                    loggerInfo("提取出数据:" + hexNumber);
-
-
-                                    var subString = hexNumber.Substring(4, 4) + hexNumber.Substring(0, 4);
-                            
-                                    int decimalNumber = Convert.ToInt32(subString, 16);  // 将十六进制字符串转换为十进制数
-
-                                    loggerInfo("转换后数据:" + decimalNumber);
-
-
-                                    Pressure2 = decimalNumber;
-
-
-                                    item.testValue = decimalNumber.ToString();
-
-
-                                    if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max))
-                                    {
-
-                                        rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
-                                        loggerDebug("返回结果:" + (rReturn ? "True" : "False"));
-                                    }
-                                  
-                                }
-                                else
-                                {
-                                    loggerError("提取数据:" + data + " 有问题");
-                                }
-
-
-                            }
-                            else
-                            {
-                                loggerError("测试超时");
-                            }
-
-                        }
-                        break;
-
+#endregion  
 
 
                     case "PowerONTest":

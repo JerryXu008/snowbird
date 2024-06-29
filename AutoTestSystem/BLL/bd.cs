@@ -749,8 +749,33 @@ namespace AutoTestSystem.BLL
             File.WriteAllLines(filename, lines);
         }
 
+       public static string GetCombinedMd5(params string[] md5Strings)
+        {
+            // 将所有MD5字符串连接起来
+            StringBuilder combinedBuilder = new StringBuilder();
+            foreach (string md5 in md5Strings)
+            {
+                combinedBuilder.Append(md5);
+            }
+            string combined = combinedBuilder.ToString();
 
-        public static string GetMD5HashFromFile(string fileName)
+            // 计算连接后的字符串的MD5值
+            using (var md5 = MD5.Create())
+            {
+                var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(combined));
+
+                // 将字节数组转换为十六进制字符串
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hash.Length; i++)
+                {
+                    sb.Append(hash[i].ToString("x2"));
+                }
+                return sb.ToString();
+            }
+        }
+   
+
+    public static string GetMD5HashFromFile(string fileName)
         {
             using (var md5 = MD5.Create())
             {
@@ -1589,6 +1614,15 @@ namespace AutoTestSystem.BLL
             {
                 //if (i % 4 == 0 && flag)
                 //    RunDosCmd("arp -d & exit");
+
+                if (Global.STATIONNAME == "BURNIN") {
+
+                    if (i % 4 == 0)
+                        RunDosCmd("arp -d & exit");
+                }
+
+
+
                 var pingReply = Ping(address);
                 if (pingReply != null && pingReply.Status == 0)
                 {
