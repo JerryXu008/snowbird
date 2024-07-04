@@ -897,7 +897,20 @@ namespace AutoTestSystem.Model
 
                             loggerDebug(">>>>>>>>>>cmd:" + item.ComdOrParam);
 
+
+                            if (Global.POE_PORT != "19" && Global.POE_PORT != "20")
+                            {
                                 rReturn = PoeConfigSetting(Global.POE_PORT, item.ComdOrParam);
+                            }
+                            else {
+
+                                rReturn = PoeConfigSetting2(Global.POE_PORT, item.ComdOrParam);
+                            }
+                            
+                        
+                        
+                        
+                        
                         }
                         break;
                     case "POEReadConsumption":
@@ -919,9 +932,20 @@ namespace AutoTestSystem.Model
                             if (root != null && root.result != null && root.result.Count > 0)
                             {
                                 logger.Debug("~~~~~~~~~~~~~~~~~~:" + Global.POE_PORT);
-                                logger.Info(">>>>>>>>>>>Consumption=" + root.result[int.Parse(Global.POE_PORT) - 1].val.PowerConsumption);
 
-                                double number = (double)(root.result[int.Parse(Global.POE_PORT) - 1].val.PowerConsumption) / 10;
+
+                                int index = int.Parse(Global.POE_PORT) - 1;
+                                if (Global.POE_PORT == "19") {
+                                    index = root.result.Count - 2;
+                                }
+                                else if (Global.POE_PORT == "20")
+                                {
+                                    index = root.result.Count - 1;
+                                }
+
+                                logger.Info(">>>>>>>>>>>Consumption=" + root.result[index].val.PowerConsumption);
+
+                                double number = (double)(root.result[index].val.PowerConsumption) / 10;
                                 item.testValue = number.ToString("F2");
                                 rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
 
@@ -4208,11 +4232,31 @@ namespace AutoTestSystem.Model
 
 
                                 HandleSpecialMethed(item, rReturn, "");
+                                rReturn = false;
+
+                                if (retry != 0 && rReturn == false && Global.STATIONNAME == "BURNIN")
+                                {
+                                    loggerInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>.restart iperfServer");
+
+                                    RunDosCmd("taskkill /IM " + "iperf3" + ".exe" + " /F");
+                                    StartSFTPSever();
+
+
+                                    var recvStr = "";
+                                    DUTCOMM.SendCommand($"killall iperf3", ref recvStr, Global.PROMPT, 10);
+                                    Thread.Sleep(1000);
+                                    DUTCOMM.SendCommand($"iperf3 -s -D &", ref recvStr, Global.PROMPT, 10);
+                                    Thread.Sleep(1000);
+
+                                    loggerDebug("打流重新retry1");
 
 
 
 
-                                return rReturn = false;
+                                }
+
+
+                                return rReturn;
                             }
                         }
 
@@ -4260,6 +4304,18 @@ namespace AutoTestSystem.Model
 
                                 RunDosCmd("taskkill /IM " + "iperf3" + ".exe" + " /F");
                                 StartSFTPSever();
+
+
+                                var recvStr = "";
+                                DUTCOMM.SendCommand($"killall iperf3", ref recvStr, Global.PROMPT, 10);
+                                Thread.Sleep(1000);
+                                DUTCOMM.SendCommand($"iperf3 -s -D &", ref recvStr, Global.PROMPT, 10);
+                                Thread.Sleep(1000);
+
+                                loggerDebug("打流重新retry2");
+
+
+
 
                             }
 

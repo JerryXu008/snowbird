@@ -379,7 +379,7 @@ namespace AutoTestSystem
 #else
             if (!RunDosCmd("tzutil /g").Contains("China Standard"))
             {
-                RunDosCmd("tzutil /s \"UTC_dstoff\"");// 设置电脑时区为UTC
+                RunDosCmd("tzutil /s \"UTC_dstoff\"", 0, false);// 设置电脑时区为UTC
             }
 #endif
             InitCreateDirs();
@@ -1048,7 +1048,7 @@ namespace AutoTestSystem
                 //  MessageBox.Show(@"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp\QUTSStatusApp.exe");
 
                 //   if (Global.STATIONNAME == "SRF") {
-                RunDosCmd("taskkill /IM QUTSStatusApp.exe /F");
+                RunDosCmd("taskkill /IM QUTSStatusApp.exe /F",0,false);
              
 
                 Task.Run(async () =>
@@ -1570,7 +1570,7 @@ namespace AutoTestSystem
                 //  MessageBox.Show(@"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp\QUTSStatusApp.exe");
 
                 //   if (Global.STATIONNAME == "SRF") {
-                RunDosCmd("taskkill /IM QUTSStatusApp.exe /F");
+                RunDosCmd("taskkill /IM QUTSStatusApp.exe /F", 0, false);
 
                 Task.Run(async () =>
                 {
@@ -1870,7 +1870,7 @@ namespace AutoTestSystem
 
             //MessageBox.Show(Name);
             ///////////////////////////这里改了，记得改回来
-            if (Name.Contains("BURNIN") || Name.Contains("ALK") || Name.Contains("SETDHCP") || Name.Contains("NOISETEST"))
+            if (Name.Contains("BURNIN") || Name.Contains("ALK") || Name.Contains("SETDHCP") || Name.ToLower().Contains("noisetest") || Name.ToLower().Contains("cct"))
             {
                 if (Name.Contains("-"))
                 {
@@ -1883,10 +1883,9 @@ namespace AutoTestSystem
                     if (Name.Contains("ALK"))
                     {
                         iniConfig.Writeini("Station", "FAIL_CONTINUE", "1");
-                        Global.FAIL_CONTINUE = "1";
+                        Global.FAIL_CONTINUE = "1";  
 
-                    }
-
+                    } 
                     return;
 
                 }
@@ -1981,47 +1980,47 @@ namespace AutoTestSystem
                 Application.Exit();
             }
         }
-        public void GetFixName2()
-        {
-            //return;
+        //public void GetFixName2()
+        //{
+        //    //return;
 
 
 
-           var Name = Environment.MachineName;
+        //   var Name = Environment.MachineName;
 
-           // Name = "MBFT-1640";
-            // Name = "BURNIN-0001";
+        //   // Name = "MBFT-1640";
+        //    // Name = "BURNIN-0001";
 
-            //Name = "SetDHCP-1000";
+        //    //Name = "SetDHCP-1000";
 
 
-            if (Name.Contains("MBFT") || Name.Contains("ALK") || Name.Contains("SetDHCP")) {
-                if (Name.Contains("-"))
-                {
-                    Global.STATIONNO = Name;
-                    Global.FIXTURENAME = Global.STATIONNO;
+        //    if (Name.Contains("MBFT") || Name.Contains("ALK") || Name.Contains("SetDHCP")) {
+        //        if (Name.Contains("-"))
+        //        {
+        //            Global.STATIONNO = Name;
+        //            Global.FIXTURENAME = Global.STATIONNO;
 
-                    int lastIndex = Global.STATIONNO.LastIndexOf('-');
-                    Global.STATIONNAME = Global.STATIONNO.Substring(0, lastIndex);
+        //            int lastIndex = Global.STATIONNO.LastIndexOf('-');
+        //            Global.STATIONNAME = Global.STATIONNO.Substring(0, lastIndex);
 
-                    if (Name.Contains("ALK"))
-                    {
-                        iniConfig.Writeini("Station", "FAIL_CONTINUE", "1");
-                        Global.FAIL_CONTINUE = "1";
+        //            if (Name.Contains("ALK"))
+        //            {
+        //                iniConfig.Writeini("Station", "FAIL_CONTINUE", "1");
+        //                Global.FAIL_CONTINUE = "1";
 
-                    }
+        //            }
 
-                    return;
+        //            return;
 
-                }
-                else {
+        //        }
+        //        else {
 
-                    MessageBox.Show($"请检查机台名字是否正确!");
-                    System.Environment.Exit(0);
-                    return;
-                }
+        //            MessageBox.Show($"请检查机台名字是否正确!");
+        //            System.Environment.Exit(0);
+        //            return;
+        //        }
                 
-            }
+        //    }
            
 
 
@@ -2029,79 +2028,79 @@ namespace AutoTestSystem
 
 
 
-            if (Global.FIXTUREFLAG == "0") {
-                FixSerialPort = new Comport(FixCOMinfo);
-                FixSerialPort.OpenCOM();
+        //    if (Global.FIXTUREFLAG == "0") {
+        //        FixSerialPort = new Comport(FixCOMinfo);
+        //        FixSerialPort.OpenCOM();
 
             
-                return;
-            }
-            try
-            {
+        //        return;
+        //    }
+        //    try
+        //    {
                
-                FixSerialPort = new Comport(FixCOMinfo);
-                FixSerialPort.OpenCOM();
+        //        FixSerialPort = new Comport(FixCOMinfo);
+        //        FixSerialPort.OpenCOM();
 
 
                 
 
-                string recvStr = "";
-                for (int i = 0; i < 3; i++)
-                {
-                    loggerDebug($"READ_FIXNUM {i}");
-                    if (FixSerialPort.SendCommandToFix("AT+READ_FIXNUM%", ref recvStr, "\r\n", 1))
+        //        string recvStr = "";
+        //        for (int i = 0; i < 3; i++)
+        //        {
+        //            loggerDebug($"READ_FIXNUM {i}");
+        //            if (FixSerialPort.SendCommandToFix("AT+READ_FIXNUM%", ref recvStr, "\r\n", 1))
 
-                    {
-
-
-                        Global.FIXTURENAME = recvStr.Replace("\r\n", "").Trim();
-                        lbl_StationNo.Text = Global.FIXTURENAME;
-                        Global.STATIONNO = Global.FIXTURENAME;
-                        Global.STATIONNAME = Global.FIXTURENAME.Substring(0, Global.FIXTURENAME.IndexOf("-"));
-                        iniConfig.Writeini("Station", "STATIONNAME", Global.STATIONNAME);
-                        iniConfig.Writeini("Station", "STATIONNO", Global.STATIONNO);
-                       // iniConfig.Writeini("Station", "FIXTURENAME", Global.FIXTURENAME);
-                        logger.Debug($"Read fix number success,stationName:{ Global.STATIONNAME}");
-                        break;
-                    }
-
-                    if (i == 2)
-                    {
-
-                        if (!Environment.MachineName.Contains("CCT") && !Environment.MachineName.Contains("ALK"))
-                        {
-                            MessageBox.Show($"Read FixNum error,Please check it!");
-                            System.Environment.Exit(0);
-
-                        }
+        //            {
 
 
+        //                Global.FIXTURENAME = recvStr.Replace("\r\n", "").Trim();
+        //                lbl_StationNo.Text = Global.FIXTURENAME;
+        //                Global.STATIONNO = Global.FIXTURENAME;
+        //                Global.STATIONNAME = Global.FIXTURENAME.Substring(0, Global.FIXTURENAME.IndexOf("-"));
+        //                iniConfig.Writeini("Station", "STATIONNAME", Global.STATIONNAME);
+        //                iniConfig.Writeini("Station", "STATIONNO", Global.STATIONNO);
+        //               // iniConfig.Writeini("Station", "FIXTURENAME", Global.FIXTURENAME);
+        //                logger.Debug($"Read fix number success,stationName:{ Global.STATIONNAME}");
+        //                break;
+        //            }
+
+        //            if (i == 2)
+        //            {
+
+        //                if (!Environment.MachineName.Contains("CCT") && !Environment.MachineName.Contains("ALK"))
+        //                {
+        //                    MessageBox.Show($"Read FixNum error,Please check it!");
+        //                    System.Environment.Exit(0);
+
+        //                }
 
 
-                        ////CCT
-                        //lbl_StationNo.Text = "CCT-1630";
-                        //Global.STATIONNO = "CCT-1630";
-                        //Global.STATIONNAME = "CCT";
-                        //Global.FIXTURENAME = "CCT-1630";
-                        //iniConfig.Writeini("Station", "STATIONNAME", Global.STATIONNAME);
-                        //iniConfig.Writeini("Station", "STATIONNO", Global.STATIONNO);
-                        //iniConfig.Writeini("Station", "FIXTURENAME", Global.FIXTURENAME);
 
-                    }
 
-                }
+        //                ////CCT
+        //                //lbl_StationNo.Text = "CCT-1630";
+        //                //Global.STATIONNO = "CCT-1630";
+        //                //Global.STATIONNAME = "CCT";
+        //                //Global.FIXTURENAME = "CCT-1630";
+        //                //iniConfig.Writeini("Station", "STATIONNAME", Global.STATIONNAME);
+        //                //iniConfig.Writeini("Station", "STATIONNO", Global.STATIONNO);
+        //                //iniConfig.Writeini("Station", "FIXTURENAME", Global.FIXTURENAME);
 
-                if (Global.STATIONNAME != "CCT" && Global.STATIONNAME != ("ALK")) {
-                    GetPoePort();
-                }
+        //            }
+
+        //        }
+
+        //        if (Global.STATIONNAME != "CCT" && Global.STATIONNAME != ("ALK")) {
+        //            GetPoePort();
+        //        }
                 
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"{ex.Message}");
-                Application.Exit();
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"{ex.Message}");
+        //        Application.Exit();
+        //    }
+        //}
 
 
 
@@ -2128,23 +2127,30 @@ namespace AutoTestSystem
                     if (FixSerialPort.SendCommandToFix("AT+READ_POE%", ref recvStr, "\r\n", 1))
                     {
                         string port = recvStr.Replace("\r\n", "").Replace("POE-", "").Replace("%", "").Trim();
-                  
 
-                        if (port == "010")
+                        
+                        if (port == "010" || port=="0010")
                         {
                             Global.POE_PORT = "10";
-
+                            iniConfig.Writeini("DUT", "POE_PORT", Global.POE_PORT);
+                            loggerDebug($"Read fix POE port success:{ Global.POE_PORT}");
+                            break;
 
                         }
-                        else if (port == "020")
+                        else if (port == "020" || port == "0020")
                         {
                             Global.POE_PORT = "20";
-
+                            iniConfig.Writeini("DUT", "POE_PORT", Global.POE_PORT);
+                            loggerDebug($"Read fix POE port success:{ Global.POE_PORT}");
+                            break;
 
                         }
                         else { 
                        
                         Global.POE_PORT = port.Substring(port.LastIndexOf("0") + 1);
+
+
+
                         if (int.TryParse(Global.POE_PORT, out int ds))
                         {
                             iniConfig.Writeini("DUT", "POE_PORT", Global.POE_PORT);
@@ -2204,7 +2210,7 @@ namespace AutoTestSystem
                 // StopSFTPSever();
                 // Task.Run(() => StartSFTPSever());
 
-                RunDosCmd("taskkill /IM " + "iperf3" + ".exe" + " /F");
+                RunDosCmd("taskkill /IM " + "iperf3" + ".exe" + " /F", 0, false);
                 StartSFTPSever();
             }
 
@@ -2425,7 +2431,7 @@ namespace AutoTestSystem
                         { //时间不对
                             loggerInfo("startTime error,update");
 
-                            RunDosCmd("tzutil /s \"UTC_dstoff\"");// 设置电脑时区为UTC
+                            RunDosCmd("tzutil /s \"UTC_dstoff\"", 0, false);// 设置电脑时区为UTC
 
                             var dateTime = SyDateTimeHelper.GetNetDateTime(DateTime.Now);
                             startTime = dateTime;
@@ -2570,10 +2576,18 @@ namespace AutoTestSystem
                                 DUTCOMM.Close();
                             }
 
-                            if (Global.STATIONNAME == "NOISETEST")
-                            {
-                               // PowerCycleOutletWPS(int.Parse(Global.WPSPortNum));
+                            if (Global.STATIONNAME == "ALKB") {
+
+                                //清空数据
+                                var cmd2 = @"python ./Config/testLeak.py -p " + Global.LeakTwoCOM1 + " -cmd 01050008ff000df8";
+                                RunDosCmd(cmd2, 3);
+
+                                cmd2 = @"python ./Config/testLeak.py -p " + Global.LeakTwoCOM2 + " -cmd 01050008ff000df8";
+                                RunDosCmd(cmd2, 3);
                             }
+
+
+ 
 
                             // 无论测试pass/fail，都弹出治具
                             if (Global.FIXTUREFLAG == "1")
@@ -2613,11 +2627,30 @@ namespace AutoTestSystem
                                             loggerInfo("pop up fixture");
 
 
-                                           // if (testStatus == TestStatus.PASS) {
+
+                                            // if (testStatus == TestStatus.PASS) {
+
+                                            if (Global.STATIONNAME == "MBLT" && testStatus == TestStatus.FAIL && (error_code_firstfail.Trim()=="2.1.2" || error_code_firstfail.Trim() == "2.1.1"))
+                                            {
+                                                loggerDebug("特殊问题，不退出治具");
+                                            }
+                                            else {
                                                 FixSerialPort.SendCommandToFix("AT+TESTEND%", ref recvStr, "OK", 5);
-                                           // }
+
+                                            }
+
+                                           
+                                         
+                                            
+                                            
+                                            
+                                            // }
                                            
                                            
+                                             
+
+
+
                                         }
 
                                         if (Global.STATIONNAME == "MBFT")
@@ -2747,7 +2780,7 @@ namespace AutoTestSystem
                             {
 
 
-                                RunDosCmd("taskkill /IM QUTSStatusApp.exe /F");
+                                RunDosCmd("taskkill /IM QUTSStatusApp.exe /F", 0, false);
                                 KillProcessNoRes("QUTSStatusApp");
                                 KillProcessNoRes("QCATestSuite"); //SRF
                                 KillProcessNoRes("QPSTConfig"); //SRF
@@ -2760,7 +2793,7 @@ namespace AutoTestSystem
 
                             if (Global.STATIONNAME == "MBFT") {
 
-                                RunDosCmd("taskkill /IM QUTSStatusApp.exe /F");
+                                RunDosCmd("taskkill /IM QUTSStatusApp.exe /F", 0, false);
 
                                 KillProcessNoRes("ATSuite"); //MBFT
                                 KillProcessNoRes("BTTestSuiteRD");//MBFT
@@ -3055,7 +3088,7 @@ namespace AutoTestSystem
         {
 
 
-            if (Global.STATIONNAME == "CCT" || Global.STATIONNAME== "NOISETEST") {
+            if (Global.STATIONNAME == "CCT" || Global.STATIONNAME.ToLower()== "noisetest") {
                 return;
             }
 
@@ -3249,7 +3282,7 @@ namespace AutoTestSystem
                                 //纠正一下时间：
                                 if (DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss").Contains("0001-01-01")) {
                                     //重置时间，防止starttime出错
-                                    RunDosCmd("tzutil /s \"UTC_dstoff\"");// 设置电脑时区为UTC
+                                    RunDosCmd("tzutil /s \"UTC_dstoff\"", 0, false);// 设置电脑时区为UTC
                                     var dateTime = SyDateTimeHelper.GetNetDateTime(DateTime.Now);
                                     loggerInfo("get updated time>>>:" + dateTime.ToLongTimeString());
                                     SyDateTimeHelper.SetLocalDateTime2(dateTime);
@@ -4753,7 +4786,7 @@ namespace AutoTestSystem
         {
             if (Global.STATIONNAME == "BURNIN" 
                 || Global.STATIONNAME.ToLower() == "revert" 
-                || Global.STATIONNAME == "NOISETEST"
+                || Global.STATIONNAME.ToLower() == "noisetest"
 
                  || Global.STATIONNAME == "ALKB"
 
@@ -4980,16 +5013,21 @@ namespace AutoTestSystem
                 }
                 else
                 {
-                    if (Global.STATIONNAME != "NOISETEST")
+
+                   
+                    
+                    
+                    if (Global.STATIONNAME == "ALKB") {
+                    
+                        mesUrl = $"http://{Global.MESIP}:{Global.MESPORT}/api/offline/serial/{SN}/station/{Global.FIXTURENAME}/result";
+                    }
+
+                    else
                     {
                         mesUrl = $"http://{Global.MESIP}:{Global.MESPORT}/api/2/serial/{SN}/station/{Global.FIXTURENAME}/info";
                     }
-                    else {
-                        var ip = "172.23.33.132";
-                        var port =  Global.MESPORT ;
-                        mesUrl = $"http://{ip}:{port}/api/2/serial/{SN}/station/{Global.FIXTURENAME}/info";
 
-                    }
+
                 }
                 
                 

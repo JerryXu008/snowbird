@@ -804,7 +804,7 @@ namespace AutoTestSystem.BLL
 
                 if (poeType == "poeDot3af") //poe
                 {
-                    data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{peo_Port}\",{{\"Mode\":\"{"poeDot3af"}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":164}}";
+                    data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{peo_Port}\",{{\"Mode\":\"{"poeDot3af"}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":15,\"Structure\":\"2Pair\"}}],\"id\":164}}";
 
                 }
                 else if (poeType == "disable") {
@@ -814,11 +814,24 @@ namespace AutoTestSystem.BLL
                 }
                 else if (poeType == "poePlusDot3bt") { //poe+
 
-                    data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{peo_Port}\",{{\"Mode\":\"{"poePlusDot3bt"}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":0,\"Structure\":\"2Pair\"}}],\"id\":942}}";
+                    data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{peo_Port}\",{{\"Mode\":\"{"poePlusDot3bt"}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":942}}";
+                }
+                else if (poeType == "poePlusPlusDot3bt")//poe++
+                {  
+
+                    if (peo_Port == "19") {
+                        peo_Port = "3";
+                    }
+                    else if (peo_Port == "20")
+                    {
+                        peo_Port = "4";
+                    }
+
+                    data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"10G 1/{peo_Port}\",{{\"Mode\":\"{"poePlusDot3bt"}\",\"Priority\":\"critical\",\"Lldp\":\"enable\",\"MaxPower\":60,\"Structure\":\"4Pair\"}}],\"id\":942}}";
                 }
 
 
-                
+
                 loggerDebug("请求参数:" + data);
                 
                 StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
@@ -838,6 +851,81 @@ namespace AutoTestSystem.BLL
 
 
         }
+
+
+
+        public static bool PoeConfigSetting2(string peo_Port, string poeType)
+        {
+
+            bool re = false;
+            try
+            {
+                if (peo_Port == "19")
+                {
+                    peo_Port = "3";
+                }
+                else if (peo_Port == "20")
+                {
+                    peo_Port = "4";
+                }
+
+
+
+                var cookies = new CookieContainer();
+                var client = GetClient(cookies, "admin", "admin123");
+                string url = $@"http://169.254.100.101/api/v1/service";
+                string data = "";
+
+
+                loggerDebug(">>>>>>>>>>poeType:" + poeType);
+
+                if (poeType == "poeDot3af") //poe
+                {
+
+                    data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"10G 1/{peo_Port}\",{{\"Mode\":\"{"poeDot3af"}\",\"Priority\":\"critical\",\"Lldp\":\"enable\",\"MaxPower\":15,\"Structure\":\"2Pair\"}}],\"id\":942}}";
+                }
+                else if (poeType == "poePlusDot3at") //poe+
+                {
+                    
+                    data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"10G 1/{peo_Port}\",{{\"Mode\":\"{"poePlusDot3at"}\",\"Priority\":\"critical\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":942}}";
+                }
+                
+                else if (poeType == "disable")
+                {
+
+                    data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"10G 1/{peo_Port}\",{{\"Mode\":\"{"disable"}\",\"Priority\":\"critical\",\"Lldp\":\"enable\",\"MaxPower\":15,\"Structure\":\"4Pair\"}}],\"id\":942}}";
+
+                }
+              
+                else if (poeType == "poePlusDot3bt")//poe++
+                { //poe+
+
+                    data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"10G 1/{peo_Port}\",{{\"Mode\":\"{"poePlusDot3bt"}\",\"Priority\":\"critical\",\"Lldp\":\"enable\",\"MaxPower\":90,\"Structure\":\"4Pair\"}}],\"id\":942}}";
+                }
+               
+
+
+
+                loggerDebug("请求参数:" + data);
+
+                StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+                var result = client.PostAsync(url, content).Result;
+                var response_content = result.Content.ReadAsByteArrayAsync().Result;
+                var responseStr = System.Text.Encoding.UTF8.GetString(response_content);
+                loggerDebug(result.StatusCode + ":" + responseStr);
+                if (result.IsSuccessStatusCode && responseStr.Contains("\"error\":null"))
+                    re = true;
+            }
+            catch (Exception ex)
+            {
+                loggerError(ex.Message);
+                re = false;
+            }
+            return re;
+
+
+        }
+
 
         #region 测试功能函数
 
@@ -863,13 +951,13 @@ namespace AutoTestSystem.BLL
 
                     if (fileName != "") {
                         loggerDebug($"another way kill again");
-                        RunDosCmd($"taskkill /IM { Path.GetFileName(fileName)} /F");
+                        RunDosCmd($"taskkill /IM { Path.GetFileName(fileName)} /F",0,false);
                     }
                     
 
                     if (processName == "userspace_speedtest") {
                         loggerDebug($"dos kill agagin");
-                        RunDosCmd("taskkill /IM userspace_speedtest.exe /F");
+                        RunDosCmd("taskkill /IM userspace_speedtest.exe /F",0,false);
                     }
                     
                 }
@@ -894,10 +982,9 @@ namespace AutoTestSystem.BLL
         {
           
              
-            RunDosCmd("taskkill /IM " + processName + ".exe" + " /F");
-            RunDosCmd("taskkill /IM " + processName + ".exe" + " /F");
-            RunDosCmd("taskkill /IM " + processName + ".exe" + " /F");
-
+            RunDosCmd("taskkill /IM " + processName + ".exe" + " /F",0,false);
+            RunDosCmd("taskkill /IM " + processName + ".exe" + " /F", 0, false);
+            RunDosCmd("taskkill /IM " + processName + ".exe" + " /F", 0, false);
 
 
 
@@ -934,17 +1021,17 @@ namespace AutoTestSystem.BLL
                     if (processName == "userspace_speedtest")
                     {
                         loggerDebug($"dos kill again");
-                        RunDosCmd("taskkill /IM userspace_speedtest.exe /F");
+                        RunDosCmd("taskkill /IM userspace_speedtest.exe /F",0,false);
                     }
                     if (processName == "QCATestSuite") {
-                        RunDosCmd("taskkill /IM QCATestSuite.exe /F");
+                        RunDosCmd("taskkill /IM QCATestSuite.exe /F", 0, false);
                     }
 
 
 
                     if (Global.STATIONNAME == "SRF" || Global.STATIONNAME == "MBFT") {
                         loggerDebug($"dos kill again");
-                        RunDosCmd("taskkill /IM "+ processName+ ".exe" + " /F");
+                        RunDosCmd("taskkill /IM "+ processName+ ".exe" + " /F",0,false);
                     }
                     
 
@@ -986,13 +1073,13 @@ namespace AutoTestSystem.BLL
                     if (processName == "userspace_speedtest")
                     {
                         loggerDebug($"dos kill again");
-                        RunDosCmd("taskkill /IM userspace_speedtest.exe /F");
+                        RunDosCmd("taskkill /IM userspace_speedtest.exe /F", 0, false);
                     }
 
                     if (Global.STATIONNAME == "SRF" || Global.STATIONNAME == "MBFT")
                     {
                         loggerDebug($"dos kill again");
-                        RunDosCmd("taskkill /IM " + processName + ".exe" + " /F");
+                        RunDosCmd("taskkill /IM " + processName + ".exe" + " /F", 0, false);
                     }
 
 
@@ -1383,7 +1470,7 @@ namespace AutoTestSystem.BLL
             SFTPSeverProcess.Start();
         }
 
-        public static string RunDosCmd(string command, int timeout = 0)
+        public static string RunDosCmd(string command, int timeout = 0,bool needPrint = true)
         {
             loggerDebug($"DosSendComd-->{command}");
             using (var p = new Process())
@@ -1402,7 +1489,10 @@ namespace AutoTestSystem.BLL
                 var output = p.StandardOutput.ReadToEnd();
                 p.WaitForExit(timeout * 1000);
                 p.Close();
-                loggerDebug(output + error);
+                if (needPrint == false) {
+                    loggerDebug(output + error);
+                }
+                
                 return output + error;
             }
         }
@@ -2306,7 +2396,29 @@ namespace AutoTestSystem.BLL
             string strLoginPassword = string.Format("{0}:{1}", username, password);
             byte[] bytLoginPassword = System.Text.Encoding.UTF8.GetBytes(strLoginPassword);
             string strLoginPasswordEncoded = Convert.ToBase64String(bytLoginPassword);
-            client.DefaultRequestHeaders.Add("Authorization", $"Basic {strLoginPasswordEncoded}");
+             client.DefaultRequestHeaders.Add("Authorization", $"Basic {strLoginPasswordEncoded}");
+         
+            
+
+            return client;
+        }
+
+        public static HttpClient GetClient2(CookieContainer cookies, string username, string password)
+        {
+            var handler = new HttpClientHandler() { CookieContainer = cookies, UseCookies = false };
+            var client = new HttpClient(handler);
+
+            client.DefaultRequestHeaders.Add("User-Agent", "GetLimit");
+            client.DefaultRequestHeaders.Add("Accept", "*/*");
+            //client.DefaultRequestHeaders.Add("Pragma", "no-cache");
+            client.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
+            string strLoginPassword = string.Format("{0}:{1}", username, password);
+            byte[] bytLoginPassword = System.Text.Encoding.UTF8.GetBytes(strLoginPassword);
+            string strLoginPasswordEncoded = Convert.ToBase64String(bytLoginPassword);
+            // client.DefaultRequestHeaders.Add("Authorization", $"Basic {strLoginPasswordEncoded}");
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJQcml2aWxlZ2UiOjE1LCJTY2hlbWUiOiJIVFRQIiwiVXNlck5hbWUiOiJhZG1pbiIsImlhdCI6MTYwNzkxMTY2NX0.GLqBxa2Y0MpiZoMjqe-mrBkktQWyA0mjbrUijkUMi_6kuZXp6vTixVuAi69wufs_8adwb9hr0cv3PKeeBqtHW_DBK0waSzPTldB4v3KgBgc-bnZjO1Em8A0EW1AqqrX5gpFyGMkEYuC0o4Agya_wGBeGjwjqqNTXTMKc5_yJWZsKxf4kBGryxb3fh0GNUhGgHirz9oKukkPV4xTqwK3xtNljfAQhhz5MXfuHZI1lbfSRUuQkbh0R_A3IPU-23xfFUixxrJiWsU8ZB363D09oNJ9ndF9anUUBVtQxVskCgPTdtEjy-zjIkFVqPoHR4X0omhBvflIJEbtz0F5mBz08TA");
+             
+
             return client;
         }
 

@@ -569,7 +569,7 @@ namespace TestConsole
 
             
 
-            string data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{8}\",{{\"Mode\":\"{"poeDot3af"}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":164}}";
+            string data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{8}\",{{\"Mode\":\"{"poeDot3af"}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":15,\"Structure\":\"2Pair\"}}],\"id\":164}}";
 
 
 
@@ -830,10 +830,10 @@ namespace TestConsole
 
 
 
+            
+            //  CreateCSVDataMerciAndSnowBirdMBFT();
 
-              CreateCSVDataMerciAndSnowBirdMBFT();
-
-           //   CreateCSVDataSnowbirdSRF();
+             CreateCSVDataSnowbirdSRF();
             // POESwtichPortSpeed();
 
             //  TestPort();
