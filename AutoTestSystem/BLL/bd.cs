@@ -1489,7 +1489,7 @@ namespace AutoTestSystem.BLL
                 var output = p.StandardOutput.ReadToEnd();
                 p.WaitForExit(timeout * 1000);
                 p.Close();
-                if (needPrint == false) {
+                if (needPrint == true) {
                     loggerDebug(output + error);
                 }
                 
@@ -1710,8 +1710,11 @@ namespace AutoTestSystem.BLL
                     if (i % 4 == 0)
                         RunDosCmd("arp -d & exit");
                 }
+                if (Global.STATIONNAME == "RTT")
+                {
 
-
+                   // RunDosCmd("arp -d & exit");
+                }
 
                 var pingReply = Ping(address);
                 if (pingReply != null && pingReply.Status == 0)

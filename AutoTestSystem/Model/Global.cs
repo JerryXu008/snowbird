@@ -68,6 +68,9 @@ namespace AutoTestSystem.Model
         public static string SweepVersion;
         public static string AUTOTESTNOFIXUTRE_COUNT;
         public static string POEType;
+
+
+        public static string GUPORT;
         ///**************************ini配置文件DUT全局配置变量**********************/
         public static string DUTIP;
         public static string SSH_PORT;
@@ -479,7 +482,7 @@ namespace AutoTestSystem.Model
                 TESTMODE = iniConfig.Readini("Station", "TESTMODE").Trim();
 #endif
 
-
+                GUPORT  = iniConfig.Readini("Station", "GUPORT").Trim();
                 SkipSweep = iniConfig.Readini("Station", "SkipSweep").Trim();
 
                 TestCasePath = iniConfig.Readini("Station", "TestCasePath").Trim();

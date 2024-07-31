@@ -298,7 +298,7 @@
         "IfElse": "",
         "For": "",
         "Mode": "",
-        "ComdOrParam": "50",
+        "ComdOrParam": "0",
         "ExpectStr": "",
         "CheckStr1": "",
         "CheckStr2": "",
@@ -1328,7 +1328,7 @@
     "IsTest": true,
     "IsTestFinished": false,
     "TestResult": true,
-    "TotalNumber": 12,
+    "TotalNumber": 13,
     "TestSerial": 10,
     "TestVersion": null,
     "SystemName": null,
@@ -1377,6 +1377,43 @@
         "startIndex": 0,
         "start_time_json": "0001-01-01T00:00:00",
         "start_time": "0001-01-01T00:00:00",
+        "ItemName": "ENABLE_5G_WIFI_GU",
+        "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
+        "RetryTimes": "5-1",
+        "TimeOut": "10",
+        "SubStr1": "",
+        "SubStr2": "",
+        "IfElse": "",
+        "For": "",
+        "Mode": "",
+        "ComdOrParam": "",
+        "ExpectStr": "",
+        "CheckStr1": "",
+        "CheckStr2": "",
+        "Limit_max": "",
+        "testValue": null,
+        "Limit_min": "",
+        "ElapsedTime": null,
+        "ErrorDetails": null,
+        "Unit": "",
+        "MES_var": "",
+        "ByPassFail": "",
+        "FTC": "",
+        "TestKeyword": "ENABLE_5G_WIFI_GU",
+        "Spec": "",
+        "error_code": "",
+        "Json": "",
+        "EeroName": "ENABLE_5G_WIFI_GU",
+        "NoContain": null,
+        "SpecStatic": ""
+      },
+      {
+        "testNumber": 2,
+        "tResult": true,
+        "isTest": true,
+        "startIndex": 0,
+        "start_time_json": "0001-01-01T00:00:00",
+        "start_time": "0001-01-01T00:00:00",
         "ItemName": "ThreadSleep",
         "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
         "RetryTimes": "",
@@ -1408,7 +1445,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 2,
+        "testNumber": 3,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1445,7 +1482,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 3,
+        "testNumber": 4,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1482,7 +1519,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 4,
+        "testNumber": 5,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1519,7 +1556,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 5,
+        "testNumber": 6,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1556,7 +1593,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 6,
+        "testNumber": 7,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1593,7 +1630,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 7,
+        "testNumber": 8,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1630,7 +1667,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 8,
+        "testNumber": 9,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1667,7 +1704,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 9,
+        "testNumber": 10,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1704,7 +1741,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 10,
+        "testNumber": 11,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1741,7 +1778,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 11,
+        "testNumber": 12,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1874,7 +1911,7 @@
     "IsTest": true,
     "IsTestFinished": false,
     "TestResult": true,
-    "TotalNumber": 29,
+    "TotalNumber": 25,
     "TestSerial": 12,
     "TestVersion": null,
     "SystemName": null,
@@ -1948,161 +1985,13 @@
         "TestKeyword": "default",
         "Spec": "",
         "error_code": "",
-        "Json": "",
-        "EeroName": "ENABLE_5G_WIFI",
-        "NoContain": null,
-        "SpecStatic": ""
-      },
-      {
-        "testNumber": 2,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "SampleTelnetLogin",
-        "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
-        "RetryTimes": "3-1",
-        "TimeOut": "10",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "192.168.1.200",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "SampleTelnetLogin",
-        "Spec": "",
-        "error_code": "",
-        "Json": "",
-        "EeroName": "ENABLE_5G_WIFI",
-        "NoContain": null,
-        "SpecStatic": ""
-      },
-      {
-        "testNumber": 3,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "ENABLE_5G_WIFI_GU",
-        "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
-        "RetryTimes": "3-1",
-        "TimeOut": "30",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "ifconfig ath0 down",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "SampleTelnetCmd",
-        "Spec": "",
-        "error_code": "",
-        "Json": "",
-        "EeroName": "ENABLE_5G_WIFI",
-        "NoContain": null,
-        "SpecStatic": ""
-      },
-      {
-        "testNumber": 4,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "ENABLE_5G_WIFI_2_GU",
-        "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
-        "RetryTimes": "3-1",
-        "TimeOut": "30",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "ifconfig ath1 up",
-        "ExpectStr": "root@OpenWrt:/#",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "SampleTelnetCmd",
-        "Spec": "",
-        "error_code": "",
         "Json": "y",
         "EeroName": "ENABLE_5G_WIFI",
         "NoContain": null,
         "SpecStatic": ""
       },
       {
-        "testNumber": 5,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
-        "ItemName": "ThreadSleep",
-        "ErrorCode": "3.16.3.1: Device.WiFiRadio.BothRadios.Enable",
-        "RetryTimes": "",
-        "TimeOut": "",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "5",
-        "ExpectStr": "",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "ThreadSleep",
-        "Spec": "",
-        "error_code": "",
-        "Json": "",
-        "EeroName": "5G_PING_GOLDEN",
-        "NoContain": null,
-        "SpecStatic": ""
-      },
-      {
-        "testNumber": 6,
+        "testNumber": 2,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2139,7 +2028,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 7,
+        "testNumber": 3,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2176,7 +2065,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 8,
+        "testNumber": 4,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2213,7 +2102,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 9,
+        "testNumber": 5,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2250,7 +2139,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 10,
+        "testNumber": 6,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2287,7 +2176,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 11,
+        "testNumber": 7,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2324,7 +2213,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 12,
+        "testNumber": 8,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2361,7 +2250,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 13,
+        "testNumber": 9,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2398,7 +2287,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 14,
+        "testNumber": 10,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2435,7 +2324,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 15,
+        "testNumber": 11,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2472,7 +2361,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 16,
+        "testNumber": 12,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2509,7 +2398,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 17,
+        "testNumber": 13,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2546,7 +2435,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 18,
+        "testNumber": 14,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2583,7 +2472,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 19,
+        "testNumber": 15,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2620,7 +2509,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 20,
+        "testNumber": 16,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2657,7 +2546,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 21,
+        "testNumber": 17,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2694,7 +2583,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 22,
+        "testNumber": 18,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2731,7 +2620,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 23,
+        "testNumber": 19,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2768,7 +2657,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 24,
+        "testNumber": 20,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2805,7 +2694,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 25,
+        "testNumber": 21,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2842,7 +2731,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 26,
+        "testNumber": 22,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2879,7 +2768,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 27,
+        "testNumber": 23,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -2916,7 +2805,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 28,
+        "testNumber": 24,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,

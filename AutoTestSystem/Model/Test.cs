@@ -264,7 +264,7 @@ namespace AutoTestSystem.Model
                             rReturn = Copyfile(calbinpath, item.ExpectStr);
                             break;
                         }
-
+                    
 
                     case "StartRecordTime": {
 
@@ -288,10 +288,64 @@ namespace AutoTestSystem.Model
                             rReturn = true;
                             break;
                         }
+                        
+
+                          case "ENABLE_5G_WIFI_GU":
+
+                        {
+
+                            loggerDebug("开启 GU 5G");
+                            Task.Run(() =>
+                            {
+
+                                if (SampleComm != null)
+                                {
+                                    SampleComm.Close();
+                                }
+                                SampleComm = new Telnet(new TelnetInfo { _Address = "192.168.1.200" });
+                                SampleComm.Open();
+                                var revStr = "";
+                                SampleComm.SendCommand("", ref revStr, "", 5);
+                             
+                                Thread.Sleep(1000);
+                                SampleComm.SendCommand("ifconfig ath0 down", ref revStr, "root@OpenWrt:/#", 10);
+                                Thread.Sleep(1000);
+                                SampleComm.SendCommand("ifconfig ath1 up", ref revStr, "root@OpenWrt:/#", 10);
+
+                            });
 
 
+                            rReturn = true;
+
+                        }
+                        break;
+
+                    case "ENABLE_2G_WIFI_GU":
+
+                        {
+
+                            loggerDebug("开启 GU 2G");
+                            Task.Run(() =>
+                            {
+
+                                if (SampleComm != null)
+                                {
+                                    SampleComm.Close();
+                                }
+                                SampleComm = new Telnet(new TelnetInfo { _Address = "192.168.1.200" });
+                                SampleComm.Open();
+                                var revStr = "";
+                                //SampleComm.SendCommand("ifconfig ath0 up", ref revStr, "root@OpenWrt:/#", 20);
+                                SampleComm.SendCommand("ifconfig ath0 up", ref revStr, "root@OpenWrt:/#", 10);
+                                SampleComm.SendCommand("ifconfig ath1 down", ref revStr, "root@OpenWrt:/#", 10);
+
+                            });
 
 
+                            rReturn = true;
+                            
+                        }
+                        break;
                     case "CopyMBFTConfig":
 
                         return true;
@@ -486,10 +540,33 @@ namespace AutoTestSystem.Model
 
                     case "SampleTelnetLogin":
                         {
+
+                            if (SampleComm != null) {
+                                SampleComm.Close();
+                            }
                             SampleComm = new Telnet(new TelnetInfo { _Address = item.ComdOrParam });
                             rReturn = SampleComm.Open(item.ExpectStr);
                         }
                         break;
+                        
+                    case "SampleCOMLogin":
+                        {
+
+                                if (SampleComm != null)
+                                {
+                                    SampleComm.Close();
+                                }
+
+                                var GUDUTCOMinfo = new SerialConnetInfo { PortName = Global.GUPORT, BaudRate = 115200 };
+
+                               SampleComm = new Comport(GUDUTCOMinfo);
+                            
+                              rReturn = SampleComm.Open();
+                           
+                             
+                        }
+                        break;
+
 
                     case "WaitForTelnet":
                         {
@@ -2282,6 +2359,13 @@ namespace AutoTestSystem.Model
                                 if (itemSingle.testValue == null)
                                     itemSingle.testValue = item.tResult.ToString();
 
+                             
+
+                                if (found == false)
+                                {
+                                    itemSingle.testValue = "False";
+                                }
+
 
                                 if (rReturn == false)
                                 {
@@ -2696,6 +2780,12 @@ namespace AutoTestSystem.Model
 
                                 if (itemSingle.testValue == null)
                                     itemSingle.testValue = item.tResult.ToString();
+
+
+                                if (found == false)
+                                {
+                                    itemSingle.testValue = "False";
+                                }
 
 
                                 if (rReturn == false)
@@ -3283,6 +3373,11 @@ namespace AutoTestSystem.Model
                                 if (itemSingle.testValue == null)
                                     itemSingle.testValue = item.tResult.ToString();
 
+
+                                if (found == false)
+                                {
+                                    itemSingle.testValue = "False";
+                                }
 
                                 if (rReturn == false) {
                                     HandleErrorCodeAndDetail(ErrorList, itemSingle, info);
@@ -3939,8 +4034,10 @@ namespace AutoTestSystem.Model
                             {
                                 string[] temp = csvLines[i].Split(new char[] { ',' }, StringSplitOptions.None);
 
+                             
 
-                                if (temp[0] == item.TestKeyword.Substring(0, 2) && temp[1] == item.SubStr1 && temp[4] == item.SubStr2 && temp[5] == item.ComdOrParam)
+
+                                if (temp[0] == item.TestKeyword.Substring(0, 2) && temp[1] == item.SubStr1 && temp[5] == item.ComdOrParam)
                                 {
                                     loggerInfo($"find test result in csv line{i + 1}.testResult={temp[46]}");
 
@@ -3972,27 +4069,6 @@ namespace AutoTestSystem.Model
                         break;
 
 
-
-
-
-
-
-
-
-
-
-
-                    
-
-
-
-
-
-
-
-
-
-                  
                 
 
                     case "GetIQXInfo":
@@ -5636,7 +5712,33 @@ namespace AutoTestSystem.Model
                 error_details = item.EeroName;
             }
 
+            if (error_code == item.EeroName)
+            {
 
+                if (item.ErrorCode != null && item.ErrorCode != "")
+                {
+
+                    try
+                    {
+                        var errCode = item.ErrorCode.Split(new string[] { "\n", "\r\n" }, 0)[0].Split(':')[0].Trim();
+
+                        if (errCode != "1.4.1.1")
+                        {
+                            error_code = errCode;
+                            error_details = item.ErrorCode.Split(new string[] { "\n", "\r\n" }, 0)[0].Split(':')[1].Trim();
+                        }
+                    }
+                    catch
+                    {
+                        logger.Error("~~~~~~~Errocode Subtract Error:" + item.ErrorCode);
+
+                    }
+
+
+                }
+
+
+            }
         }
 
 

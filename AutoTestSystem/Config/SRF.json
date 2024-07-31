@@ -930,7 +930,7 @@
         "Mode": "",
         "ComdOrParam": "E:\\Eero_snowbird_DVT_LUX_SRF_WIFI_ATSuite\\QCATestSuite.exe",
         "ExpectStr": "",
-        "CheckStr1": "0b1bb545423b4336e8ad3d0d7199c19d",
+        "CheckStr1": "ceda82b8b963e51ce510fa030457bdae",
         "CheckStr2": "",
         "Limit_max": "",
         "testValue": null,

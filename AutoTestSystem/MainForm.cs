@@ -92,6 +92,10 @@ namespace AutoTestSystem
         public static Communication DUTCOMM;
         public static Communication DUTCOMM2;
         public static Comport FixSerialPort;
+
+
+      
+
         //public static GPIB GPIBCOMM;                                                                      //!GPIB连接
         public static Communication SampleComm;
         public static Communication STAComm; //赔测板
@@ -863,16 +867,7 @@ namespace AutoTestSystem
 
 
 
-          
-           
-
-         
-
-
-
-
-
-
+       
 
 #if DEBUG
             //if (Global.STATIONNAME != "CCT")
@@ -898,8 +893,7 @@ namespace AutoTestSystem
             testThread.Start();
 
 
-
-
+ 
 
 
             // textBox1.Text = "GGC3530132850621";
@@ -1858,7 +1852,7 @@ namespace AutoTestSystem
 
             //Name = "SetDHCP-1000";
 
-            //Name = "NOISETEST-1111";
+            //Name = "MBFT-1111";
 
             //Global.STATIONNO = Name;
             //Global.FIXTURENAME = Global.STATIONNO;
@@ -2586,11 +2580,11 @@ namespace AutoTestSystem
                                 RunDosCmd(cmd2, 3);
                             }
 
+                          
 
- 
 
-                            // 无论测试pass/fail，都弹出治具
-                            if (Global.FIXTUREFLAG == "1")
+                                // 无论测试pass/fail，都弹出治具
+                                if (Global.FIXTUREFLAG == "1")
                             {
 
 
@@ -2630,19 +2624,18 @@ namespace AutoTestSystem
 
                                             // if (testStatus == TestStatus.PASS) {
 
-                                            if (Global.STATIONNAME == "MBLT" && testStatus == TestStatus.FAIL && (error_code_firstfail.Trim()=="2.1.2" || error_code_firstfail.Trim() == "2.1.1"))
-                                            {
-                                                loggerDebug("特殊问题，不退出治具");
-                                            }
-                                            else {
+                                            //if (Global.STATIONNAME == "MBLT" && testStatus == TestStatus.FAIL && (error_code_firstfail.Trim()=="2.1.2" || error_code_firstfail.Trim() == "2.1.1"))
+                                            //{
+                                            //    loggerDebug("特殊问题，不退出治具");
+                                            //}
+                                            //else {
                                                 FixSerialPort.SendCommandToFix("AT+TESTEND%", ref recvStr, "OK", 5);
 
-                                            }
+                                           // }
 
                                            
                                          
-                                            
-                                            
+                                                                                   
                                             
                                             // }
                                            
@@ -2652,12 +2645,7 @@ namespace AutoTestSystem
 
 
                                         }
-
-                                        if (Global.STATIONNAME == "MBFT")
-                                        {
-                                           // FixSerialPort.SendCommandToFix("AT+BLOW_OFF%", ref recvStr, "", 5);
-                                        }
-
+ 
 
                                       
                                       
@@ -2671,8 +2659,8 @@ namespace AutoTestSystem
                             if (testStatus != TestStatus.PASS) {
                                 if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF" || Global.STATIONNAME == "BURNIN")
                                 {
-                                     loggerInfo("失败了连续ping 10次");
-                                     PingIP("192.168.1.1", 10);
+                                    // loggerInfo("失败了连续ping 10次");
+                                    // PingIP("192.168.1.1", 10);
                                 }
                                 else if(Global.STATIONNAME=="MBLT") {
 
@@ -2698,16 +2686,31 @@ namespace AutoTestSystem
                                     Thread.Sleep(1000);
 
 
-                                    STAComm.SendCommand("cat /sys/class/thermal/thermal_zone3/temp", ref revStr, "root@OpenWrt:/#", 10);
+                                    //STAComm.SendCommand("cat /sys/class/thermal/thermal_zone3/temp", ref revStr, "root@OpenWrt:/#", 10);
 
 
-                                    var testValue = GetValue(revStr, "temp", "root");
+                                    STAComm.SendCommand("thermaltool -i wifi0 -get | grep \"temperature\"", ref revStr, "root@OpenWrt:/#", 10);
 
-                                    if (testValue == "") {
-                                        testValue = "0";
+                                    var testValue0 = GetValue(revStr, "temperature:", ",");
+
+                                    if (testValue0 == "") {
+                                        testValue0 = "0";
                                     }
 
-                                    testValue = Math.Round(double.Parse(testValue) / 1000).ToString();
+                                    testValue0 = Math.Round(double.Parse(testValue0) / 1).ToString();
+
+                                    STAComm.SendCommand("thermaltool -i wifi1 -get | grep \"temperature\"", ref revStr, "root@OpenWrt:/#", 10);
+
+                                    var testValue1 = GetValue(revStr, "temperature:", ",");
+
+                                    if (testValue1 == "")
+                                    {
+                                        testValue1 = "0";
+                                    }
+
+                                    testValue1 = Math.Round(double.Parse(testValue1) / 1).ToString();
+
+
 
                                     var CSVFilePathRTTTemp = $@"{Global.LOGFOLDER}\CsvData\{DateTime.Now.ToString("yyyy-MM-dd")}_{Global.STATIONNO}_RTTGUTemp.csv";
 
@@ -2717,9 +2720,9 @@ namespace AutoTestSystem
                                     string result = testStatus == TestStatus.PASS ? "PASS" : "FAIL";
 
 
-                                    string temperature = testValue;
+                                    string wifi0 = testValue0;
 
-
+                                    string wifi1 = testValue1;
 
                                     string errorCode = testStatus == TestStatus.PASS ? "" : error_details_firstfail;
 
@@ -2732,16 +2735,16 @@ namespace AutoTestSystem
                                         // 如果文件不存在，写入列头
                                         if (!fileExists)
                                         {
-                                            writer.WriteLine("SN,Result,Temp,errocode");
+                                            writer.WriteLine("SN,Result,wifi0,wifi1,errocode");
                                         }
 
                                         // 写入数据
-                                        writer.WriteLine($"{sn},{result},{temperature},{errorCode}");
+                                        writer.WriteLine($"{sn},{result},{wifi0},{wifi1},{errorCode}");
                                     }
 
 
-                                   // loggerDebug("reboot Sample");
-                                   // STAComm.SendCommand("reboot", ref revStr, "", 10);
+                                    loggerDebug("reboot Sample");
+                                    STAComm.SendCommand("reboot", ref revStr, "", 10);
                                 }
                                 catch (Exception ex) {
 
@@ -2855,9 +2858,13 @@ namespace AutoTestSystem
                                 Directory.CreateDirectory(path);
                             }
                             // loggerInfo("创建工单目录完成:"+path);
-                             
-                                // {finalTestResult}_{SN}_{error_details_firstfail}_{DateTime.Now.ToString("hh-mm-ss")}
 
+                            // {finalTestResult}_{SN}_{error_details_firstfail}_{DateTime.Now.ToString("hh-mm-ss")}
+
+
+                            if (error_details_firstfail.Contains("JSON_UPLOAD")) {
+                                error_details_firstfail = "JSON_UPLOAD";
+                            }
 
                             cellLogPath = $@"{Global.LogPath}\{WorkOrder}\{finalTestResult}_{SN}_{error_details_firstfail}_{DateTime.Now.ToString("hh-mm-ss")}.txt";
                             
@@ -3898,7 +3905,10 @@ namespace AutoTestSystem
                                             //|| (tempItem.ErrorCode.Contains("1.4.3.6:") && ((Global.STATIONNAME == "MBFT") || (Global.STATIONNAME == "SRF")))
                                             || (tempItem.ErrorCode.Contains("1.11.5:"))
                                             || (tempItem.ErrorCode.Contains("3.1.0:"))
+                                             || (tempItem.ErrorCode.Contains("1.11.7:"))
+                                              || (tempItem.ErrorCode.Contains("2.1.1:"))
 
+                                            
                                             )
                                         {
 
@@ -3932,7 +3942,7 @@ namespace AutoTestSystem
 
                                                 if (uploadJsonSpecialFail == false)
                                                 {
-                                                    PostAsyncJsonToMes();
+                                                    PostAsyncJsonToMes(5);
                                                 }
                                             }
 
@@ -4003,7 +4013,7 @@ namespace AutoTestSystem
                                         bool uploadjsonResult = UploadJsonToClient();
                                         if (uploadjsonResult)//客户系统上传成功
                                         {
-                                            if (PostAsyncJsonToMes() & stationStatus)
+                                            if (PostAsyncJsonToMes(5) & stationStatus)
                                             {
                                                 finalTestResult = stationStatus.ToString().ToUpper() == "TRUE" ? "PASS" : "FAIL";
                                                 //collectCsvResult();
@@ -4019,7 +4029,7 @@ namespace AutoTestSystem
                                         { //客户系统上传失败
                                             if (!uploadJsonSpecialFail) //不是特殊失败类型
                                             {
-                                                PostAsyncJsonToMes();
+                                                PostAsyncJsonToMes(5);
 
                                                 SetTestStatus(TestStatus.FAIL);
 
@@ -4613,8 +4623,12 @@ namespace AutoTestSystem
                                         }
 
                                    }
-                        
-                                   stationObj.tests.Add(phaseItems);
+                                    if (phaseItems.test_value == "False" || testItem.testValue == "False")
+                                    {
+
+                                        phaseItems.status = "failed";
+                                    }
+                                    stationObj.tests.Add(phaseItems);
 
                                    
                                 }
@@ -4684,10 +4698,6 @@ namespace AutoTestSystem
 
 
 
-
-
-
-
                 if (!JsonSerializer(stationObj, out string JsonStr, JsonPath))
                 {
                     loggerError("Serialize station Json info error!!!...");
@@ -4718,9 +4728,25 @@ namespace AutoTestSystem
                     loggerInfo("StationName:RTT uploadfail ,Cancel DHCP Mode...");
                     var STAComm = new Telnet(new TelnetInfo { _Address = "192.168.1.1" });
                     string revStr = "";
-                    if (STAComm.Open("root@OpenWrt:/#") && STAComm.SendCommand("fw_setenv bootcmd bootipq", ref revStr, "root@OpenWrt:/#", 10))
+                    if (STAComm.Open("root@OpenWrt:/#"))
                     {
-                        loggerInfo("StationName:RTT  DHCP Mode cancel success!");
+
+                        STAComm.SendCommand("fw_setenv bootcmd bootipq", ref revStr, "root@OpenWrt:/#", 10);
+                        STAComm.SendCommand("fw_setenv revert_mode", ref revStr, "root@OpenWrt:/#", 10);
+                        STAComm.SendCommand("fw_setenv saveenv", ref revStr, "root@OpenWrt:/#", 10);
+
+
+                        Thread.Sleep(1000);
+                        if (STAComm.SendCommand("fw_printenv | grep bootipq", ref revStr, "bootcmd=bootipq", 5))
+                        {
+                            loggerInfo("StationName:RTT  DHCP Mode cancel success!");
+                        }
+                        else
+                        {
+                            loggerInfo("StationName:RTT  DHCP Mode cancel fail");
+                        }
+
+ 
                     }
                     else
                     {
@@ -4904,14 +4930,13 @@ namespace AutoTestSystem
         /// 上传json文件to Mes.
         /// </summary>
         /// <returns></returns>
-        private bool PostAsyncJsonToMes()
+        private bool PostAsyncJsonToMes(int retryTime)
         {
+            Label:
             if (Global.STATIONNAME == "CancelDHCP" || Global.STATIONNAME.ToLower() == "revert")
             {
                 return true;
             }
-
-
             if (Global.STATIONNAME == "BURNIN")
             {
 
@@ -4920,8 +4945,6 @@ namespace AutoTestSystem
 
 
             }
-
-
 
             DateTime startUpload = DateTime.Now;
             bool result = false;
@@ -4946,11 +4969,7 @@ namespace AutoTestSystem
                 }
 
 
-               
-
-
-
-             
+                
 
                 MesPhases mesPhasesUpload = ForeachClassFields<MesPhases>(mesPhases, "TRUE");
 
@@ -5013,9 +5032,7 @@ namespace AutoTestSystem
                 }
                 else
                 {
-
-                   
-                    
+            
                     
                     if (Global.STATIONNAME == "ALKB") {
                     
@@ -5112,18 +5129,18 @@ namespace AutoTestSystem
                     if (Global.STATIONNAME == "SRF")
                     {
                         loggerDebug("~~~~~~~~~~~begin checkroute");
-                        //检查路由:
-                        //  if (mescheckroute.checkroute(SN, Global.FIXTURENAME, out string mesMsg) && mesMsg.Contains("OK"))
-                        //  {
-                        //没过站
-                        // loggerDebug("not pass station,setIPflag=true,MesMsg="+ mesMsg);
-                        // SetIPflag = true;
-                        //  }
-                        //  else {
-                        // loggerDebug("pass station,setIPflag=false");
-                        // SetIPflag = false;
-                        // }
                         SetIPflag = false;
+                    }
+
+                    if (Global.STATIONNAME == "RTT") {
+                        retryTime--;
+                        if (retryTime != 0) {
+                            loggerDebug("重新post to MES");
+                            Thread.Sleep(3000);
+                            goto Label;
+                        
+                        }
+                    
                     }
 
 
@@ -5132,8 +5149,6 @@ namespace AutoTestSystem
                     SetIPflag = true;
                 }
              
-
-
                 loggerFatal("UploadJsonToMESException:" + ex.ToString());
 
               
@@ -5152,14 +5167,29 @@ namespace AutoTestSystem
                         loggerInfo("StationName:RTT uploadfail ,Cancel DHCP Mode...");
                         var STAComm = new Telnet(new TelnetInfo { _Address = "192.168.1.1" });
                         string revStr = "";
-                        if (STAComm.Open("root@OpenWrt:/#") && STAComm.SendCommand("fw_setenv bootcmd bootipq", ref revStr, "root@OpenWrt:/#", 10))
+                       if (STAComm.Open("root@OpenWrt:/#")) {
+
+                        STAComm.SendCommand("fw_setenv bootcmd bootipq", ref revStr, "root@OpenWrt:/#", 10);
+                        STAComm.SendCommand("fw_setenv revert_mode", ref revStr, "root@OpenWrt:/#", 10);
+                        STAComm.SendCommand("fw_setenv saveenv", ref revStr, "root@OpenWrt:/#", 10);
+                       
+                        
+                        Thread.Sleep(1000);
+                        if (STAComm.SendCommand("fw_printenv | grep bootipq", ref revStr, "bootcmd=bootipq", 5))
                         {
                             loggerInfo("StationName:RTT  DHCP Mode cancel success!");
                         }
-                        else
-                        {
-                            loggerInfo("StationName:RTT  DHCP Mode cancel fail!");
+                        else {
+                            loggerInfo("StationName:RTT  DHCP Mode cancel fail");
                         }
+
+                        
+                       }
+                                          
+                       else
+                       {
+                            loggerInfo("StationName:RTT  DHCP Mode cancel fail!");
+                       }
 
                     }
                
