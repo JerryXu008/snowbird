@@ -1224,7 +1224,7 @@ namespace AutoTestSystem
                                 if (!isTesting)
                                 {
                                     //开启扫描
-                                    scanManager.Scan();
+                                    scanManager.Scan(); 
                                 }
 
                                 //这里注释掉，不然扫码超时之后，无法再次扫码
@@ -1894,26 +1894,12 @@ namespace AutoTestSystem
             }
 
 
-
-
-
-
-
-            if (Global.FIXTUREFLAG == "0")
-            {
-                FixSerialPort = new Comport(FixCOMinfo);
-                FixSerialPort.OpenCOM();
-
-
-                return;
-            }
+ 
             try
             {
 
                 FixSerialPort = new Comport(FixCOMinfo);
                 FixSerialPort.OpenCOM();
-
-
 
 
                 string recvStr = "";

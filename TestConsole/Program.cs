@@ -831,9 +831,9 @@ namespace TestConsole
 
 
             
-            //  CreateCSVDataMerciAndSnowBirdMBFT();
+              CreateCSVDataMerciAndSnowBirdMBFT();
 
-             CreateCSVDataSnowbirdSRF();
+            // CreateCSVDataSnowbirdSRF();
             // POESwtichPortSpeed();
 
             //  TestPort();
