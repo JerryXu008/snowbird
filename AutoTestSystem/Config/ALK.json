@@ -244,7 +244,7 @@
         "CheckStr2": "",
         "Limit_max": "4100",
         "testValue": null,
-        "Limit_min": "2700",
+        "Limit_min": "3000",
         "ElapsedTime": null,
         "ErrorDetails": null,
         "Unit": "pa",

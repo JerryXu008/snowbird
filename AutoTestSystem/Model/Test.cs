@@ -447,6 +447,7 @@ namespace AutoTestSystem.Model
                                 loggerInfo(">>>>:" + ret);
                                 if (ret.Contains("OK"))
                                 {
+                                    int ii = 0;
                                     rReturn = true; 
                                 }
                                 else
@@ -715,7 +716,7 @@ namespace AutoTestSystem.Model
 
                     case "Waitingcsvlog":
                         csvLines = null;
-                        rReturn = WaitingCSVlog(item.TimeOut, item.ComdOrParam, SN, out csvLines);
+                        rReturn = WaitingCSVlog(item.TimeOut, item.ComdOrParam, SN,item.ExpectStr, out csvLines);
                         break;
                     case "WaitingcsvlogBT":
                         {
@@ -970,7 +971,7 @@ namespace AutoTestSystem.Model
 
                     case "POEconfig":
                         {
-
+                           
 
                             loggerDebug(">>>>>>>>>>cmd:" + item.ComdOrParam);
 
@@ -1265,7 +1266,7 @@ namespace AutoTestSystem.Model
                             else
                             {
                                 loggerError("mesMsg:" + mesMsg);
-                                MainForm.f1.ShowLbl_FAIL_TEXT(mesMsg);
+                                MainForm.f1.ShowLbl_FAIL_TEXT("ABA Error:" + mesMsg);
                             } 
                         }
                         break;
@@ -5254,7 +5255,7 @@ namespace AutoTestSystem.Model
                                 rReturn = true;
                             }
 
-                            else if ((Global.TESTMODE == "debug" || Global.TESTMODE == "fa" || IsDebug) && item.EeroName.Trim()== "CHECK_ART_PARTITION")
+                            else if ((Global.TESTMODE == "debug" || Global.TESTMODE == "fa" || IsDebug) && item.EeroName.Trim() == "CHECK_ART_PARTITION")
                             {
                                 rReturn = true;
                                 loggerDebug("Debug Mode CHECK_ART_PARTITION SKip ,do not run");

@@ -2,6 +2,7 @@ using AutoTestSystem.BLL;
 using AutoTestSystem.DAL;
 using AutoTestSystem.Model;
 using Checkroute;
+using KAutoHelper;
 using Newtonsoft.Json;
 using Renci.SshNet;
 using System;
@@ -53,7 +54,7 @@ namespace AutoTestSystem
 
         //打开程序后的第一次运行
         public bool isFirstRun = true;
-
+        public static string TempItemFAILName;
         //UBOOT fail ,LED_W保存
         public string UBOOT_LED_W_ReMSG1="";
         public string UBOOT_LED_W_ReMSG2 = "";
@@ -268,75 +269,76 @@ namespace AutoTestSystem
 
 
 
-            ////先输入数值
-            //InutMEASPOP usbDialog2 = new InutMEASPOP();
 
-            //usbDialog2.lowLimit = "35.1";
-            //usbDialog2.highLimit = "89.9";
-            //double value = -1;
-            //usbDialog2.TextHandler = (str) => {
+                ////先输入数值
+                //InutMEASPOP usbDialog2 = new InutMEASPOP();
 
-            //    value = double.Parse(str);
-            //};
-            //usbDialog2.StartPosition = FormStartPosition.CenterScreen;
-            //usbDialog2.TopMost = true;
-            //usbDialog2.ShowTip("Please record sound level");
-            //usbDialog2.ShowDialog();
+                //usbDialog2.lowLimit = "35.1";
+                //usbDialog2.highLimit = "89.9";
+                //double value = -1;
+                //usbDialog2.TextHandler = (str) => {
 
-
-
-
-
-            //// 获取当前可执行文件的路径
-            //string exeFilePath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-            //// 配置文件路径（假设在同一目录下）
-            //string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory+"/config", "config.ini");
-
-            //// 计算当前可执行文件的MD5校验码
-            //string exeMd5 = GetMD5HashFromFile(exeFilePath);
-            //// 计算配置文件的MD5校验码
-            //string configMd5 = GetMD5HashFromFile(configFilePath);
-
-            //// 打印MD5校验码
-            //Console.WriteLine("Executable MD5: " + exeMd5);
-            //Console.WriteLine("Config.ini MD5: " + configMd5);
-
-            //// 将两个或更多MD5校验码组合起来，计算最终的MD5校验码
-            //string combinedMd5 = GetCombinedMd5(exeMd5, configMd5);
-
-            //// 打印最终的MD5校验码
-            //Console.WriteLine("Final Combined MD5: " + combinedMd5);
-
-
-
-
-            //TestingNoise usbDialog = new TestingNoise();
-
-            //var result = "";
-            //usbDialog.TextHandler = (str) => {
-
-            //    result = str;
-            //};
-
-            //usbDialog.StartPosition = FormStartPosition.CenterScreen;
-            //usbDialog.ShowTip();
-
-
-            ////// 设置窗体为无边框样式
-            //usbDialog.FormBorderStyle = FormBorderStyle.None;
-            //// 最大化窗体
-            //usbDialog.WindowState = FormWindowState.Maximized;
-
-            //usbDialog.TopMost = true;
-
-            //usbDialog.ShowDialog();
+                //    value = double.Parse(str);
+                //};
+                //usbDialog2.StartPosition = FormStartPosition.CenterScreen;
+                //usbDialog2.TopMost = true;
+                //usbDialog2.ShowTip("Please record sound level");
+                //usbDialog2.ShowDialog();
 
 
 
 
 
+                //// 获取当前可执行文件的路径
+                //string exeFilePath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                //// 配置文件路径（假设在同一目录下）
+                //string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory+"/config", "config.ini");
 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi; //设定按分辨率来缩放控件
+                //// 计算当前可执行文件的MD5校验码
+                //string exeMd5 = GetMD5HashFromFile(exeFilePath);
+                //// 计算配置文件的MD5校验码
+                //string configMd5 = GetMD5HashFromFile(configFilePath);
+
+                //// 打印MD5校验码
+                //Console.WriteLine("Executable MD5: " + exeMd5);
+                //Console.WriteLine("Config.ini MD5: " + configMd5);
+
+                //// 将两个或更多MD5校验码组合起来，计算最终的MD5校验码
+                //string combinedMd5 = GetCombinedMd5(exeMd5, configMd5);
+
+                //// 打印最终的MD5校验码
+                //Console.WriteLine("Final Combined MD5: " + combinedMd5);
+
+
+
+
+                //TestingNoise usbDialog = new TestingNoise();
+
+                //var result = "";
+                //usbDialog.TextHandler = (str) => {
+
+                //    result = str;
+                //};
+
+                //usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                //usbDialog.ShowTip();
+
+
+                ////// 设置窗体为无边框样式
+                //usbDialog.FormBorderStyle = FormBorderStyle.None;
+                //// 最大化窗体
+                //usbDialog.WindowState = FormWindowState.Maximized;
+
+                //usbDialog.TopMost = true;
+
+                //usbDialog.ShowDialog();
+
+
+
+
+
+
+                this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi; //设定按分辨率来缩放控件
             InitializeComponent();
 
 
@@ -2220,7 +2222,7 @@ namespace AutoTestSystem
             ArrayListCsvHeaderMAX = new List<string>();
             ArrayListCsvHeaderUNIT = new List<string>();
 
-
+            TempItemFAILName = "";
             error_code = "";
             error_details = "";
             error_code_firstfail = "";
@@ -2447,20 +2449,7 @@ namespace AutoTestSystem
                             }
                          
                         }
-                        if (!Global.GoldenSN.Contains(SN) && Global.STATIONNAME == "MBFT")
-                        {
-                            if (CalibrationFail)
-                            {
-                                string recvStr = "";
-                                DUTCOMM.SendCommand($"dd if=/dev/zero of=/dev/mmcblk0p9", ref recvStr, Global.PROMPT, 10);
-                            }
-
-                            if (Global.ClearCalWhenValidation && ValidationFail)
-                            {
-                                string recvStr = "";
-                                DUTCOMM.SendCommand($"dd if=/dev/zero of=/dev/mmcblk0p9", ref recvStr, Global.PROMPT, 10);
-                            }
-                        }
+                    
                         if (Global.STATIONNAME == "RTT")
                         {
                             string recvStr = "";
@@ -2470,7 +2459,6 @@ namespace AutoTestSystem
                         Global.Total_Fail_Num++;
 
                       
-                        
                         if (lbl_failCount.Text == "")
                         {
                             this.bt_Status.Font = new System.Drawing.Font("宋体",36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -2598,7 +2586,18 @@ namespace AutoTestSystem
                                             FixSerialPort.SendCommandToFix("AT+USB_PWROFF%", ref recvStr, "OK", 5);
 
 
-                                            PoeConfigSetting(Global.POE_PORT, "disable");
+                                         
+
+                                            if (Global.POE_PORT != "19" && Global.POE_PORT != "20")
+                                            {
+                                                 PoeConfigSetting(Global.POE_PORT, "disable");
+                                            }
+                                            else
+                                            {
+
+                                                PoeConfigSetting2(Global.POE_PORT, "disable");
+                                            }
+
                                         }
 
                                         //FixSerialPort.SendCommandToFix("AT+VBUS_OFF%", ref recvStr, "OK", 5);
@@ -2664,73 +2663,88 @@ namespace AutoTestSystem
                                 try
                                 {
 
-
-                                    
-                                    var STAComm = new Telnet(new TelnetInfo { _Address = "192.168.1.200" });
-                                    string revStr = "";
-                                    STAComm.Open("root@OpenWrt:/#");
-                                    Thread.Sleep(1000);
-
-
-                                    //STAComm.SendCommand("cat /sys/class/thermal/thermal_zone3/temp", ref revStr, "root@OpenWrt:/#", 10);
-
-
-                                    STAComm.SendCommand("thermaltool -i wifi0 -get | grep \"temperature\"", ref revStr, "root@OpenWrt:/#", 10);
-
-                                    var testValue0 = GetValue(revStr, "temperature:", ",");
-
-                                    if (testValue0 == "") {
-                                        testValue0 = "0";
-                                    }
-
-                                    testValue0 = Math.Round(double.Parse(testValue0) / 1).ToString();
-
-                                    STAComm.SendCommand("thermaltool -i wifi1 -get | grep \"temperature\"", ref revStr, "root@OpenWrt:/#", 10);
-
-                                    var testValue1 = GetValue(revStr, "temperature:", ",");
-
-                                    if (testValue1 == "")
+                                    //var recv = RunDosCmd($"ping 192.168.1.200 -n 2");
+                                    //if (recv.Contains("(0%") && recv.Contains("TTL="))
+                                    if(TempItemFAILName!= "VERIFYSFIS")
                                     {
-                                        testValue1 = "0";
-                                    }
-
-                                    testValue1 = Math.Round(double.Parse(testValue1) / 1).ToString();
 
 
 
-                                    var CSVFilePathRTTTemp = $@"{Global.LOGFOLDER}\CsvData\{DateTime.Now.ToString("yyyy-MM-dd")}_{Global.STATIONNO}_RTTGUTemp.csv";
 
 
+                                        var STAComm = new Telnet(new TelnetInfo { _Address = "192.168.1.200" });
+                                        string revStr = "";
+                                        STAComm.Open("root@OpenWrt:/#");
+                                        Thread.Sleep(1000);
 
-                                    string sn = SN;
-                                    string result = testStatus == TestStatus.PASS ? "PASS" : "FAIL";
+
+                                        //STAComm.SendCommand("cat /sys/class/thermal/thermal_zone3/temp", ref revStr, "root@OpenWrt:/#", 10);
 
 
-                                    string wifi0 = testValue0;
+                                        STAComm.SendCommand("thermaltool -i wifi0 -get | grep \"temperature\"", ref revStr, "root@OpenWrt:/#", 10);
 
-                                    string wifi1 = testValue1;
+                                        var testValue0 = GetValue(revStr, "temperature:", ",");
 
-                                    string errorCode = testStatus == TestStatus.PASS ? "" : error_details_firstfail;
-
-                                    // 检查文件是否存在
-                                    bool fileExists = File.Exists(CSVFilePathRTTTemp);
-
-                                    // 打开文件
-                                    using (StreamWriter writer = new StreamWriter(CSVFilePathRTTTemp, true, Encoding.UTF8))
-                                    {
-                                        // 如果文件不存在，写入列头
-                                        if (!fileExists)
+                                        if (testValue0 == "")
                                         {
-                                            writer.WriteLine("SN,Result,wifi0,wifi1,errocode");
+                                            testValue0 = "0";
                                         }
 
-                                        // 写入数据
-                                        writer.WriteLine($"{sn},{result},{wifi0},{wifi1},{errorCode}");
+                                        testValue0 = Math.Round(double.Parse(testValue0) / 1).ToString();
+
+                                        STAComm.SendCommand("thermaltool -i wifi1 -get | grep \"temperature\"", ref revStr, "root@OpenWrt:/#", 10);
+
+                                        var testValue1 = GetValue(revStr, "temperature:", ",");
+
+                                        if (testValue1 == "")
+                                        {
+                                            testValue1 = "0";
+                                        }
+
+                                        testValue1 = Math.Round(double.Parse(testValue1) / 1).ToString();
+
+
+
+                                        var CSVFilePathRTTTemp = $@"{Global.LOGFOLDER}\CsvData\{DateTime.Now.ToString("yyyy-MM-dd")}_{Global.STATIONNO}_RTTGUTemp.csv";
+
+
+
+                                        string sn = SN;
+                                        string result = testStatus == TestStatus.PASS ? "PASS" : "FAIL";
+
+
+                                        string wifi0 = testValue0;
+
+                                        string wifi1 = testValue1;
+
+                                        string errorCode = testStatus == TestStatus.PASS ? "" : error_details_firstfail;
+
+                                        // 检查文件是否存在
+                                        bool fileExists = File.Exists(CSVFilePathRTTTemp);
+
+                                        // 打开文件
+                                        using (StreamWriter writer = new StreamWriter(CSVFilePathRTTTemp, true, Encoding.UTF8))
+                                        {
+                                            // 如果文件不存在，写入列头
+                                            if (!fileExists)
+                                            {
+                                                writer.WriteLine("SN,Result,wifi0,wifi1,errocode");
+                                            }
+
+                                            // 写入数据
+                                            writer.WriteLine($"{sn},{result},{wifi0},{wifi1},{errorCode}");
+                                        }
+
+
+                                        loggerDebug("reboot Sample");
+                                        STAComm.SendCommand("reboot", ref revStr, "", 10);
                                     }
 
 
-                                    loggerDebug("reboot Sample");
-                                    STAComm.SendCommand("reboot", ref revStr, "", 10);
+
+
+
+
                                 }
                                 catch (Exception ex) {
 
@@ -3536,7 +3550,7 @@ namespace AutoTestSystem
                                     // 测试fail停止测试,生成结果or fail继续测试。
                                     if (!tempItem.tResult && !fail_continue)
                                     {
-
+                                        TempItemFAILName = tempItem.EeroName;
 
                                         if (Global.STATIONNAME == "RTT")
                                         {
@@ -5109,32 +5123,54 @@ namespace AutoTestSystem
             catch (Exception ex)
             {
 
-                if (ex.ToString().Contains("TaskCanceledException"))
+                //if (ex.ToString().Contains("TaskCanceledException"))
+                //{
+                //    //超时了，再次走一下路由检查，看看是否过站
+                //    if (Global.STATIONNAME == "SRF")
+                //    {
+                //        loggerDebug("~~~~~~~~~~~begin checkroute");
+                //        SetIPflag = false;
+                //    }
+
+                //    if (Global.STATIONNAME == "RTT") {
+                //        retryTime--;
+                //        if (retryTime != 0) {
+                //            loggerDebug("重新post to MES");
+                //            Thread.Sleep(3000);
+                //            goto Label;
+
+                //        }
+
+                //    }
+
+
+                //}
+                //else {
+                //    SetIPflag = true;
+                //}
+
+
+                
+                     
+
+                   
+                 retryTime--;
+                if (retryTime != 0)
                 {
-                    //超时了，再次走一下路由检查，看看是否过站
-                    if (Global.STATIONNAME == "SRF")
-                    {
-                        loggerDebug("~~~~~~~~~~~begin checkroute");
-                        SetIPflag = false;
-                    }
-
-                    if (Global.STATIONNAME == "RTT") {
-                        retryTime--;
-                        if (retryTime != 0) {
-                            loggerDebug("重新post to MES");
-                            Thread.Sleep(3000);
-                            goto Label;
-                        
-                        }
-                    
-                    }
-
+                    loggerDebug("重新post to MES");
+                    Thread.Sleep(3000);
+                    goto Label;
 
                 }
                 else {
                     SetIPflag = true;
                 }
-             
+
+                   
+
+
+
+
                 loggerFatal("UploadJsonToMESException:" + ex.ToString());
 
               

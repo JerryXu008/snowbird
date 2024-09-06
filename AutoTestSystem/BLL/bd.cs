@@ -390,29 +390,105 @@ namespace AutoTestSystem.BLL
             return rReturn;
         }
 
-        /// <summary>
-        ///     等待并读取csv文件
-        /// </summary>
-        /// <param name="timeOut">超时时间</param>
-        /// <param name="filepath">文件绝对路径</param>
-        /// <param name="csvLines">csv文件内容</param>
-        /// <returns></returns>
-        public static bool WaitingCSVlog(string timeOut, string filepath, string str, out string[] csvLines)
-        {
-            //if (Global.STATIONNAME == "SRF")
-            //{
-            //    Sleep(120000);
-            //}
-            //else {
-            //    Sleep(3000);
-            //}
+        ///// <summary>
+        /////     等待并读取csv文件
+        ///// </summary>
+        ///// <param name="timeOut">超时时间</param>
+        ///// <param name="filepath">文件绝对路径</param>
+        ///// <param name="csvLines">csv文件内容</param>
+        ///// <returns></returns>
+        //public static bool WaitingCSVlog(string timeOut, string filepath, string str, out string[] csvLines)
+        //{
+        //    //if (Global.STATIONNAME == "SRF")
+        //    //{
+        //    //    Sleep(120000);
+        //    //}
+        //    //else {
+        //    //    Sleep(3000);
+        //    //}
               
-           // 
+        //   // 
+        //    var rReturn = false;
+        //    var lngStart = DateTime.Now.AddSeconds(int.Parse(timeOut)).Ticks;
+        //    var dir = new DirectoryInfo(filepath);
+        //    while (DateTime.Now.Ticks <= lngStart)
+        //    {
+        //        // 返回目录中所有文件和子目录
+        //        if (dir.GetFileSystemInfos().Length > 0)
+        //        {
+        //            loggerDebug($"find log number:{dir.GetFileSystemInfos().Length}.");
+        //            var files = Directory.GetFileSystemEntries(filepath);
+        //            foreach (var file in files)
+        //            {
+        //                if (file.Contains(str) && file.EndsWith(".csv"))
+        //                {
+        //                    loggerDebug($"find csv File:{file}");
+        //                    //Thread.Sleep(3000);
+        //                    using (var sr = new StreamReader(file))
+        //                    {
+        //                        csvLines = sr.ReadToEnd().Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+        //                    }
+                           
+        //                    return true;
+        //                }
+        //            }
+        //        }
+        //        Thread.Sleep(1000);
+        //    }
+        //    loggerError($"Waiting csv log timeout{timeOut}.FAIL!!! ");
+        //    csvLines = null;
+        //    return rReturn;
+        //}
+
+
+
+        public static bool WaitingCSVlog(string timeOut, string filepath, string str,string exeName, out string[] csvLines)
+        {
             var rReturn = false;
             var lngStart = DateTime.Now.AddSeconds(int.Parse(timeOut)).Ticks;
             var dir = new DirectoryInfo(filepath);
+            int checkInterval = 10000; // 10 seconds in milliseconds
+            var lastCheckTime = DateTime.Now;
+
+          
+
             while (DateTime.Now.Ticks <= lngStart)
             {
+
+                if (exeName != "") {
+                    // 每10秒检查一次 QCATestSuite.exe 是否存在
+                    if ((DateTime.Now - lastCheckTime).TotalMilliseconds >= checkInterval)
+                    {
+                        lastCheckTime = DateTime.Now;
+
+                        // 使用 Process 启动 cmd，并执行 tasklist | findstr QCATestSuite
+                        var process = new Process
+                        {
+                            StartInfo = new ProcessStartInfo
+                            {
+                                FileName = "cmd.exe",
+                                Arguments = $"/c tasklist | findstr {exeName}",
+                                RedirectStandardOutput = true,
+                                UseShellExecute = false,
+                                CreateNoWindow = true
+                            }
+                        };
+                        process.Start();
+
+                        string output = process.StandardOutput.ReadToEnd();
+                        process.WaitForExit();
+
+                        // 如果没有找到 QCATestSuite.exe 进程，则返回 false
+                        if (string.IsNullOrEmpty(output))
+                        {
+                            loggerError($"{exeName}.exe process not found. Exiting...");
+                            csvLines = null;
+                            return false;
+                        }
+                    }
+
+                }
+
                 // 返回目录中所有文件和子目录
                 if (dir.GetFileSystemInfos().Length > 0)
                 {
@@ -423,22 +499,28 @@ namespace AutoTestSystem.BLL
                         if (file.Contains(str) && file.EndsWith(".csv"))
                         {
                             loggerDebug($"find csv File:{file}");
-                            //Thread.Sleep(3000);
                             using (var sr = new StreamReader(file))
                             {
                                 csvLines = sr.ReadToEnd().Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
                             }
-                           
                             return true;
                         }
                     }
                 }
                 Thread.Sleep(1000);
             }
-            loggerError($"Waiting csv log timeout{timeOut}.FAIL!!! ");
+
+            loggerError($"Waiting csv log timeout {timeOut}. FAIL!!! ");
             csvLines = null;
             return rReturn;
         }
+
+
+
+
+
+
+
 
 
         public static bool WaitingCSVlog2(string timeOut, string filepath, string str, out string[] csvLines)
@@ -1713,7 +1795,8 @@ namespace AutoTestSystem.BLL
                 if (Global.STATIONNAME == "RTT")
                 {
 
-                   // RunDosCmd("arp -d & exit");
+                    if (i % 4 == 0)
+                        RunDosCmd("arp -d & exit");
                 }
 
                 var pingReply = Ping(address);
