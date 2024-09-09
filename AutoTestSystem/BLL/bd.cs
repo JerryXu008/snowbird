@@ -1238,6 +1238,7 @@ namespace AutoTestSystem.BLL
                 FileInfo fileInfo = new FileInfo(fileName);
                 if (KillProcess(processName,fileName))
                 {
+                    loggerDebug("...start ready to start " + processName);
                     if (fileInfo.Directory != null)
                     {
                         var p = new Process { StartInfo = { WorkingDirectory = fileInfo.Directory.ToString(), FileName = fileInfo.Name } };
@@ -1246,6 +1247,13 @@ namespace AutoTestSystem.BLL
 
                     Thread.Sleep(1000);
                     var myProc = Process.GetProcessesByName(processName); //获取所有进程
+                    if (myProc.Length > 0) {
+                        loggerDebug("find " + processName);
+                    }
+                    else {
+                        loggerDebug("not find " + processName);
+                    }
+
                     return myProc.Length > 0;
                 }
 
