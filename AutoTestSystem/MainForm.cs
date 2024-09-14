@@ -2681,59 +2681,59 @@ namespace AutoTestSystem
                                         //STAComm.SendCommand("cat /sys/class/thermal/thermal_zone3/temp", ref revStr, "root@OpenWrt:/#", 10);
 
 
-                                        STAComm.SendCommand("thermaltool -i wifi0 -get | grep \"temperature\"", ref revStr, "root@OpenWrt:/#", 10);
+                                        //STAComm.SendCommand("thermaltool -i wifi0 -get | grep \"temperature\"", ref revStr, "root@OpenWrt:/#", 10);
 
-                                        var testValue0 = GetValue(revStr, "temperature:", ",");
+                                        //var testValue0 = GetValue(revStr, "temperature:", ",");
 
-                                        if (testValue0 == "")
-                                        {
-                                            testValue0 = "0";
-                                        }
+                                        //if (testValue0 == "")
+                                        //{
+                                        //    testValue0 = "0";
+                                        //}
 
-                                        testValue0 = Math.Round(double.Parse(testValue0) / 1).ToString();
+                                        //testValue0 = Math.Round(double.Parse(testValue0) / 1).ToString();
 
-                                        STAComm.SendCommand("thermaltool -i wifi1 -get | grep \"temperature\"", ref revStr, "root@OpenWrt:/#", 10);
+                                        //STAComm.SendCommand("thermaltool -i wifi1 -get | grep \"temperature\"", ref revStr, "root@OpenWrt:/#", 10);
 
-                                        var testValue1 = GetValue(revStr, "temperature:", ",");
+                                        //var testValue1 = GetValue(revStr, "temperature:", ",");
 
-                                        if (testValue1 == "")
-                                        {
-                                            testValue1 = "0";
-                                        }
+                                        //if (testValue1 == "")
+                                        //{
+                                        //    testValue1 = "0";
+                                        //}
 
-                                        testValue1 = Math.Round(double.Parse(testValue1) / 1).ToString();
-
-
-
-                                        var CSVFilePathRTTTemp = $@"{Global.LOGFOLDER}\CsvData\{DateTime.Now.ToString("yyyy-MM-dd")}_{Global.STATIONNO}_RTTGUTemp.csv";
+                                        //testValue1 = Math.Round(double.Parse(testValue1) / 1).ToString();
 
 
 
-                                        string sn = SN;
-                                        string result = testStatus == TestStatus.PASS ? "PASS" : "FAIL";
+                                        //var CSVFilePathRTTTemp = $@"{Global.LOGFOLDER}\CsvData\{DateTime.Now.ToString("yyyy-MM-dd")}_{Global.STATIONNO}_RTTGUTemp.csv";
 
 
-                                        string wifi0 = testValue0;
 
-                                        string wifi1 = testValue1;
+                                        //string sn = SN;
+                                        //string result = testStatus == TestStatus.PASS ? "PASS" : "FAIL";
 
-                                        string errorCode = testStatus == TestStatus.PASS ? "" : error_details_firstfail;
 
-                                        // 检查文件是否存在
-                                        bool fileExists = File.Exists(CSVFilePathRTTTemp);
+                                        //string wifi0 = testValue0;
 
-                                        // 打开文件
-                                        using (StreamWriter writer = new StreamWriter(CSVFilePathRTTTemp, true, Encoding.UTF8))
-                                        {
-                                            // 如果文件不存在，写入列头
-                                            if (!fileExists)
-                                            {
-                                                writer.WriteLine("SN,Result,wifi0,wifi1,errocode");
-                                            }
+                                        //string wifi1 = testValue1;
 
-                                            // 写入数据
-                                            writer.WriteLine($"{sn},{result},{wifi0},{wifi1},{errorCode}");
-                                        }
+                                        //string errorCode = testStatus == TestStatus.PASS ? "" : error_details_firstfail;
+
+                                        //// 检查文件是否存在
+                                        //bool fileExists = File.Exists(CSVFilePathRTTTemp);
+
+                                        //// 打开文件
+                                        //using (StreamWriter writer = new StreamWriter(CSVFilePathRTTTemp, true, Encoding.UTF8))
+                                        //{
+                                        //    // 如果文件不存在，写入列头
+                                        //    if (!fileExists)
+                                        //    {
+                                        //        writer.WriteLine("SN,Result,wifi0,wifi1,errocode");
+                                        //    }
+
+                                        //    // 写入数据
+                                        //    writer.WriteLine($"{sn},{result},{wifi0},{wifi1},{errorCode}");
+                                        //}
 
 
                                         loggerDebug("reboot Sample");
@@ -4713,7 +4713,38 @@ namespace AutoTestSystem
                 //var fileInfo = new FileInfo(cellLogPath);
                 //if (Math.Ceiling(fileInfo.Length / 1024.0) < 100)
                 //    Thread.Sleep(3000);
-                result = UploadJson(JsonPath);
+
+
+                for (var i = 5; i >= 1; i--)
+                {
+
+                    result = UploadJson(JsonPath, i);
+                    if (result == true)
+                    {
+                        break;
+
+                    }
+                    else
+                    {
+                        if (Global.STATIONNAME == "CCT")
+                        {
+
+                            Thread.Sleep(20000);
+                        }
+                        else {
+
+                            Thread.Sleep(5000);
+                        }
+
+
+                    }
+                }
+
+
+
+
+
+              //  result = UploadJson(JsonPath);
             }
             catch (Exception ex)
             {
@@ -4810,7 +4841,7 @@ namespace AutoTestSystem
             return limit;
 
         }
-        public bool UploadJson(string JsonFilePath)
+        public bool UploadJson(string JsonFilePath, int retryIndex)
         {
             if (Global.STATIONNAME == "BURNIN" 
                 || Global.STATIONNAME.ToLower() == "revert" 
@@ -4862,25 +4893,38 @@ namespace AutoTestSystem
 
 
                     loggerError("Json-info upload to client fail:" + errors);
-                    mesPhases.JSON_UPLOAD = "FALSE";
+                     
+
+
+
+                    if (retryIndex == 1)
+                    {
+                        mesPhases.JSON_UPLOAD = "FALSE";
+                    }
+
                     if (stationObj.status == "passed")
                     {
-                        mesPhases.error_code = "JSON_UPLOAD";
-                        mesPhases.status = "failed";
-                        error_code = "JSON_UPLOAD"; 
-                        error_details = "JSON_UPLOAD";
-                        error_code_firstfail = "JSON_UPLOAD";
-                        if (responds.Contains("No valid session found from cloud admin API"))
-                        {   
-                            error_details_firstfail = "JSON_UPLOAD\r\n" + "(" + "No valid session found from cloud admin API" + ")";
-                        }
-                        else
+
+                        if (retryIndex == 1)
                         {
-                            error_details_firstfail = "JSON_UPLOAD";
+                            mesPhases.error_code = "JSON_UPLOAD";
+                            mesPhases.status = "failed";
+                            error_code = "JSON_UPLOAD";
+                            error_details = "JSON_UPLOAD";
+                            error_code_firstfail = "JSON_UPLOAD";
+                            if (responds.Contains("No valid session found from cloud admin API"))
+                            {
+                                error_details_firstfail = "JSON_UPLOAD\r\n" + "(" + "No valid session found from cloud admin API" + ")";
+                            }
+                            else
+                            {
+                                error_details_firstfail = "JSON_UPLOAD";
+                            }
                         }
-                       
-                        
+
                     }
+
+ 
                     return false;
                 }
             }

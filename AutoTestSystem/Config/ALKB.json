@@ -156,7 +156,7 @@
         "CheckStr2": "",
         "Limit_max": "",
         "testValue": null,
-        "Limit_min": "180",
+        "Limit_min": "500",
         "ElapsedTime": null,
         "ErrorDetails": null,
         "Unit": "pa",
