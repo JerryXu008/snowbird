@@ -5074,7 +5074,7 @@ namespace AutoTestSystem
                 if (Global.TESTMODE.ToLower() == "fa")
                 {
                 
-                    mesUrl = $"http://10.90.108.172:8086/api/1/FA/serial/{SN}/station/{Global.FIXTURENAME}/result";
+                    mesUrl = $"http://10.90.116.132:8087/api/1/FA/serial/{SN}/station/{Global.FIXTURENAME}/result";
                 }
                 else
                 {

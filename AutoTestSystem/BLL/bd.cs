@@ -33,7 +33,7 @@ namespace AutoTestSystem.BLL
     {
         public static ILog logger = Log4NetHelper.GetLogger(typeof(Bd));
 
-        public  static string  TempCellLogPath = "\\Temp.txt";
+        public static string TempCellLogPath = "\\Temp.txt";
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         private static extern int GetWindowText(IntPtr hWnd, IntPtr lpString, int nMaxCount);
@@ -128,7 +128,8 @@ namespace AutoTestSystem.BLL
                 throw new Exception(ex.Message);
             }
         }
-        public static void loggerDebug(string txt) { 
+        public static void loggerDebug(string txt)
+        {
             logger.Debug(txt);
             SaveLog(txt);
         }
@@ -154,7 +155,8 @@ namespace AutoTestSystem.BLL
         }
 
 
-        public static void MonitorClickZhuBo(string processName) {
+        public static void MonitorClickZhuBo(string processName)
+        {
 
             string windows_title = null;
             Process[] processes = Process.GetProcesses();
@@ -173,7 +175,8 @@ namespace AutoTestSystem.BLL
                         Marshal.FreeHGlobal(buffer);
                     }
                 }
-                else {
+                else
+                {
                     //loggerDebug("can not find " + processName);
                 }
             }
@@ -190,12 +193,13 @@ namespace AutoTestSystem.BLL
                     AutoControl.SendClickOnControlByHandle(childhWnd);
                 }
             }
-            else {
+            else
+            {
 
                 logger.Debug($"未找到{processName} 句柄");
             }
-            
-           
+
+
 
         }
 
@@ -225,19 +229,20 @@ namespace AutoTestSystem.BLL
 
         public static void SaveLog(string log, int type = 1)
         {
-          
-            if (Global.STATIONNAME != "BURNIN") {
+
+            if (Global.STATIONNAME != "BURNIN")
+            {
                 return;
             }
 
             try
-            { 
-                
-                    using (StreamWriter sw = new StreamWriter( Global.LogPath + "\\" + TempCellLogPath, true, Encoding.Default))
-                    {
-                        sw.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {log}");
-                    }
-                
+            {
+
+                using (StreamWriter sw = new StreamWriter(Global.LogPath + "\\" + TempCellLogPath, true, Encoding.Default))
+                {
+                    sw.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {log}");
+                }
+
             }
             catch (Exception)
             {
@@ -308,7 +313,7 @@ namespace AutoTestSystem.BLL
 
 
 
-       static string GetNetName(string ip)
+        static string GetNetName(string ip)
         {
             var str = RunDosCmd("ipconfig/all");
 
@@ -339,19 +344,20 @@ namespace AutoTestSystem.BLL
 
             }
 
-            if (ret == "") {
+            if (ret == "")
+            {
                 //loggerInfo("ip地址:" + ip + " 没有找到,开始固定网口名称查找");
                 ret = "0.10";
             }
             return ret;
         }
-     public  static void NetshInterfaceEnable(string netName)
+        public static void NetshInterfaceEnable(string netName)
         {
             //var name = Global.NetInterfaceName;
             var name = netName;
             RunDosCmd("netsh interface set interface " + name + " enabled");
         }
-      public static void NetshInterfaceDisEnable(string netName)
+        public static void NetshInterfaceDisEnable(string netName)
         {
             //var name = GetNetName(ip);
             //Global.NetInterfaceName = name;
@@ -406,7 +412,7 @@ namespace AutoTestSystem.BLL
         //    //else {
         //    //    Sleep(3000);
         //    //}
-              
+
         //   // 
         //    var rReturn = false;
         //    var lngStart = DateTime.Now.AddSeconds(int.Parse(timeOut)).Ticks;
@@ -428,7 +434,7 @@ namespace AutoTestSystem.BLL
         //                    {
         //                        csvLines = sr.ReadToEnd().Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
         //                    }
-                           
+
         //                    return true;
         //                }
         //            }
@@ -442,7 +448,7 @@ namespace AutoTestSystem.BLL
 
 
 
-        public static bool WaitingCSVlog(string timeOut, string filepath, string str,string exeName, out string[] csvLines)
+        public static bool WaitingCSVlog(string timeOut, string filepath, string str, string exeName, out string[] csvLines)
         {
             var rReturn = false;
             var lngStart = DateTime.Now.AddSeconds(int.Parse(timeOut)).Ticks;
@@ -450,12 +456,13 @@ namespace AutoTestSystem.BLL
             int checkInterval = 10000; // 10 seconds in milliseconds
             var lastCheckTime = DateTime.Now;
 
-          
+
 
             while (DateTime.Now.Ticks <= lngStart)
             {
 
-                if (exeName != "") {
+                if (exeName != "")
+                {
                     // 每10秒检查一次 QCATestSuite.exe 是否存在
                     if ((DateTime.Now - lastCheckTime).TotalMilliseconds >= checkInterval)
                     {
@@ -525,8 +532,8 @@ namespace AutoTestSystem.BLL
 
         public static bool WaitingCSVlog2(string timeOut, string filepath, string str, out string[] csvLines)
         {
-          
-          //  Sleep(3000);
+
+            //  Sleep(3000);
             var rReturn = false;
             var lngStart = DateTime.Now.AddSeconds(int.Parse(timeOut)).Ticks;
             var dir = new DirectoryInfo(filepath);
@@ -539,7 +546,7 @@ namespace AutoTestSystem.BLL
                     var files = Directory.GetFileSystemEntries(filepath);
                     foreach (var file in files)
                     {
-                       var name = Path.GetFileName(file);
+                        var name = Path.GetFileName(file);
 
                         if (name.Contains(str) && name.EndsWith(".csv"))
                         {
@@ -765,7 +772,7 @@ namespace AutoTestSystem.BLL
 
 
 
-      
+
 
 
 
@@ -781,15 +788,15 @@ namespace AutoTestSystem.BLL
 
         public static bool PowerCycleOutlet(int index)
         {
-                bool rReturn = false;
+            bool rReturn = false;
 
-                loggerInfo("Start Power OFF");
-                bool rReturnoff = PoeConfigSetting(index.ToString(), "disable");
-                Thread.Sleep(3000);
+            loggerInfo("Start Power OFF");
+            bool rReturnoff = PoeConfigSetting(index.ToString(), "disable");
+            Thread.Sleep(3000);
 
 
-               loggerInfo("Start Power ON");
-               bool rReturnon = PoeConfigSetting(index.ToString(), "poeDot3af");
+            loggerInfo("Start Power ON");
+            bool rReturnon = PoeConfigSetting(index.ToString(), "poeDot3af");
 
 
             if (!PingIP(Global.DUTIP, 2))
@@ -797,16 +804,17 @@ namespace AutoTestSystem.BLL
 
                 loggerInfo("Cannot Ping Successfully");
                 loggerInfo(">>>>>>>>>> PowerOFF OK");
-              //  Sleep(10000);     
-                 
-                 rReturn = rReturnoff && rReturnon;
-                 return rReturn;
+                //  Sleep(10000);     
+
+                rReturn = rReturnoff && rReturnon;
+                return rReturn;
             }
-            else {
+            else
+            {
                 loggerError("断电后再上电，不应该能马上ping通，所以失败!!!");
                 return rReturn = false;
             }
- 
+
         }
 
         public static void WriteToCsvForALKLeak(string filename, List<string> headers, List<string> data)
@@ -831,7 +839,7 @@ namespace AutoTestSystem.BLL
             File.WriteAllLines(filename, lines);
         }
 
-       public static string GetCombinedMd5(params string[] md5Strings)
+        public static string GetCombinedMd5(params string[] md5Strings)
         {
             // 将所有MD5字符串连接起来
             StringBuilder combinedBuilder = new StringBuilder();
@@ -855,9 +863,9 @@ namespace AutoTestSystem.BLL
                 return sb.ToString();
             }
         }
-   
 
-    public static string GetMD5HashFromFile(string fileName)
+
+        public static string GetMD5HashFromFile(string fileName)
         {
             using (var md5 = MD5.Create())
             {
@@ -869,7 +877,7 @@ namespace AutoTestSystem.BLL
             }
         }
 
-        public static  bool PoeConfigSetting(string peo_Port,string poeType)
+        public static bool PoeConfigSetting(string peo_Port, string poeType)
         {
 
             bool re = false;
@@ -889,19 +897,22 @@ namespace AutoTestSystem.BLL
                     data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{peo_Port}\",{{\"Mode\":\"{"poeDot3af"}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":15,\"Structure\":\"2Pair\"}}],\"id\":164}}";
 
                 }
-                else if (poeType == "disable") {
+                else if (poeType == "disable")
+                {
 
                     data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{peo_Port}\",{{\"Mode\":\"{"disable"}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":164}}";
 
                 }
-                else if (poeType == "poePlusDot3bt") { //poe+
+                else if (poeType == "poePlusDot3bt")
+                { //poe+
 
                     data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"2.5G 1/{peo_Port}\",{{\"Mode\":\"{"poePlusDot3bt"}\",\"Priority\":\"low\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":942}}";
                 }
                 else if (poeType == "poePlusPlusDot3bt")//poe++
-                {  
+                {
 
-                    if (peo_Port == "19") {
+                    if (peo_Port == "19")
+                    {
                         peo_Port = "3";
                     }
                     else if (peo_Port == "20")
@@ -915,7 +926,7 @@ namespace AutoTestSystem.BLL
 
 
                 loggerDebug("请求参数:" + data);
-                
+
                 StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
                 var result = client.PostAsync(url, content).Result;
                 var response_content = result.Content.ReadAsByteArrayAsync().Result;
@@ -968,23 +979,23 @@ namespace AutoTestSystem.BLL
                 }
                 else if (poeType == "poePlusDot3at") //poe+
                 {
-                    
+
                     data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"10G 1/{peo_Port}\",{{\"Mode\":\"{"poePlusDot3at"}\",\"Priority\":\"critical\",\"Lldp\":\"enable\",\"MaxPower\":30,\"Structure\":\"2Pair\"}}],\"id\":942}}";
                 }
-                
+
                 else if (poeType == "disable")
                 {
 
                     data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"10G 1/{peo_Port}\",{{\"Mode\":\"{"disable"}\",\"Priority\":\"critical\",\"Lldp\":\"enable\",\"MaxPower\":15,\"Structure\":\"4Pair\"}}],\"id\":942}}";
 
                 }
-              
+
                 else if (poeType == "poePlusDot3bt")//poe++
                 { //poe+
 
                     data = $"{{\"method\":\"poe.config.interface.set\",\"params\":[\"10G 1/{peo_Port}\",{{\"Mode\":\"{"poePlusDot3bt"}\",\"Priority\":\"critical\",\"Lldp\":\"enable\",\"MaxPower\":90,\"Structure\":\"4Pair\"}}],\"id\":942}}";
                 }
-               
+
 
 
 
@@ -1015,7 +1026,7 @@ namespace AutoTestSystem.BLL
         ///     结束进程
         /// </summary>
         /// <param name="processName"></param>
-        public static bool KillProcess(string processName,string fileName = "")
+        public static bool KillProcess(string processName, string fileName = "")
         {
             try
             {
@@ -1024,37 +1035,40 @@ namespace AutoTestSystem.BLL
                 //if (myProc.Length == 0) return true;
                 foreach (var thisProc in myProc)
                 {
-                    if (thisProc.CloseMainWindow()) {
+                    if (thisProc.CloseMainWindow())
+                    {
                         continue;
                     }
-                  //  loggerDebug($"准备杀死程序 :{processName}...");
+                    //  loggerDebug($"准备杀死程序 :{processName}...");
                     thisProc.Kill();
                     loggerDebug($"Kill process: {processName}...");
 
-                    if (fileName != "") {
+                    if (fileName != "")
+                    {
                         loggerDebug($"another way kill again");
-                        RunDosCmd($"taskkill /IM { Path.GetFileName(fileName)} /F",0,false);
+                        RunDosCmd($"taskkill /IM {Path.GetFileName(fileName)} /F", 0, false);
                     }
-                    
 
-                    if (processName == "userspace_speedtest") {
+
+                    if (processName == "userspace_speedtest")
+                    {
                         loggerDebug($"dos kill agagin");
-                        RunDosCmd("taskkill /IM userspace_speedtest.exe /F",0,false);
+                        RunDosCmd("taskkill /IM userspace_speedtest.exe /F", 0, false);
                     }
-                    
+
                 }
 
                 Thread.Sleep(500);
                 var myProc2 = Process.GetProcessesByName(processName); //获取所有进程
-               // loggerInfo("进程:" + processName + " 没有了");
-                 return myProc2.Length == 0;
+                                                                       // loggerInfo("进程:" + processName + " 没有了");
+                return myProc2.Length == 0;
                 //return true;
             }
             catch (Exception ex)
             {
-               // loggerError("杀死程序出现异常");
+                // loggerError("杀死程序出现异常");
                 loggerFatal(ex.ToString());
-               // return true;
+                // return true;
                 throw;
             }
         }
@@ -1062,9 +1076,9 @@ namespace AutoTestSystem.BLL
 
         public static void KillProcessNoResForce(string processName)
         {
-          
-             
-            RunDosCmd("taskkill /IM " + processName + ".exe" + " /F",0,false);
+
+
+            RunDosCmd("taskkill /IM " + processName + ".exe" + " /F", 0, false);
             RunDosCmd("taskkill /IM " + processName + ".exe" + " /F", 0, false);
             RunDosCmd("taskkill /IM " + processName + ".exe" + " /F", 0, false);
 
@@ -1081,12 +1095,12 @@ namespace AutoTestSystem.BLL
             try
             {
 
-                if (processName == "BTTestSuiteRD" || processName == "ATSuite" || processName == "QCATestSuite" || processName == "BTTestSuite") {
-                    MonitorClickZhuBo(processName);
-                    Thread.Sleep(1000);
-                }
+                //if (processName == "BTTestSuiteRD" || processName == "ATSuite" || processName == "QCATestSuite" || processName == "BTTestSuite") {
+                //    MonitorClickZhuBo(processName);
+                //    Thread.Sleep(1000);
+                //}
 
-             
+
                 //Process[] localAll = Process.GetProcesses();
                 var myProc = Process.GetProcessesByName(processName); //获取所有进程
                 //if (myProc.Length == 0) return true;
@@ -1103,26 +1117,28 @@ namespace AutoTestSystem.BLL
                     if (processName == "userspace_speedtest")
                     {
                         loggerDebug($"dos kill again");
-                        RunDosCmd("taskkill /IM userspace_speedtest.exe /F",0,false);
+                        RunDosCmd("taskkill /IM userspace_speedtest.exe /F", 0, false);
                     }
-                    if (processName == "QCATestSuite") {
+                    if (processName == "QCATestSuite")
+                    {
                         RunDosCmd("taskkill /IM QCATestSuite.exe /F", 0, false);
                     }
 
 
 
-                    if (Global.STATIONNAME == "SRF" || Global.STATIONNAME == "MBFT") {
+                    if (Global.STATIONNAME == "SRF" || Global.STATIONNAME == "MBFT")
+                    {
                         loggerDebug($"dos kill again");
-                        RunDosCmd("taskkill /IM "+ processName+ ".exe" + " /F",0,false);
+                        RunDosCmd("taskkill /IM " + processName + ".exe" + " /F", 0, false);
                     }
-                    
+
 
                 }
 
                 Thread.Sleep(500);
                 var myProc2 = Process.GetProcessesByName(processName); //获取所有进程
                                                                        // loggerInfo("进程:" + processName + " 没有了");
-               // return myProc2.Length == 0;
+                                                                       // return myProc2.Length == 0;
                 return true;
             }
             catch (Exception ex)
@@ -1130,7 +1146,7 @@ namespace AutoTestSystem.BLL
                 // loggerError("杀死程序出现异常");
                 loggerFatal(ex.ToString());
                 return true;
-               // throw;
+                // throw;
             }
         }
 
@@ -1169,13 +1185,13 @@ namespace AutoTestSystem.BLL
 
                 Thread.Sleep(500);
                 var myProc2 = Process.GetProcessesByName(processName); //获取所有进程
-                 return myProc2.Length == 0;
+                return myProc2.Length == 0;
 
-                 
+
             }
             catch (Exception ex)
             {
-                
+
                 loggerFatal(ex.ToString());
                 throw;
             }
@@ -1236,7 +1252,7 @@ namespace AutoTestSystem.BLL
             try
             {
                 FileInfo fileInfo = new FileInfo(fileName);
-                if (KillProcess(processName,fileName))
+                if (KillProcess(processName, fileName))
                 {
                     loggerDebug("...start ready to start " + processName);
                     if (fileInfo.Directory != null)
@@ -1247,10 +1263,12 @@ namespace AutoTestSystem.BLL
 
                     Thread.Sleep(1000);
                     var myProc = Process.GetProcessesByName(processName); //获取所有进程
-                    if (myProc.Length > 0) {
+                    if (myProc.Length > 0)
+                    {
                         loggerDebug("find " + processName);
                     }
-                    else {
+                    else
+                    {
                         loggerDebug("not find " + processName);
                     }
 
@@ -1268,7 +1286,7 @@ namespace AutoTestSystem.BLL
         }
 
 
-        public static bool RestartProcess(string processName, string fileName,out Process rProcess)
+        public static bool RestartProcess(string processName, string fileName, out Process rProcess)
         {
 
             try
@@ -1280,7 +1298,7 @@ namespace AutoTestSystem.BLL
                     if (fileInfo.Directory != null)
                     {
                         p = new Process { StartInfo = { WorkingDirectory = fileInfo.Directory.ToString(), FileName = fileInfo.Name } };
-                     
+
                         p.Start();
                     }
 
@@ -1560,7 +1578,7 @@ namespace AutoTestSystem.BLL
             SFTPSeverProcess.Start();
         }
 
-        public static string RunDosCmd(string command, int timeout = 0,bool needPrint = true)
+        public static string RunDosCmd(string command, int timeout = 0, bool needPrint = true)
         {
             loggerDebug($"DosSendComd-->{command}");
             using (var p = new Process())
@@ -1579,10 +1597,11 @@ namespace AutoTestSystem.BLL
                 var output = p.StandardOutput.ReadToEnd();
                 p.WaitForExit(timeout * 1000);
                 p.Close();
-                if (needPrint == true) {
+                if (needPrint == true)
+                {
                     loggerDebug(output + error);
                 }
-                
+
                 return output + error;
             }
         }
@@ -1730,7 +1749,7 @@ namespace AutoTestSystem.BLL
         //        if (i % 4 == 0) {
         //            RunDosCmd("arp -d & exit");
         //        }
-                    
+
         //        var pingReply = Ping(address);
         //        if (pingReply.Status == 0)
         //        {
@@ -1795,7 +1814,8 @@ namespace AutoTestSystem.BLL
                 //if (i % 4 == 0 && flag)
                 //    RunDosCmd("arp -d & exit");
 
-                if (Global.STATIONNAME == "BURNIN") {
+                if (Global.STATIONNAME == "BURNIN")
+                {
 
                     if (i % 4 == 0)
                         RunDosCmd("arp -d & exit");
@@ -2059,7 +2079,8 @@ namespace AutoTestSystem.BLL
             var rReturn = false;
 
 
-            if (value == "NA") {
+            if (value == "NA")
+            {
                 info = "";
                 loggerError("value is NA,no need compare,false");
                 return false;
@@ -2096,16 +2117,16 @@ namespace AutoTestSystem.BLL
             {
                 loggerDebug("Compare Limit_min and Limit_max...");
                 var rReturn1 = temp >= double.Parse(limitMin);
-               // loggerInfo("return1:" + rReturn1);
+                // loggerInfo("return1:" + rReturn1);
                 var rReturn2 = temp <= double.Parse(limitMax);
-              //  loggerInfo("return2:" + rReturn2);
+                //  loggerInfo("return2:" + rReturn2);
                 rReturn = rReturn1 & rReturn2;
-               // loggerInfo("总结过:" + rReturn);
+                // loggerInfo("总结过:" + rReturn);
                 if (!rReturn) infoTemp = temp < double.Parse(limitMin) ? "TooLow" : "TooHigh";
             }
 
             info = infoTemp;
-           // loggerInfo("总结过2:" + info);
+            // loggerInfo("总结过2:" + info);
             return rReturn;
         }
 
@@ -2271,9 +2292,9 @@ namespace AutoTestSystem.BLL
                     return;
 
                 }
-                
 
-                
+
+
             }
             else
             {
@@ -2490,9 +2511,9 @@ namespace AutoTestSystem.BLL
             string strLoginPassword = string.Format("{0}:{1}", username, password);
             byte[] bytLoginPassword = System.Text.Encoding.UTF8.GetBytes(strLoginPassword);
             string strLoginPasswordEncoded = Convert.ToBase64String(bytLoginPassword);
-             client.DefaultRequestHeaders.Add("Authorization", $"Basic {strLoginPasswordEncoded}");
-         
-            
+            client.DefaultRequestHeaders.Add("Authorization", $"Basic {strLoginPasswordEncoded}");
+
+
 
             return client;
         }
@@ -2511,7 +2532,7 @@ namespace AutoTestSystem.BLL
             string strLoginPasswordEncoded = Convert.ToBase64String(bytLoginPassword);
             // client.DefaultRequestHeaders.Add("Authorization", $"Basic {strLoginPasswordEncoded}");
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJQcml2aWxlZ2UiOjE1LCJTY2hlbWUiOiJIVFRQIiwiVXNlck5hbWUiOiJhZG1pbiIsImlhdCI6MTYwNzkxMTY2NX0.GLqBxa2Y0MpiZoMjqe-mrBkktQWyA0mjbrUijkUMi_6kuZXp6vTixVuAi69wufs_8adwb9hr0cv3PKeeBqtHW_DBK0waSzPTldB4v3KgBgc-bnZjO1Em8A0EW1AqqrX5gpFyGMkEYuC0o4Agya_wGBeGjwjqqNTXTMKc5_yJWZsKxf4kBGryxb3fh0GNUhGgHirz9oKukkPV4xTqwK3xtNljfAQhhz5MXfuHZI1lbfSRUuQkbh0R_A3IPU-23xfFUixxrJiWsU8ZB363D09oNJ9ndF9anUUBVtQxVskCgPTdtEjy-zjIkFVqPoHR4X0omhBvflIJEbtz0F5mBz08TA");
-             
+
 
             return client;
         }

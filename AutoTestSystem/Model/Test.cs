@@ -32,7 +32,7 @@ namespace AutoTestSystem.Model
 
         private static CancellationTokenSource cts = new CancellationTokenSource();
 
-      
+
 
         public Test()
         {
@@ -52,7 +52,7 @@ namespace AutoTestSystem.Model
         }
 
 
-        
+
 
         public bool StepTest(test_phases testPhase, Items item, int retryTimes, phase_items phaseItem, ref int retry)
         {
@@ -69,12 +69,12 @@ namespace AutoTestSystem.Model
             if (item.ItemName == "Checkroute")
             {
                 var curTime = DateTime.Now;
-                
+
                 var dateTimeNow = SyDateTimeHelper.GetNetDateTime(DateTime.Now);
                 bool same = false;
                 same = (curTime.ToShortDateString() == dateTimeNow.ToShortDateString());
 
-                
+
                 if (same == false)
                 { //时间不对
                     loggerInfo("!!!startTime error,update time");
@@ -89,7 +89,7 @@ namespace AutoTestSystem.Model
                 }
 
             }
-            
+
             bool specFlag = false; //spec中是否有变量
             string info = "";
             error_code = "";
@@ -103,9 +103,9 @@ namespace AutoTestSystem.Model
                 || item.TestKeyword.Contains("CheckEeroTest") || item.TestKeyword.Contains("Checkroute")
                 || item.TestKeyword.Contains("CheckEeroABA")
                 || item.TestKeyword.Contains("GetWorkOrder")
-                // || item.TestKeyword.Contains("SetDHCP")
+                 // || item.TestKeyword.Contains("SetDHCP")
                  || item.TestKeyword.Contains("CKCustom")
-                
+
                 ))
             {
                 loggerWarn("This is debug mode.Skip this step.");
@@ -114,7 +114,7 @@ namespace AutoTestSystem.Model
             }
 
 
-            
+
 
             // 发送的命令中有变量
             while (!String.IsNullOrEmpty(item.ComdOrParam) && item.ComdOrParam.Contains("<") && item.ComdOrParam.Contains(">"))
@@ -127,7 +127,7 @@ namespace AutoTestSystem.Model
             // Spec值中含有变量
             while (!string.IsNullOrEmpty(item.Spec) && item.Spec.Contains("<") && item.Spec.Contains(">"))
             {
-                if (item.EeroName == "TEST_IMAGE_VERSION" &&  (Global.STATIONNAME.ToUpper() == "MBLT" || Global.STATIONNAME.ToUpper() == "SFT"))
+                if (item.EeroName == "TEST_IMAGE_VERSION" && (Global.STATIONNAME.ToUpper() == "MBLT" || Global.STATIONNAME.ToUpper() == "SFT"))
                     specFlag = false;
                 else
                     specFlag = true;
@@ -145,10 +145,10 @@ namespace AutoTestSystem.Model
                     loggerDebug($"mescheckroute.getFirmwareFW:{mes_qsdk_version}");
                 }
 #endif
-               
-                
-                
-                
+
+
+
+
                 string verName = GetMidStr(item.Spec, "<", ">");
                 item.Spec = GetMidStr(item.Spec, null, "<") + GetVerReflection(f1, verName) + GetMidStr(item.Spec, ">", null);
                 if (string.IsNullOrEmpty(item.Spec))
@@ -168,7 +168,7 @@ namespace AutoTestSystem.Model
             //added 20230516  SpecStatic,为了解决specFlag默认等于false的bug，导致jsonupload fail
             if (!IsNullOrEmpty(item.SpecStatic) && item.SpecStatic.Contains("<") && item.SpecStatic.Contains(">"))
             {
-                if (item.EeroName == "TEST_IMAGE_VERSION" && (Global.STATIONNAME.ToUpper() == "MBLT" || Global.STATIONNAME.ToUpper() == "SFT"))  
+                if (item.EeroName == "TEST_IMAGE_VERSION" && (Global.STATIONNAME.ToUpper() == "MBLT" || Global.STATIONNAME.ToUpper() == "SFT"))
                 {
                     loggerInfo($"MBLT Test_Image_Version特殊处理,设置specFlag=false");
                     specFlag = false;
@@ -188,8 +188,8 @@ namespace AutoTestSystem.Model
 
             //get limit
             {
-               
-                if (!IsNullOrEmpty(item.Json) && Global.OnlineLimit=="1" && Global.STATIONNAME!= "BURNIN" && Global.STATIONNAME != "SetDHCP" && Global.STATIONNAME != "Revert")
+
+                if (!IsNullOrEmpty(item.Json) && Global.OnlineLimit == "1" && Global.STATIONNAME != "BURNIN" && Global.STATIONNAME != "SetDHCP" && Global.STATIONNAME != "Revert")
                 {
                     if (Online_Limit == null)
                     {
@@ -203,7 +203,7 @@ namespace AutoTestSystem.Model
                         UpdateLimitFromOnline(item);
 
 
-                        
+
                     }
                 }
             }
@@ -241,18 +241,19 @@ namespace AutoTestSystem.Model
 
                     case "StartProcess":
                         {
-                            if (Global.STATIONNAME != "SRF") {
+                            if (Global.STATIONNAME != "SRF")
+                            {
                                 RunDosCmd("taskkill /IM " + item.ExpectStr + ".exe" + " /F");
                                 RunDosCmd("taskkill /IM " + item.ExpectStr + ".exe" + " /F");
                             }
-                          
+
 
                             rReturn = StartProcess(item.ExpectStr, item.ComdOrParam);
                             Sleep("1");
                             Program.SwitchToThisWindow(Global.processInfo.MainWindowHandle, true);
                             break;
                         }
-                       
+
 
                     case "CopyFileToDir":
                         rReturn = Copyfile(item.ComdOrParam, item.ExpectStr);
@@ -264,9 +265,10 @@ namespace AutoTestSystem.Model
                             rReturn = Copyfile(calbinpath, item.ExpectStr);
                             break;
                         }
-                    
 
-                    case "StartRecordTime": {
+
+                    case "StartRecordTime":
+                        {
 
                             PowerToTelnetStartTime = DateTime.Now;
                             rReturn = true;
@@ -277,20 +279,21 @@ namespace AutoTestSystem.Model
                     case "EndRecordTime":
                         {
 
-                            if (PowerToTelnetStartTime != null) {
+                            if (PowerToTelnetStartTime != null)
+                            {
 
                                 PowerToTelnetEndTime = DateTime.Now;
 
-                               var  seconds = (PowerToTelnetEndTime - PowerToTelnetStartTime).TotalSeconds;
-                               item.testValue = seconds.ToString();
+                                var seconds = (PowerToTelnetEndTime - PowerToTelnetStartTime).TotalSeconds;
+                                item.testValue = seconds.ToString();
 
                             }
                             rReturn = true;
                             break;
                         }
-                        
 
-                          case "ENABLE_5G_WIFI_GU":
+
+                    case "ENABLE_5G_WIFI_GU":
 
                         {
 
@@ -306,7 +309,7 @@ namespace AutoTestSystem.Model
                                 SampleComm.Open();
                                 var revStr = "";
                                 SampleComm.SendCommand("", ref revStr, "", 5);
-                             
+
                                 Thread.Sleep(1000);
                                 SampleComm.SendCommand("ifconfig ath0 down", ref revStr, "root@OpenWrt:/#", 10);
                                 Thread.Sleep(1000);
@@ -343,7 +346,7 @@ namespace AutoTestSystem.Model
 
 
                             rReturn = true;
-                            
+
                         }
                         break;
                     case "CopyMBFTConfig":
@@ -381,7 +384,7 @@ namespace AutoTestSystem.Model
                         break;
 
                     case "ThreadSleep2":
-                        Sleep( int.Parse(item.ComdOrParam));
+                        Sleep(int.Parse(item.ComdOrParam));
                         rReturn = true;
                         break;
 
@@ -428,13 +431,14 @@ namespace AutoTestSystem.Model
                     case "GetCsnErroMessage_CCT":
                         {
 
-                            if (Global.TESTMODE == "debug") {
+                            if (Global.TESTMODE == "debug")
+                            {
                                 loggerDebug("debug,skip");
                                 return rReturn = true;
                             }
 
 
-                           var url = $"http://10.90.116.132:8086/api/CHKRoute/serial/{SN}/station/CCT-1630";
+                            var url = $"http://10.90.116.132:8086/api/CHKRoute/serial/{SN}/station/CCT-1630";
                             loggerDebug(url);
 
                             var ret = "";
@@ -448,7 +452,7 @@ namespace AutoTestSystem.Model
                                 if (ret.Contains("OK"))
                                 {
                                     int ii = 0;
-                                    rReturn = true; 
+                                    rReturn = true;
                                 }
                                 else
                                 {
@@ -457,7 +461,7 @@ namespace AutoTestSystem.Model
                                     rReturn = false;
                                 }
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
 
                                 loggerInfo(">>>>:" + ex.Message);
@@ -470,17 +474,19 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
-               
+
                     case "PowerPingDUT":
- 
+
                     case "PingDUT":
                         try
                         {
-                           
 
 
-                            if (Global.STATIONNAME == "BURNIN") {
-                                if (item.TestKeyword == "PingDUT") {
+
+                            if (Global.STATIONNAME == "BURNIN")
+                            {
+                                if (item.TestKeyword == "PingDUT")
+                                {
                                     Regex regex = new Regex(@"_(\d+)$");
                                     Match match = regex.Match(item.ItemName);
                                     if (match.Success)
@@ -489,17 +495,18 @@ namespace AutoTestSystem.Model
                                         loggerInfo($"--------------------------------------LoopIndex:{loopNum}-------------------------------------");
                                     }
                                 }
-                               
+
                             }
 
-                         
+
 
 
                             rReturn = PingIP(!IsNullOrEmpty(item.ComdOrParam) ? item.ComdOrParam : DUTIP, int.Parse(item.TimeOut));
                             if (retryTimes > 0)
                             {
 
-                                if (rReturn == false) {
+                                if (rReturn == false)
+                                {
 
 
                                     loggerDebug("清缓存");
@@ -510,18 +517,19 @@ namespace AutoTestSystem.Model
                                 HandleSpecialMethed(item, rReturn, "");
                             }
                         }
-                        catch (Exception ex) {
+                        catch (Exception ex)
+                        {
                             rReturn = false;
                             loggerError(ex.ToString());
                         }
-                       
+
                         break;
 
                     case "PingDUT2":
                         try
                         {
                             rReturn = PingIP(!IsNullOrEmpty(item.ComdOrParam) ? item.ComdOrParam : DUTIP, int.Parse(item.TimeOut));
-                            
+
                         }
                         catch (Exception ex)
                         {
@@ -542,29 +550,30 @@ namespace AutoTestSystem.Model
                     case "SampleTelnetLogin":
                         {
 
-                            if (SampleComm != null) {
+                            if (SampleComm != null)
+                            {
                                 SampleComm.Close();
                             }
                             SampleComm = new Telnet(new TelnetInfo { _Address = item.ComdOrParam });
                             rReturn = SampleComm.Open(item.ExpectStr);
                         }
                         break;
-                        
+
                     case "SampleCOMLogin":
                         {
 
-                                if (SampleComm != null)
-                                {
-                                    SampleComm.Close();
-                                }
+                            if (SampleComm != null)
+                            {
+                                SampleComm.Close();
+                            }
 
-                                var GUDUTCOMinfo = new SerialConnetInfo { PortName = Global.GUPORT, BaudRate = 115200 };
+                            var GUDUTCOMinfo = new SerialConnetInfo { PortName = Global.GUPORT, BaudRate = 115200 };
 
-                               SampleComm = new Comport(GUDUTCOMinfo);
-                            
-                              rReturn = SampleComm.Open();
-                           
-                             
+                            SampleComm = new Comport(GUDUTCOMinfo);
+
+                            rReturn = SampleComm.Open();
+
+
                         }
                         break;
 
@@ -574,14 +583,15 @@ namespace AutoTestSystem.Model
                             if (DUTCOMM == null || DUTCOMM.GetType() != typeof(Telnet))
                             {
 
-                                if (DUTCOMM != null) { 
+                                if (DUTCOMM != null)
+                                {
                                     DUTCOMM.Close();
                                 }
 
                                 if (!IsNullOrEmpty(item.ComdOrParam))
                                     telnetInfo = new TelnetInfo { _Address = item.ComdOrParam };
-                                
-                                
+
+
                                 DUTCOMM = new Telnet(telnetInfo);
                             }
                             rReturn = DUTCOMM.Open(Global.PROMPT);
@@ -652,14 +662,14 @@ namespace AutoTestSystem.Model
                                 if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max))
                                     rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
 
-                              
+
                             }
                             else
                             {
                                 HandleSpecialMethed(item, rReturn, revStr);
                             }
 
-                           
+
                         }
                         break;
 
@@ -681,7 +691,8 @@ namespace AutoTestSystem.Model
                         {
                             if (DUTCOMM == null || DUTCOMM.GetType() == typeof(Telnet))
                             {
-                                if (DUTCOMM != null) { 
+                                if (DUTCOMM != null)
+                                {
                                     DUTCOMM.Close();
                                 }
 
@@ -693,7 +704,7 @@ namespace AutoTestSystem.Model
                             }
 
                             DUTCOMM.Close();
-                            
+
                             rReturn = DUTCOMM.Open();
                         }
                         break;
@@ -716,7 +727,7 @@ namespace AutoTestSystem.Model
 
                     case "Waitingcsvlog":
                         csvLines = null;
-                        rReturn = WaitingCSVlog(item.TimeOut, item.ComdOrParam, SN,item.ExpectStr, out csvLines);
+                        rReturn = WaitingCSVlog(item.TimeOut, item.ComdOrParam, SN, item.ExpectStr, out csvLines);
                         break;
                     case "WaitingcsvlogBT":
                         {
@@ -760,9 +771,9 @@ namespace AutoTestSystem.Model
                     case "CompressFile":
                         {
                             string zipPath = item.ExpectStr.Replace($@"./", $@"{System.Environment.CurrentDirectory}\").Replace("SN", SN).Replace("DateTime.Now:yyyy-MM-dd_hh-mm-ss", $"{startTime:yyyy-MM-dd_HH-mm-ss}");
-                            
-                            loggerInfo("压缩后的文件路径:"+zipPath);
-                                
+
+                            loggerInfo("压缩后的文件路径:" + zipPath);
+
 
                             var files = Directory.GetFileSystemEntries(item.ComdOrParam);
                             if (files.Length != 0)
@@ -780,11 +791,12 @@ namespace AutoTestSystem.Model
                                         {
                                             zipPath = zipPathPass;
                                             break;
-                                        } 
+                                        }
                                         else if (file.ToLower().EndsWith("fail")) //bt测试fail了，把之前的pass路径移动到fail路径
                                         {
                                             zipPath = zipPathFail;
-                                            if (!Directory.Exists(Path.GetDirectoryName(zipPathFail))) {
+                                            if (!Directory.Exists(Path.GetDirectoryName(zipPathFail)))
+                                            {
                                                 Directory.CreateDirectory(Path.GetDirectoryName(zipPathFail));
                                             }
 
@@ -792,9 +804,10 @@ namespace AutoTestSystem.Model
                                             File.Move(zipPathPass, zipPathFail);
                                             break;
                                         }
-                                        else {
-                                        
-                                        
+                                        else
+                                        {
+
+
                                         }
                                     }
                                     else if (File.Exists(zipPathFail))//说明wififail了，bt继续压缩到这个fail路径
@@ -816,7 +829,8 @@ namespace AutoTestSystem.Model
                                             zipPath = zipPathFail;
                                             break;
                                         }
-                                        else {
+                                        else
+                                        {
                                             //bt 会在对应软件log下面生成pass或者fail文件夹，本次snowbird wifi没有生成pass/fai文件夹
                                             loggerInfo("没有pass或者fail结尾,当做pass");
                                             zipPath = zipPathPass;
@@ -845,20 +859,21 @@ namespace AutoTestSystem.Model
                         {
                             try
                             {
-                                
+
                                 if (mescheckroute.CheckEeroTest(SN, Global.TESTMODE, out string mesMsg) && mesMsg.Contains("OK"))
                                 {
-                                   
+
                                     rReturn = true;
                                 }
                                 else
                                 {
-                                   
+
                                     loggerError("mesMsg:" + mesMsg);
                                     MainForm.f1.ShowLbl_FAIL_TEXT(mesMsg);
                                 }
                             }
-                            catch (Exception ex) {
+                            catch (Exception ex)
+                            {
                                 MessageBox.Show(ex.Message);
                                 rReturn = false;
                             }
@@ -867,8 +882,8 @@ namespace AutoTestSystem.Model
 
                     case "Checkroute":
                         {
-                             
-                              
+
+
 
                             if (mescheckroute.checkroute(SN, Global.FIXTURENAME, out string mesMsg) && mesMsg.Contains("OK"))
                             {
@@ -878,8 +893,8 @@ namespace AutoTestSystem.Model
                             {
                                 loggerError("mesMsg:" + mesMsg);
                                 MainForm.f1.ShowLbl_FAIL_TEXT(mesMsg);
-                               
-                                
+
+
                                 if (mesMsg.Contains("recheck"))
                                 {
                                     error_code = ErrorList[0].Split(':')[0].Trim();
@@ -971,7 +986,7 @@ namespace AutoTestSystem.Model
 
                     case "POEconfig":
                         {
-                           
+
 
                             loggerDebug(">>>>>>>>>>cmd:" + item.ComdOrParam);
 
@@ -980,15 +995,16 @@ namespace AutoTestSystem.Model
                             {
                                 rReturn = PoeConfigSetting(Global.POE_PORT, item.ComdOrParam);
                             }
-                            else {
+                            else
+                            {
 
                                 rReturn = PoeConfigSetting2(Global.POE_PORT, item.ComdOrParam);
                             }
-                            
-                        
-                        
-                        
-                        
+
+
+
+
+
                         }
                         break;
                     case "POEReadConsumption":
@@ -1013,7 +1029,8 @@ namespace AutoTestSystem.Model
 
 
                                 int index = int.Parse(Global.POE_PORT) - 1;
-                                if (Global.POE_PORT == "19") {
+                                if (Global.POE_PORT == "19")
+                                {
                                     index = root.result.Count - 2;
                                 }
                                 else if (Global.POE_PORT == "20")
@@ -1087,7 +1104,7 @@ namespace AutoTestSystem.Model
                                 dict2.Add("AdvertiseDisabled", 921);
                             }
 
-                         
+
 
                             string data = JsonConvert.SerializeObject(dict);
 
@@ -1107,21 +1124,23 @@ namespace AutoTestSystem.Model
                             {
                                 logger.Error("set fail:" + responseStr);
                             }
-                           
+
 
                         }
                         break;
 
-                    case "HardwareReset": {
+                    case "HardwareReset":
+                        {
 
                             loggerInfo($"-----HardWareReboot------");
                             rReturn = PowerCycleOutlet(int.Parse(Global.POE_PORT));
                         }
                         break;
 
-                    case "WPS_PowerOFF": {
+                    case "WPS_PowerOFF":
+                        {
                             rReturn = Power_OnOff_WPS(int.Parse(Global.WPSPortNum), false);
-                            
+
                         }
                         break;
 
@@ -1180,16 +1199,18 @@ namespace AutoTestSystem.Model
 
 
                     case "SoftwareReset":
-                        {  
+                        {
 
                             loggerInfo($"-----SoftWareReboot------");
                             var recvStr = "";
                             DUTCOMM.SendCommand("reboot", ref recvStr, "", 10);
 
                             bool notShutDown = true;
-                            for (var i = 0; i < 10; i++) {
+                            for (var i = 0; i < 10; i++)
+                            {
                                 bool r = PingIP(Global.DUTIP, 1);
-                                if (r == false) {
+                                if (r == false)
+                                {
                                     notShutDown = false;
                                     break;
                                 }
@@ -1197,7 +1218,7 @@ namespace AutoTestSystem.Model
                             }
 
                             rReturn = !notShutDown;
-                                            
+
 
                         }
                         break;
@@ -1213,48 +1234,48 @@ namespace AutoTestSystem.Model
                             if (match.Success)
                             {
                                 var loopNum = match.Groups[1].Value;
-                                loggerInfo($"-------------------{loopNum } Power cycle test -----------------");
+                                loggerInfo($"-------------------{loopNum} Power cycle test -----------------");
                             }
 
 
                             bool powercycle = PowerCycleOutlet(int.Parse(Global.POE_PORT));
 
                             rReturn = powercycle;
-                          
-                         
+
+
                         }
                         break;
 
-                    
+
 
 
                     case "PowerCycleTest":
                         {
-               
-                               
-                                bool powercycle_ALL = true;
-                                for (int i = 0; i < int.Parse(item.ComdOrParam); i++)
+
+
+                            bool powercycle_ALL = true;
+                            for (int i = 0; i < int.Parse(item.ComdOrParam); i++)
+                            {
+                                loggerInfo($"-------------------{i + 1} Power cycle test -----------------");
+
+                                bool powercycle = PowerCycleOutletWPS(int.Parse(Global.POE_PORT));
+
+                                //Thread.Sleep(1000);
+                                powercycle_ALL &= powercycle;
+                                if (!powercycle)
                                 {
-                                    loggerInfo($"-------------------{i+1} Power cycle test -----------------");
-                                   
-                                    bool powercycle = PowerCycleOutletWPS(int.Parse(Global.POE_PORT));
-                                                               
-                                   //Thread.Sleep(1000);
-                                    powercycle_ALL &= powercycle;
-                                    if (!powercycle)
-                                    {
-                                        break;
-                                    }
+                                    break;
                                 }
-                                if (powercycle_ALL)
-                                {
-                                    rReturn = true;
-                                }
-                            
+                            }
+                            if (powercycle_ALL)
+                            {
+                                rReturn = true;
+                            }
+
                         }
                         break;
 
-                      
+
 
 
                     case "CheckEeroABA":
@@ -1267,7 +1288,7 @@ namespace AutoTestSystem.Model
                             {
                                 loggerError("mesMsg:" + mesMsg);
                                 MainForm.f1.ShowLbl_FAIL_TEXT("ABA Error:" + mesMsg);
-                            } 
+                            }
                         }
                         break;
 
@@ -1278,7 +1299,7 @@ namespace AutoTestSystem.Model
 
 
 
-                           // return rReturn;
+                            // return rReturn;
 
 
 
@@ -1298,12 +1319,12 @@ namespace AutoTestSystem.Model
                     case "GetCsnErroMessage":
                         {
                             MesMac = "";
-                           // loggerInfo("MesMac 置空");
+                            // loggerInfo("MesMac 置空");
                             if (mescheckroute.GetCsnErroMessage(SN, out CSN, out string IPSN, out MesMac, out string mesMsg))
                                 rReturn = true;
                             loggerDebug("mesMsg:" + mesMsg);
                             loggerDebug("Get MesMac:" + MesMac + ", sn:" + CSN + ", IPSN:" + IPSN);
-                            
+
                         }
                         break;
 
@@ -1327,12 +1348,13 @@ namespace AutoTestSystem.Model
                                 loggerDebug("mesMsg:" + mesMsg);
                                 loggerDebug("sn:" + SN + ", MesIP:" + DUTMesIP);
                             }
-                            else {
+                            else
+                            {
                                 loggerDebug("fail sn:" + SN);
                                 loggerDebug("mesMsg:" + mesMsg);
-                               
+
                             }
-                            
+
                         }
                         break;
 
@@ -1341,8 +1363,8 @@ namespace AutoTestSystem.Model
                             if (Global.FIXTUREFLAG == "1")
                             {
 
-                                if ( 
-                                       ((Global.STATIONNAME=="MBFT" || Global.STATIONNAME=="SRF") && SRF_POP_RETRY == 1)
+                                if (
+                                       ((Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF") && SRF_POP_RETRY == 1)
                                         ||
                                         ((Global.STATIONNAME == "RTT") && RTT_PING_RETRY == 1)
 
@@ -1394,7 +1416,8 @@ namespace AutoTestSystem.Model
                                     }
 
                                 }
-                                else {
+                                else
+                                {
 
                                     return rReturn = true;
 
@@ -1428,7 +1451,8 @@ namespace AutoTestSystem.Model
                                 //{
 
 
-                                if (FixSerialPort == null) {
+                                if (FixSerialPort == null)
+                                {
 
                                     return rReturn = false;
                                 }
@@ -1471,7 +1495,8 @@ namespace AutoTestSystem.Model
                                         HandleSpecialMethed(item, rReturn, revStr);
                                     }
                                 }
-                                else {
+                                else
+                                {
                                     if (item.TestKeyword == "CurrentTest")
                                     {
                                         HandleSpecialMethed(item, rReturn, revStr);
@@ -1505,7 +1530,7 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
-                      case "TestingNoise":
+                    case "TestingNoise":
                         {
 
 
@@ -1534,13 +1559,13 @@ namespace AutoTestSystem.Model
                                 try
                                 {
                                     loggerDebug("开始打流");
-                                   
-                                
+
+
                                     Task sendCommandTask = Task.Run(() => {
-                                      
+
                                         var revStr = "";
                                         dosCmd.SendCommand(item.ComdOrParam, ref revStr, item.ExpectStr, short.Parse(item.TimeOut));
-                                                
+
                                     }, cts.Token);
 
                                     // 等待任务完成或取消请求
@@ -1557,14 +1582,14 @@ namespace AutoTestSystem.Model
                                 }
                                 catch (OperationCanceledException)
                                 {
-                                    
-                                   
+
+
                                     // 任务被取消
                                     loggerError("Task was cancelled.");
                                 }
                                 catch (Exception ex)
                                 {
-                                  
+
                                     loggerError(ex.Message);
                                 }
                             }, cts.Token);
@@ -1592,13 +1617,13 @@ namespace AutoTestSystem.Model
 
                             //if (rReturn == false) {
 
-                                cts.Cancel();
-                                cts = new CancellationTokenSource();
+                            cts.Cancel();
+                            cts = new CancellationTokenSource();
 
-                                ExecuteTask();
+                            ExecuteTask();
 
-                             //   return rReturn;
-                          //  }
+                            //   return rReturn;
+                            //  }
 
 
                             //TestingNoise usbDialog = new TestingNoise();
@@ -1624,7 +1649,7 @@ namespace AutoTestSystem.Model
 
                             //if (result == "0")
                             //{
-                               
+
                             //    NoiseGlobalReturn = false;
                             //    cts.Cancel();
                             //    cts = new CancellationTokenSource();
@@ -1636,13 +1661,13 @@ namespace AutoTestSystem.Model
                             //else if (result == "1")
                             //{
                             //    NoiseGlobalReturn = true;
-                               
-                                
+
+
                             //    cts.Cancel();
                             //    cts = new CancellationTokenSource();
                             //    ExecuteTask();
                             //    //  rReturn = true;
-                                
+
                             //}
                             //else {
 
@@ -1653,18 +1678,19 @@ namespace AutoTestSystem.Model
                             //    cts.Cancel();
                             //    cts = new CancellationTokenSource();
                             //    ExecuteTask();
-                                
+
                             //    retry++;
                             //}
-                             
+
 
                         }
                         break;
 
 
-                    case "GROUND_POINT_MEAS": {
+                    case "GROUND_POINT_MEAS":
+                        {
                             InutMEASPOP usbDialog = new InutMEASPOP();
-                            double value=-1;
+                            double value = -1;
                             usbDialog.TextHandler = (str) => {
 
                                 value = double.Parse(str);
@@ -1691,7 +1717,7 @@ namespace AutoTestSystem.Model
                     case "CheckLED_Manual":
                         {
                             LEDSHow usbDialog = new LEDSHow();
-                            var value ="";
+                            var value = "";
                             usbDialog.TextHandler = (str) => {
 
                                 value = str;
@@ -1707,32 +1733,35 @@ namespace AutoTestSystem.Model
                             {
                                 rReturn = true;
                             }
-                            else { 
-                            
+                            else
+                            {
+
                             }
                         }
                         break;
-                        
 
 
-                    case "ShowFixtureTip": {
-                          
-                            
-                            
+
+                    case "ShowFixtureTip":
+                        {
+
+
+
                             //ShowFixtureTip usbDialog = new ShowFixtureTip();
                             //usbDialog.TextHandler = (str) => { };
                             //usbDialog.StartPosition = FormStartPosition.CenterScreen;
                             //usbDialog.ShowTip();
                             //usbDialog.ShowDialog();
-                           
-                            
-                            
+
+
+
                             rReturn = true;
                         }
                         break;
 
 
-                    case "PressButtonShow": {
+                    case "PressButtonShow":
+                        {
                             ButtonShow usbDialog = new ButtonShow();
                             usbDialog.TextHandler = (str) => { };
                             usbDialog.StartPosition = FormStartPosition.CenterScreen;
@@ -1763,7 +1792,7 @@ namespace AutoTestSystem.Model
 
 
                             ReadyToTest usbDialog = new ReadyToTest();
-                          
+
                             usbDialog.StartPosition = FormStartPosition.CenterScreen;
                             usbDialog.ShowTip();
 
@@ -1778,7 +1807,7 @@ namespace AutoTestSystem.Model
 
                             usbDialog.ShowDialog();
 
-                            rReturn=true;
+                            rReturn = true;
 
 
 
@@ -1789,7 +1818,7 @@ namespace AutoTestSystem.Model
                         {
 
 
-                           
+
                             int timeout = int.Parse(item.TimeOut);
                             var lngStart = DateTime.Now.AddSeconds(timeout).Ticks;
                             var lngCurTime = DateTime.Now.Ticks;
@@ -1843,15 +1872,15 @@ namespace AutoTestSystem.Model
 
                             // 设置窗体为无边框样式
                             usbDialog.FormBorderStyle = FormBorderStyle.None;
-                           // 最大化窗体
-                           usbDialog.WindowState = FormWindowState.Maximized;
+                            // 最大化窗体
+                            usbDialog.WindowState = FormWindowState.Maximized;
 
 
-                           usbDialog.ShowDialog();
+                            usbDialog.ShowDialog();
 
 
 
-                         
+
 
                         }
                         break;
@@ -1936,7 +1965,7 @@ namespace AutoTestSystem.Model
 
 
                             }
-                            
+
 
                             if (rReturn == false)
                             {
@@ -2184,7 +2213,7 @@ namespace AutoTestSystem.Model
                         }
                         if (!rReturn)
                         {
-                            // HandleSpecialMethed(item, rReturn, "");
+                            HandleSpecialMethed(item, rReturn, "", item.TestKeyword, retryTimes);
                         }
 
                         break;
@@ -2197,11 +2226,11 @@ namespace AutoTestSystem.Model
                         //rReturn = ConfrimMessageBox($"Pls connect Qorvo Inc.bt and confirm succed than click ok.", item.ItemName, MessageBoxButtons.YesNo);
                         break;
 
- 
+
 
 
                     case "RadioValidation_Zigbee_Simple":
-                   
+
                         {
                             if (csvLines == null)
                             {
@@ -2229,11 +2258,11 @@ namespace AutoTestSystem.Model
 
 
 
-                              
+
                                 rReturn = false;
                                 bool found = false;
 
-                                
+
                                 for (int i = 0; i < csvLines.Length; i++)
                                 {
                                     string[] temp = csvLines[i].Split(new char[] { ',' }, StringSplitOptions.None);
@@ -2330,7 +2359,7 @@ namespace AutoTestSystem.Model
                                         }
 
 
-                                        
+
                                         if (!rReturn)
                                         {
                                             ErrorList = temp[2].Trim().Split(new string[] { "\n" }, 0);
@@ -2342,11 +2371,11 @@ namespace AutoTestSystem.Model
                                             RFTempFailItemNameDict[Key] = itemSingle.EeroName;
 
 
-                                           
+
                                         }
-                                        break; 
-                                         
-                                        
+                                        break;
+
+
                                     }
                                 }
                                 if (found == false)
@@ -2360,7 +2389,7 @@ namespace AutoTestSystem.Model
                                 if (itemSingle.testValue == null)
                                     itemSingle.testValue = item.tResult.ToString();
 
-                             
+
 
                                 if (found == false)
                                 {
@@ -2399,20 +2428,20 @@ namespace AutoTestSystem.Model
 
 
                             }
-                        
-                        
-                        
-                     
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         }
                         break;
 
@@ -2424,10 +2453,11 @@ namespace AutoTestSystem.Model
 
 
                     case "BLE":
-                    case "Zigbee": 
+                    case "Zigbee":
                         {
-                            if (csvLines == null) { 
-                               return rReturn = false;
+                            if (csvLines == null)
+                            {
+                                return rReturn = false;
                             }
                             for (int i = 0; i < csvLines.Length; i++)
                             {
@@ -2464,8 +2494,8 @@ namespace AutoTestSystem.Model
 
                                     if (item.ItemName.ToLower().Contains("rx_per"))
                                     {
-                                       
-                                        
+
+
                                         item.testValue = temp[49];
 
 
@@ -2499,7 +2529,7 @@ namespace AutoTestSystem.Model
                                         item.testValue = temp[46];
                                         item.Unit = "dB";
                                     }
-                                    
+
                                     //if (item.ItemName== "BLE_RX_PER_F2450_P-90-97" || item.ItemName== "ZB_RX_PER_F2450_P-95-102")
                                     //{
                                     //    item.testValue = temp[47];
@@ -2507,7 +2537,7 @@ namespace AutoTestSystem.Model
                                     //    item.Limit_min = "";
                                     //    item.Limit_max = "";
                                     //}
- 
+
 
                                     if (string.IsNullOrEmpty(item.Limit_min) && string.IsNullOrEmpty(item.Limit_max))
                                         rReturn = temp[57].ToLower() == "pass" ? true : false;
@@ -2525,14 +2555,15 @@ namespace AutoTestSystem.Model
 
 
 
-                                    if (!rReturn) {
+                                    if (!rReturn)
+                                    {
                                         ErrorList = temp[2].Trim().Split(new string[] { "\n" }, 0);
 
                                         //if (temp[2] == "" || temp[2] == "NA") {
                                         //    ErrorList = item.ErrorCode.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                                         //}
-                                        
-                                       
+
+
                                     }
 
                                     return rReturn;
@@ -2542,21 +2573,21 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
-              
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     case "2G":
                     case "5G"://SRF
                         {
@@ -2573,13 +2604,13 @@ namespace AutoTestSystem.Model
                                         try
                                         {
                                             ErrorList = temp[2].Trim().Split(new string[] { "\n" }, 0);
-                                           // return rReturn;
+                                            // return rReturn;
                                         }
                                         catch (Exception ex)
                                         {
                                             loggerError(ex.Message);
                                             ErrorList = item.error_code.Trim().Split(new string[] { "\n" }, 0);
-                                           // return rReturn;
+                                            // return rReturn;
                                         }
 
                                     }
@@ -2597,27 +2628,27 @@ namespace AutoTestSystem.Model
                                         //item.Limit_min = "0";
                                         //item.Limit_max = "10.0";
 
-                                       // item.testValue = temp[12];//Rx_Level power
-                                      
-                                        
+                                        // item.testValue = temp[12];//Rx_Level power
+
+
                                         item.testValue = temp[13];//PER
                                         item.Unit = temp[14];
-                                     
-                                        
-                                        
+
+
+
                                         item.Limit_min = temp[9];
                                         item.Limit_max = temp[10];
                                         //item.Unit = "%";
                                     }
                                     else if (item.ItemName.ToLower().Contains("tx_power"))
-                                    { 
+                                    {
                                         item.testValue = temp[7];
                                         item.Unit = temp[8];
                                         item.Limit_min = temp[9];
                                         item.Limit_max = temp[10];
                                     }
 
- 
+
                                     if (string.IsNullOrEmpty(item.Limit_min) && string.IsNullOrEmpty(item.Limit_max))
                                         rReturn = temp[15].ToLower() == "pass" ? true : false;
                                     else
@@ -2627,7 +2658,8 @@ namespace AutoTestSystem.Model
                                         {
                                             rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
                                         }
-                                        catch (Exception ex) {
+                                        catch (Exception ex)
+                                        {
                                             rReturn = false;
                                             loggerError("未知异常:" + ex.Message);
 
@@ -2636,12 +2668,12 @@ namespace AutoTestSystem.Model
                                     }
 
                                     //if (!rReturn) {
-                                        
+
                                     //    if(ErrorList==null || ErrorList)
                                     //    ErrorList = temp[2].Trim().Split(new string[] { "\n" }, 0);
- 
+
                                     //}
-                                       
+
 
                                     return rReturn;
                                 }
@@ -2655,7 +2687,7 @@ namespace AutoTestSystem.Model
                     case "DesenseTest_WiFi_Simple"://SRF
                         {
 
-                           var Key = Regex.Replace(item.TestKeyword, "_Simple", "");
+                            var Key = Regex.Replace(item.TestKeyword, "_Simple", "");
 
                             for (var j = 0; j < Global.RFSequenceDict[Key].Count; j++)
                             {
@@ -2815,24 +2847,25 @@ namespace AutoTestSystem.Model
                                     break;
                                 }
                             }
-                          }
+                        }
                         break;
 
-                        
+
 
 
 
 
 
                     case "RadioValidation_6G_Simple":
-                    case "RadioValidation_5G_Simple": 
+                    case "RadioValidation_5G_Simple":
                     case "RadioValidation_2G_Simple":
-                        { 
-                            var Key = Regex.Replace(item.TestKeyword, "_Simple","");
+                        {
+                            var Key = Regex.Replace(item.TestKeyword, "_Simple", "");
 
-                            for (var j = 0; j < Global.RFSequenceDict[Key].Count; j++) {
+                            for (var j = 0; j < Global.RFSequenceDict[Key].Count; j++)
+                            {
 
-                                var  itemSingleModel = Global.RFSequenceDict[Key][j];
+                                var itemSingleModel = Global.RFSequenceDict[Key][j];
 
 
                                 var itemSingle = new Items();
@@ -3330,9 +3363,9 @@ namespace AutoTestSystem.Model
                                         else
                                         {
 
-                                           
+
                                             rReturn = CompareLimit(itemSingle.Limit_min, itemSingle.Limit_max, itemSingle.testValue, out info);
-                                           
+
 
 
                                         }
@@ -3353,7 +3386,8 @@ namespace AutoTestSystem.Model
                                         }
 
 
-                                        if (rReturn == false) {
+                                        if (rReturn == false)
+                                        {
 
                                             RFTempFailItemNameDict[Key] = itemSingle.EeroName;
 
@@ -3361,13 +3395,14 @@ namespace AutoTestSystem.Model
                                         }
 
                                         break;
-                                        
+
                                     }
                                 }
-                                if (found == false) {
+                                if (found == false)
+                                {
                                     loggerError($"Don't find {itemSingle.ItemName} test result in csv,test fail!");
                                 }
-                          
+
 
                                 //先把结果保存起来：
 
@@ -3380,15 +3415,17 @@ namespace AutoTestSystem.Model
                                     itemSingle.testValue = "False";
                                 }
 
-                                if (rReturn == false) {
+                                if (rReturn == false)
+                                {
                                     HandleErrorCodeAndDetail(ErrorList, itemSingle, info);
-                                   
+
                                     itemSingle.ErrorCode = error_code;
                                     itemSingle.ErrorDetails = error_details;
 
                                 }
 
-                                if (RFTempSequenceDict.ContainsKey(Key) == false) {
+                                if (RFTempSequenceDict.ContainsKey(Key) == false)
+                                {
                                     RFTempSequenceDict[Key] = new List<Items>();
                                 }
 
@@ -3400,7 +3437,8 @@ namespace AutoTestSystem.Model
 
 
 
-                                if (rReturn == false) {
+                                if (rReturn == false)
+                                {
                                     // 其中一个fail ，就跳出循环吧
                                     break;
                                 }
@@ -3408,7 +3446,7 @@ namespace AutoTestSystem.Model
                             }
 
 
-    
+
 
 
                         }
@@ -3432,12 +3470,12 @@ namespace AutoTestSystem.Model
                             {
                                 string[] temp = csvLines[i].Split(new char[] { ',' }, StringSplitOptions.None);
 
-                            
-                                    //5G ,  TX   , 0/1 ,   5775 ,    HE_SU-MCS13/NA ,  
-                                    if ((temp[0] == item.TestKeyword.Substring(0, 2) && temp[1] == item.SubStr1 && temp[4] == item.SubStr2 && temp[5].Trim() == item.ComdOrParam && temp[6].Trim() == item.ExpectStr)
-                                    
-                                    
-                                    && (temp[21].Trim() == item.CheckStr1 || IsNullOrEmpty(item.CheckStr1)))
+
+                                //5G ,  TX   , 0/1 ,   5775 ,    HE_SU-MCS13/NA ,  
+                                if ((temp[0] == item.TestKeyword.Substring(0, 2) && temp[1] == item.SubStr1 && temp[4] == item.SubStr2 && temp[5].Trim() == item.ComdOrParam && temp[6].Trim() == item.ExpectStr)
+
+
+                                && (temp[21].Trim() == item.CheckStr1 || IsNullOrEmpty(item.CheckStr1)))
                                 {
                                     loggerInfo($"find test result in csv line{i + 1}.testResult={temp[46]}");
                                     rReturn = temp[46].ToLower() == "pass" ? true : false;
@@ -3465,9 +3503,9 @@ namespace AutoTestSystem.Model
 
                                     if (
                                         item.ItemName.ToLower().Contains("rx_per")
-                                        || 
+                                        ||
                                         item.ItemName.ToLower().Contains("rx_power") // 非Sweep版本的时候使用
-                                        
+
                                         )
                                     {
 
@@ -3581,9 +3619,9 @@ namespace AutoTestSystem.Model
                                                 item.Unit = temp[67];
                                             }
 
-                                              
-                                         
-                                            
+
+
+
                                         }
                                         else if (item.ItemName.ToLower().Contains("user2"))
                                         {
@@ -3605,13 +3643,13 @@ namespace AutoTestSystem.Model
                                             if (temp[71] != "" && temp[71] != "NA" && temp[71] != "N/A" && temp[71] != "null" && temp[71] != "None" && temp[71] != "NULL")
                                             {
                                                 item.Unit = temp[71];
-                                            }                                          
-                                            
+                                            }
+
                                         }
                                         else
                                         {
 
-                                         
+
 
 
                                             item.testValue = temp[20];
@@ -3630,7 +3668,7 @@ namespace AutoTestSystem.Model
                                             {
                                                 item.Unit = temp[22];
                                             }
- 
+
                                         }
                                     }
                                     else if (item.ItemName.ToLower().Contains("tx_evm"))
@@ -3676,13 +3714,15 @@ namespace AutoTestSystem.Model
                                             item.Limit_max = temp[11];
                                         }
                                     }
-                                   
+
                                     else if (item.ItemName.ToLower().Contains("tx_loleak"))
                                     {
-                                        try {
+                                        try
+                                        {
                                             item.Limit_min = double.Parse(item.Limit_min).ToString("0.0");
                                         }
-                                        catch {
+                                        catch
+                                        {
                                             item.Limit_min = "0.0";
                                         }
 
@@ -3690,11 +3730,12 @@ namespace AutoTestSystem.Model
                                         {
                                             item.Limit_max = double.Parse(item.Limit_max).ToString("0.0");
                                         }
-                                        catch {
+                                        catch
+                                        {
                                             item.Limit_max = "0.0";
                                         }
 
-                                            
+
 
 
                                         item.testValue = temp[25];
@@ -3712,7 +3753,7 @@ namespace AutoTestSystem.Model
                                         {
                                             item.Unit = temp[26];
                                         }
- 
+
 
                                     }
 
@@ -3759,7 +3800,7 @@ namespace AutoTestSystem.Model
                                         {
                                             item.Unit = temp[13];
                                         }
- 
+
 
                                     }
                                     else if (item.ItemName.ToLower().Contains("tx_sysclkerr"))
@@ -3802,7 +3843,7 @@ namespace AutoTestSystem.Model
                                             item.Unit = temp[17];
                                         }
 
- 
+
 
                                     }
                                     else if (item.ItemName.ToLower().Contains("tx_specmsk"))
@@ -3845,7 +3886,7 @@ namespace AutoTestSystem.Model
                                         }
 
 
- 
+
 
                                     }
                                     else if (item.ItemName.ToLower().Contains("tx_specflat"))
@@ -3888,7 +3929,7 @@ namespace AutoTestSystem.Model
                                             item.Unit = temp[30];
                                         }
 
- 
+
                                     }
 
 
@@ -3932,7 +3973,7 @@ namespace AutoTestSystem.Model
                                                         {
                                                             foundTempInfo = true;
                                                             loggerInfo("找到了GoldenSN 对应的数据");
-                                                            loggerInfo($"goldenSN 信息：{ goldenTemp[0]},{ goldenTemp[1]},{goldenTemp[4]},{goldenTemp[5].Trim()},{goldenTemp[6].Trim()},{goldenTemp[21]}");
+                                                            loggerInfo($"goldenSN 信息：{goldenTemp[0]},{goldenTemp[1]},{goldenTemp[4]},{goldenTemp[5].Trim()},{goldenTemp[6].Trim()},{goldenTemp[21]}");
 
                                                             var goldenValue = "";
                                                             if (item.ItemName.ToLower().Contains("user1"))
@@ -4035,7 +4076,7 @@ namespace AutoTestSystem.Model
                             {
                                 string[] temp = csvLines[i].Split(new char[] { ',' }, StringSplitOptions.None);
 
-                             
+
 
 
                                 if (temp[0] == item.TestKeyword.Substring(0, 2) && temp[1] == item.SubStr1 && temp[5] == item.ComdOrParam)
@@ -4070,7 +4111,7 @@ namespace AutoTestSystem.Model
                         break;
 
 
-                
+
 
                     case "GetIQXInfo":
                         {
@@ -4189,13 +4230,13 @@ namespace AutoTestSystem.Model
                             catch (Exception ex)
                             {
                                 loggerFatal(ex.Message);
-                                
+
                                 Sleep(item.TimeOut);
-                                
-                               
+
+
                                 return rReturn = false;
                             }
-                             
+
                             string[] lines = revStr.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
                             foreach (var line in lines)
                             {
@@ -4218,7 +4259,7 @@ namespace AutoTestSystem.Model
                                 }
                             }
                             //RTT 的6.1.0.2.1: OTA.Throughput.Radio1.5GHz.Tx 和 6.1.0.2.1: OTA.Throughput.Radio0.2GHz.Tx 特殊处理
-                          
+
                             //if ( Global.STATIONNAME=="RTT" && !rReturn && retry == 2) {
                             //    //删除log 并 重新启动iperf3
                             //    try
@@ -4234,13 +4275,13 @@ namespace AutoTestSystem.Model
                             //        else if (item.ComdOrParam == "WIFI5G_THROUGHPUT_parallel_Tx1.txt") {
                             //            dosCmd.SendCommand3("start /B iperf3 -c 192.168.1.50 -i1 -O2 -P30 -t10 -B 192.168.1.15 > WIFI5G_THROUGHPUT_parallel_Tx1.txt  & exit");
                             //        }
-                                    
+
                             //    }
                             //    catch(Exception ex) {
                             //        loggerDebug("Delete file action error:" + ex.Message.ToString());
                             //        retry = 0;//直接retry=0，不需要下次retry了
                             //    }
-                                
+
                             //}
                         }
                         break;
@@ -4369,14 +4410,16 @@ namespace AutoTestSystem.Model
                             //清空一下上次的结果，因为下次要重新执行cmd了
 
 
-                            if (Global.STATIONNAME == "MBLT" && (item.ItemName == "ETH1_SPEED_TX" || item.ItemName == "ETH1_SPEED_RX")) {
+                            if (Global.STATIONNAME == "MBLT" && (item.ItemName == "ETH1_SPEED_TX" || item.ItemName == "ETH1_SPEED_RX"))
+                            {
 
                                 inPutValue = "";
 
 
                             }
 
-                            if (retry != 0 && rReturn==false && Global.STATIONNAME == "BURNIN") {
+                            if (retry != 0 && rReturn == false && Global.STATIONNAME == "BURNIN")
+                            {
                                 loggerInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>.restart iperfServer");
 
                                 RunDosCmd("taskkill /IM " + "iperf3" + ".exe" + " /F");
@@ -4449,9 +4492,9 @@ namespace AutoTestSystem.Model
                             if (temp[0].Contains(item.TestKeyword.Substring(item.TestKeyword.IndexOf("_"))))
                             {
                                 item.testValue = Math.Round(double.Parse(temp[1])).ToString();
-                                
-                                
-                                
+
+
+
                                 //item.TestValue = temp[1];
                                 loggerDebug($"Get tempSensorTest:{temp[0]},{temp[1]}");
                                 // 需要比较Limit
@@ -4497,11 +4540,13 @@ namespace AutoTestSystem.Model
                             {
                                 rReturn = true;
                                 // 需要提取测试值
-                                if (!string.IsNullOrEmpty(item.SubStr1) || !string.IsNullOrEmpty(item.SubStr2)) {
+                                if (!string.IsNullOrEmpty(item.SubStr1) || !string.IsNullOrEmpty(item.SubStr2))
+                                {
                                     item.testValue = GetValue(revStr, item.SubStr1, item.SubStr2);
                                 }
-                                    
-                                else {
+
+                                else
+                                {
 
 
                                     if (Global.STATIONNAME == "RTT" && item.ItemName == "PING_GU")
@@ -4553,7 +4598,8 @@ namespace AutoTestSystem.Model
                                         }
 
                                     }
-                                    else {
+                                    else
+                                    {
                                         rReturn = true;
                                     }
 
@@ -4561,7 +4607,7 @@ namespace AutoTestSystem.Model
                                     return rReturn;
 
                                 }
-                                   
+
                                 // 需要比较Spec
                                 if (!String.IsNullOrEmpty(item.Spec))
                                     rReturn = CheckSpec(item.Spec, item.testValue);
@@ -4581,9 +4627,9 @@ namespace AutoTestSystem.Model
                             {
                                 MD55G = item.testValue;
                             }
-                         
 
-                            
+
+
 
 
 
@@ -4591,7 +4637,8 @@ namespace AutoTestSystem.Model
                             HandleSpecialMethed(item, rReturn, "");
                         }
                         break;
-                    case "DisableNetInterface": {
+                    case "DisableNetInterface":
+                        {
                             string name = item.ComdOrParam;
                             NetshInterfaceDisEnable(name);
                             rReturn = true;
@@ -4605,11 +4652,12 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
-                    
 
 
 
-                    case "DoPushPopRetry": {
+
+                    case "DoPushPopRetry":
+                        {
                             //关闭Com7
                             //delay 10ms
                             //打开Com7
@@ -4629,9 +4677,9 @@ namespace AutoTestSystem.Model
                             FixSerialPort.SendCommandToFix("AT+PORTEJECT%", ref recvStr, "OK", 10);
 
                             Sleep(500);
- 
+
                             FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
-                           
+
                             Sleep(500);
 
                             //if (item.ComdOrParam != "1") { //需要等待开机重启
@@ -4652,8 +4700,9 @@ namespace AutoTestSystem.Model
 
                         }
                         break;
-                    case "RTT_5G_CloseAndOpen": {
-                          
+                    case "RTT_5G_CloseAndOpen":
+                        {
+
                         }
                         break;
 
@@ -4682,18 +4731,20 @@ namespace AutoTestSystem.Model
                     #region 气密性测试相关方法
 
 
-                    case "SumP2AndLeakValue": {
+                    case "SumP2AndLeakValue":
+                        {
 
 
                             var PressureInit = -1;
                             var AirLeakValueInit = -1;
 
-                             if (item.ComdOrParam == "2")
+                            if (item.ComdOrParam == "2")
                             {
                                 PressureInit = Machine2_Pressure2;
                                 AirLeakValueInit = Machine2_AirLeakValue;
                             }
-                            else {
+                            else
+                            {
 
                                 PressureInit = Pressure2;
                                 AirLeakValueInit = AirLeakValue;
@@ -4716,16 +4767,18 @@ namespace AutoTestSystem.Model
                                 }
 
                             }
-                            else {
+                            else
+                            {
 
                                 loggerError("计算结果异常");
-                                
-                            
+
+
                             }
                         }
                         break;
 
-                    case "LoopGetDelataValue": {
+                    case "LoopGetDelataValue":
+                        {
 
 
 
@@ -4753,7 +4806,7 @@ namespace AutoTestSystem.Model
 
 
 
-                                 if (item.ComdOrParam == "2")
+                                if (item.ComdOrParam == "2")
                                 {
                                     Machine2_AirLeakValue = decimalNumber;
                                 }
@@ -4776,7 +4829,7 @@ namespace AutoTestSystem.Model
                                 }
 
 
- 
+
                             }
                             else
                             {
@@ -4820,7 +4873,7 @@ namespace AutoTestSystem.Model
                                 {
                                     Machine1_Freq = decimalNumber2;
                                 }
-                               
+
 
 
 
@@ -4840,7 +4893,7 @@ namespace AutoTestSystem.Model
                             {
                                 loggerError("提取数据:" + data + " 有问题");
                             }
-                            
+
                         }
                         break;
 
@@ -4861,11 +4914,12 @@ namespace AutoTestSystem.Model
 
 
 
-                            if (item.ComdOrParam != "1") {
+                            if (item.ComdOrParam != "1")
+                            {
                                 var cmd2 = @"python ./Config/testLeak.py -p " + LeakCOM + " -cmd 01050008ff000df8";
                                 RunDosCmd(cmd2, 3);
                             }
-                         
+
 
                             DateTime startTime = DateTime.Now;
 
@@ -4888,7 +4942,8 @@ namespace AutoTestSystem.Model
                                         tempReture = true;
                                         break;
                                     }
-                                    else {
+                                    else
+                                    {
 
                                         loggerDebug("继续查找");
                                     }
@@ -4903,11 +4958,12 @@ namespace AutoTestSystem.Model
                                 loggerError("测试超时");
 
                             }
-                            else {
+                            else
+                            {
 
                                 rReturn = tempReture;
                             }
-                          
+
 
                         }
                         break;
@@ -4918,7 +4974,7 @@ namespace AutoTestSystem.Model
 
 
 
-                            var LeakCOM = item.ComdOrParam == "1" ? Global.LeakTwoCOM1 : item.ComdOrParam == "2" ? Global.LeakTwoCOM2: Global.LeakCOM;
+                            var LeakCOM = item.ComdOrParam == "1" ? Global.LeakTwoCOM1 : item.ComdOrParam == "2" ? Global.LeakTwoCOM2 : Global.LeakCOM;
 
 
                             DateTime startTime = DateTime.Now;
@@ -4926,17 +4982,17 @@ namespace AutoTestSystem.Model
                             var tempReture = false;
 
 
-                           
+
                             while ((DateTime.Now - startTime).TotalSeconds < 60)
                             {
 
-                                var cmd = @"python ./Config/testLeak.py -p "+LeakCOM+" -cmd 0103000C00014409 -d 1";
+                                var cmd = @"python ./Config/testLeak.py -p " + LeakCOM + " -cmd 0103000C00014409 -d 1";
                                 string re = RunDosCmd(cmd, 2);
 
                                 var data = GetMidStr(re, "[", "]");
                                 if (data.Length >= 14)
                                 {
-                                   
+
 
                                     if (data.Contains("46") || data.Contains("47"))
                                     {
@@ -4945,7 +5001,7 @@ namespace AutoTestSystem.Model
                                         break;
                                     }
 
-                                   
+
                                 }
                                 Thread.Sleep(1000);
                             }
@@ -4966,13 +5022,14 @@ namespace AutoTestSystem.Model
 
 
                                     var subString = hexNumber.Substring(4, 4) + hexNumber.Substring(0, 4);
-                            
+
                                     int decimalNumber = Convert.ToInt32(subString, 16);  // 将十六进制字符串转换为十进制数
 
                                     loggerInfo("转换后数据:" + decimalNumber);
 
 
-                                    if (item.ComdOrParam == "1") {
+                                    if (item.ComdOrParam == "1")
+                                    {
 
                                         Machine1_Pressure2 = decimalNumber;
                                     }
@@ -4980,11 +5037,12 @@ namespace AutoTestSystem.Model
                                     {
                                         Machine2_Pressure2 = decimalNumber;
                                     }
-                                    else {
+                                    else
+                                    {
                                         Pressure2 = decimalNumber;
 
                                     }
-                                                         
+
                                     item.testValue = decimalNumber.ToString();
 
                                     rReturn = true;
@@ -4994,7 +5052,7 @@ namespace AutoTestSystem.Model
                                         rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
                                         loggerDebug("返回结果:" + (rReturn ? "True" : "False"));
                                     }
-                                  
+
                                 }
                                 else
                                 {
@@ -5014,7 +5072,7 @@ namespace AutoTestSystem.Model
                         {
 
 
-                           
+
 
                             DateTime startTime = DateTime.Now;
 
@@ -5026,7 +5084,8 @@ namespace AutoTestSystem.Model
                             {
 
 
-                                if (r1 == false) {
+                                if (r1 == false)
+                                {
                                     var cmd = @"python ./Config/testLeak.py -p " + Global.LeakTwoCOM1 + " -cmd 0103000C00014409";
                                     string re = RunDosCmd(cmd, 3);
 
@@ -5044,12 +5103,13 @@ namespace AutoTestSystem.Model
 
 
 
-                                    } 
+                                    }
                                 }
 
                                 Thread.Sleep(10);
 
-                                if (r2 == false) {
+                                if (r2 == false)
+                                {
                                     var cmd = @"python ./Config/testLeak.py -p " + Global.LeakTwoCOM2 + " -cmd 0103000C00014409";
                                     var re = RunDosCmd(cmd, 3);
 
@@ -5062,7 +5122,7 @@ namespace AutoTestSystem.Model
                                         {
 
                                             r2 = true;
-                                          
+
                                         }
 
 
@@ -5072,7 +5132,8 @@ namespace AutoTestSystem.Model
 
                                 tempReture = r1 && r2;
 
-                                if (tempReture) {
+                                if (tempReture)
+                                {
                                     break;
                                 }
 
@@ -5227,30 +5288,31 @@ namespace AutoTestSystem.Model
 
 
 
-#endregion  
+                    #endregion
 
 
                     case "PowerONTest":
                     default:
                         {
 
-                        
-                            if (DUTCOMM == null) {
+
+                            if (DUTCOMM == null)
+                            {
 
                                 loggerError("DUTCOM 为空");
-                               return rReturn = false;
+                                return rReturn = false;
                             }
 
                             //loggerWarn($"Warning!!!,this is default DUT test-method, ErrorList.Length is {ErrorList.Length.ToString()}");
                             var revStr = "";
                             inPutValue = "";
-                            
+
                             if ((Global.TESTMODE == "debug" || Global.TESTMODE == "fa" || IsDebug) && Global.STATIONNAME == "SRF" && item.TestKeyword.Contains("SetIpaddrEnv"))
                             {
                                 rReturn = true;
                             }
 
-                            else if ((Global.TESTMODE == "debug" || Global.TESTMODE == "fa" || IsDebug)  && item.TestKeyword.Contains("SetDHCP"))
+                            else if ((Global.TESTMODE == "debug" || Global.TESTMODE == "fa" || IsDebug) && item.TestKeyword.Contains("SetDHCP"))
                             {
                                 rReturn = true;
                             }
@@ -5264,20 +5326,21 @@ namespace AutoTestSystem.Model
 
                             else if (DUTCOMM.SendCommand(item.ComdOrParam, ref revStr, item.ExpectStr, double.Parse(item.TimeOut))
                                 && revStr.CheckStr(item.CheckStr1) && revStr.CheckStr(item.CheckStr2)
-                                
-                                                      
+
+
                                 )
                             {
 
                                 var itemNoContain = item.NoContain;
-                                if (item.ItemName == "CheckCalData1" || item.ItemName == "CheckCalData2") {
+                                if (item.ItemName == "CheckCalData1" || item.ItemName == "CheckCalData2")
+                                {
 
-                                  //  loggerDebug("去掉各种空格换行");
+                                    //  loggerDebug("去掉各种空格换行");
 
-                                     revStr = revStr.Replace(" ", "");
-                                     revStr = revStr.Replace("\r", "");
-                                     revStr = revStr.Replace("\n", "");
-                                     revStr = revStr.Replace("\t", "");
+                                    revStr = revStr.Replace(" ", "");
+                                    revStr = revStr.Replace("\r", "");
+                                    revStr = revStr.Replace("\n", "");
+                                    revStr = revStr.Replace("\t", "");
 
                                     loggerInfo("revStr=" + revStr);
 
@@ -5289,59 +5352,63 @@ namespace AutoTestSystem.Model
                                     loggerInfo("itemNoContain=" + itemNoContain);
 
                                 }
-                                
-                                if (revStr.NoCheckStr(itemNoContain) == false) {
+
+                                if (revStr.NoCheckStr(itemNoContain) == false)
+                                {
 
                                     loggerError($"{revStr} contains {item.NoContain}, fail");
-                                      return rReturn = false;
+                                    return rReturn = false;
                                 }
 
 
 
 
-                                
+
 
 
                                 rReturn = true;
-                             
+
                                 // 需要提取测试值
                                 if (!string.IsNullOrEmpty(item.SubStr1) || !string.IsNullOrEmpty(item.SubStr2))
                                 {
                                     item.testValue = GetValue(revStr, item.SubStr1, item.SubStr2);
 
-                                    if (item.testValue == "" || item.testValue==null) { 
+                                    if (item.testValue == "" || item.testValue == null)
+                                    {
                                         rReturn = false;
 
-                                      
+
                                     }
 
-                                    if (item.ItemName == "Read_MAC_DHCP") {
+                                    if (item.ItemName == "Read_MAC_DHCP")
+                                    {
 
                                         loggerDebug("读取到板子mac地址:" + item.testValue);
 
                                         MesMac = item.testValue;
                                     }
-                                   
 
-                                        
+
+
                                 }
                                 else
                                 {
                                     // return rReturn = true;
                                     rReturn = true;
-                                    
+
                                 }
 
                                 if (item.ItemName == "LED_MODEL")
                                 {
 
-                                    if (item.testValue.Contains("cat: can't open")) {
+                                    if (item.testValue.Contains("cat: can't open"))
+                                    {
 
                                         item.testValue = "";
                                         return rReturn = false;
                                     }
-                                
-                                
+
+
                                 }
 
 
@@ -5353,7 +5420,8 @@ namespace AutoTestSystem.Model
                                         item.testValue = "0";
                                         return rReturn = false;
                                     }
-                                    else {
+                                    else
+                                    {
                                         if (item.ComdOrParam.Trim() == "cat /sys/class/thermal/thermal_zone3/temp")
                                         {
                                             item.testValue = Math.Round(double.Parse(item.testValue) / 1000).ToString();
@@ -5363,7 +5431,7 @@ namespace AutoTestSystem.Model
                                             item.testValue = Math.Round(double.Parse(item.testValue)).ToString(); //取整
                                         }
                                     }
-                                        
+
                                 }
 
                                 if (item.TestKeyword.Contains("ETH_SPEED_RX"))
@@ -5376,7 +5444,7 @@ namespace AutoTestSystem.Model
                                     loggerInfo("step .................... testValue=" + item.testValue);
                                     item.testValue = (Math.Round(double.Parse(item.testValue) / 10)).ToString(); //取整
 
-                                    loggerInfo("step .................... testValue="+item.testValue);
+                                    loggerInfo("step .................... testValue=" + item.testValue);
                                 }
 
 
@@ -5385,7 +5453,7 @@ namespace AutoTestSystem.Model
                                     ImageVer = item.Spec;
                                     logger.Info("<<<<<<<<<<读取到Spec:" + ImageVer);
                                 }
-                              
+
                                 // 需要比较Spec
                                 if (!string.IsNullOrEmpty(item.Spec) && string.IsNullOrEmpty(item.Limit_min) && string.IsNullOrEmpty(item.Limit_max))
                                 {
@@ -5417,11 +5485,14 @@ namespace AutoTestSystem.Model
 
 
                                     //特殊处理MBLT MMC_MODEL，因为有时候会返回一些干扰信息，rd认为是对的
-                                    if (!rReturn && Global.STATIONNAME == "MBLT" && item.ItemName == "MMC_MODEL") {
+                                    if (!rReturn && Global.STATIONNAME == "MBLT" && item.ItemName == "MMC_MODEL")
+                                    {
                                         // 8GTF4R | DG4008 | S40004
                                         var arr = item.Spec.Split('|');
-                                        foreach (var str in arr) {
-                                            if (item.testValue.Contains(str.Trim())) { 
+                                        foreach (var str in arr)
+                                        {
+                                            if (item.testValue.Contains(str.Trim()))
+                                            {
                                                 rReturn = true;
                                                 break;
                                             }
@@ -5432,19 +5503,20 @@ namespace AutoTestSystem.Model
 
                                 }
 
-                               
-                                loggerDebug("min:"+ item.Limit_min);
-                                loggerDebug("max:"+ item.Limit_max);
+
+                                loggerDebug("min:" + item.Limit_min);
+                                loggerDebug("max:" + item.Limit_max);
                                 loggerDebug("Spec:" + item.Spec);
                                 loggerDebug("Value:" + item.testValue);
 
                                 // 需要比较Limit
-                                if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max)) {
-                                    
+                                if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max))
+                                {
+
                                     rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
                                     loggerDebug("返回结果:" + (rReturn ? "True" : "False"));
                                 }
-                               
+
 
                                 if (!rReturn)
                                 {
@@ -5453,37 +5525,39 @@ namespace AutoTestSystem.Model
 
 
                             }
-                            else {  //
+                            else
+                            {  //
 
 
-                               
+
 
 
                                 //****************************P1阶段先屏蔽掉**********************************//
 
 
-                                //if (Global.STATIONNAME == "SFT" || Global.STATIONNAME == "MBFT"
-                                //     || Global.STATIONNAME == "RTT" || Global.STATIONNAME == "SRF"){
+                                if (Global.STATIONNAME == "SFT" || Global.STATIONNAME == "MBFT"
+                                     || Global.STATIONNAME == "RTT" || Global.STATIONNAME == "SRF")
+                                {
 
 
-                                //    if (DUTCOMM != null && DUTCOMM.GetType() == typeof(Telnet))
-                                //    {
-                                //       loggerInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                                //       loggerError("connet again");
-                                //       telnetInfo = new TelnetInfo { _Address = DUTCOMM.HostIP };
-                                //       DUTCOMM.Close();
-                                //       DUTCOMM = new Telnet(telnetInfo);
-                                //       DUTCOMM.Open(Global.PROMPT);
-                                //    }
+                                    if (DUTCOMM != null && DUTCOMM.GetType() == typeof(Telnet))
+                                    {
+                                        loggerInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                                        loggerError("connet again");
+                                        telnetInfo = new TelnetInfo { _Address = DUTCOMM.HostIP };
+                                        DUTCOMM.Close();
+                                        DUTCOMM = new Telnet(telnetInfo);
+                                        DUTCOMM.Open(Global.PROMPT);
+                                    }
 
 
-                                //}
+                                }
 
                                 HandleSpecialMethed(item, rReturn, revStr);
 
 
 
-                                loggerInfo("最终测试结果:" + rReturn);
+                                loggerInfo("当前测试结果:" + rReturn);
 
                             }
 
@@ -5492,16 +5566,18 @@ namespace AutoTestSystem.Model
                                 BtDevAddress = item.testValue.Trim();
 
 
-                            if (item.TestKeyword == "PowerONTest") {
+                            if (item.TestKeyword == "PowerONTest")
+                            {
                                 if (rReturn == true)
                                 {
                                     loggerInfo(">>>>>>>>>>PowerON OK");
 
                                 }
-                                else {
+                                else
+                                {
                                     loggerInfo(">>>>>>>>>>PowerON Fail");
                                 }
-                               
+
                             }
 
                         }
@@ -5531,8 +5607,8 @@ namespace AutoTestSystem.Model
                 if ((retryTimes == 0 && !rReturn) && (IsNullOrEmpty(error_code) && IsNullOrEmpty(error_details)))
                 {
 
-                    HandleErrorCodeAndDetail(ErrorList,item,info);
-       
+                    HandleErrorCodeAndDetail(ErrorList, item, info);
+
 
                     testPhase.phase_details = error_details;
                     testPhase.error_code = error_code;
@@ -5548,17 +5624,19 @@ namespace AutoTestSystem.Model
                         else
                             loggerError($"{item.ItemName} {(rReturn ? "PASS" : "FAIL")}!! ElapsedTime:{item.ElapsedTime},{error_code}:{error_details},Spec:{item.Spec},Min:{item.Limit_min},Value:{item.testValue},Max:{item.Limit_max}");
 
-                        if (item.ItemName == "FIXTURE_CLOSE") {
+                        if (item.ItemName == "FIXTURE_CLOSE")
+                        {
                             MainForm.f1.FIXTURE_TIME = item.ElapsedTime;
                         }
-                        if (item.ItemName == "DUT_PING") {
+                        if (item.ItemName == "DUT_PING")
+                        {
                             MainForm.f1.DUT_PING_TIME = item.ElapsedTime;
                         }
-                        
+
                         MainForm.f1.UpdateDetailView(SN, item.ItemName, item.Spec, item.Limit_min, item.testValue, item.Limit_max, item.ElapsedTime, item.start_time.ToString(), rReturn.ToString() == "True" ? "Pass" : "Fail");
-                        
-                    
-                    
+
+
+
                     }
 
                     // 给Json格式对象赋值
@@ -5567,14 +5645,14 @@ namespace AutoTestSystem.Model
                         if ((item.IfElse.ToLower() == "if" || item.IfElse.ToLower() == "&if") && !rReturn) // if and test result=false,do not save to json.
                         {
                         }
-                        else if ((item.IfElse.ToLower() == "elseif" ) && !rReturn) // if and test result=false,do not save to json.
+                        else if ((item.IfElse.ToLower() == "elseif") && !rReturn) // if and test result=false,do not save to json.
                         {
                         }
                         else
                         {
                             JsonAndCsv(item, phaseItem, specFlag, rReturn);
                         }
-                           
+
                     }
                     else if (!rReturn || item.ByPassFail.ToLower() == "f" || item.ByPassFail.ToLower() == "0")
                     {
@@ -5583,8 +5661,9 @@ namespace AutoTestSystem.Model
 
                         }
                         //先临时这么处理,针对 MBLT的elseif测试项
-                        else if (!rReturn && (item.Json == "" || item.Json == null) && item.IfElse == "elseif") { 
-                        
+                        else if (!rReturn && (item.Json == "" || item.Json == null) && item.IfElse == "elseif")
+                        {
+
                         }
                         // else if (!rReturn && (item.Json == "" || item.Json == null) && item.IfElse == "if" && item.ItemName== "WaitingToStart_Start")
                         else if (!rReturn && (item.Json == "" || item.Json == null) && item.IfElse == "if")
@@ -5604,10 +5683,11 @@ namespace AutoTestSystem.Model
                         SetVerReflection(mesPhases, item.MES_var, rReturn.ToString().ToUpper());
                     }
 
-                    else {
+                    else
+                    {
                         SetVerReflection(mesPhases, item.MES_var, item.testValue);
                     }
-                       
+
 
                     if (item.TestKeyword == "SetIpaddrEnv" && rReturn)
                     {
@@ -5623,7 +5703,8 @@ namespace AutoTestSystem.Model
         private void UpdateLimitFromOnline(Items item)
         {
 
-            if (Online_Limit == null) {
+            if (Online_Limit == null)
+            {
                 return;
             }
 
@@ -5667,7 +5748,8 @@ namespace AutoTestSystem.Model
                 loggerInfo($"{item.EeroName} not found in online limit");
         }
 
-        void HandleErrorCodeAndDetail(string[] ErrorList,Items item,string info = "") {
+        void HandleErrorCodeAndDetail(string[] ErrorList, Items item, string info = "")
+        {
 
             loggerDebug($"ErrorList.length {ErrorList.Length}.");
             if (ErrorList.Length == 1)
@@ -5821,7 +5903,7 @@ namespace AutoTestSystem.Model
                 return false;
             }
         }
-        private   bool Power_OnOff_WPS(int index, bool desiredState)
+        private bool Power_OnOff_WPS(int index, bool desiredState)
         {
 
 
@@ -5855,38 +5937,16 @@ namespace AutoTestSystem.Model
 
 
 
-
-
-
-
-        private static void HandleSpecialMethed(Items item, bool rReturn, string revStr)
+        private static void HandleSpecialMethed(Items item, bool rReturn, string revStr, string keywords = "", int retyTime = 0)
         {
 
-            //loggerInfo("屏蔽特殊处理!!!");
-            return;
 
 
-            //if (!rReturn && Global.STATIONNAME == "MBLT" && 
 
-            //    (
-            //       (item.ItemName == "USBMount" && item.EeroName == "USB_MOUNT")
-            //       ||
-            //       (item.ItemName == "USB_DETECT" && item.EeroName == "USB_DETECT")
-            //    )
-
-            //    )
-            //{
-            //    //loggerInfo(">>>>>>>>>>>> do it again");
-            //    //MessageBox.Show("重新拔插U盘，完成后点击确定/Đặt lại đĩa flash USB, và nhắp vào OK khi xong\r\n");
-            //    USBConfirmDialog usbDialog = new USBConfirmDialog();
-            //    usbDialog.TextHandler = (str) => { };
-            //    usbDialog.StartPosition = FormStartPosition.CenterScreen;
-            //    usbDialog.TopMost = true;
-            //    usbDialog.ShowDialog();
-            //    Thread.Sleep(3000);
-            //}
-
-
+            if (retyTime == 0)
+            {
+                return;
+            }
 
 
             loggerInfo("~~~~~~~~~~~~~~~~~~~~~~~~~~~StationName:" + Global.STATIONNAME + ",itemName:" + item.ItemName + ",eeroName:" + item.EeroName);
@@ -5895,37 +5955,12 @@ namespace AutoTestSystem.Model
 
                 !rReturn &&
                 (
-                (Global.STATIONNAME == "SFT" && (item.ItemName == "WaitingToStart") && item.EeroName == "ENTER_KERNEL")
-                ||
-                (Global.STATIONNAME == "RTT" && (item.ItemName == "DUT_PING") && item.EeroName == "DUT_PING")
-                ||
-                 (Global.STATIONNAME == "SFT" && (item.ItemName == "DUT_PING") && item.EeroName == "DUT_PING")
-                 ||
-                (Global.STATIONNAME == "SRF" && (item.ItemName == "DUT_PING") && item.EeroName == "DUT_PING")
-                 ||
-                (Global.STATIONNAME == "MBFT" && (item.ItemName == "DUT_PING") && item.EeroName == "DUT_PING")
-                 ||
-                (Global.STATIONNAME == "SFT" && (item.ItemName == "I_VDD_5V_OPEN") && item.EeroName == "I_VDD_5V_OPEN")
-                 ||
-                (Global.STATIONNAME == "SFT" && (item.ItemName == "ETH0_DATA_RATE"))
-                ||
-                (Global.STATIONNAME == "SFT" && (item.ItemName == "ETH1_DATA_RATE"))
-                ||
-                (Global.STATIONNAME == "MBLT" && (item.ItemName == "ETH0_DATA_RATE"))
-                ||
-                (Global.STATIONNAME == "MBLT" && (item.ItemName == "ETH1_DATA_RATE"))
-                ||
-                 (Global.STATIONNAME == "SFT" && (item.ItemName == "ETH0_PING"))
-                 ||
-                 (Global.STATIONNAME == "SFT" && (item.ItemName == "ETH1_PING"))
 
-               //  ||
-               // (Global.STATIONNAME == "RTT" && (item.ItemName == "PING_GU"))
+                  (Global.STATIONNAME == "MBLT" && keywords == "VoltageTest")
 
-               //   ||
-              //  (Global.STATIONNAME == "RTT" && (item.ItemName == "WiFi_SPEED_5650_TX_SERIAL_Repeat" || item.ItemName == "WiFi_SPEED_5650_RX_SERIAL_Repeat" || item.ItemName == "WiFi_SPEED__TX_SERIAL_Repeat" || item.ItemName == "WiFi_SPEED__RX_SERIAL_Repeat"))
+               )
 
-                )
+
                 )
             {
 
@@ -5934,112 +5969,233 @@ namespace AutoTestSystem.Model
 
                     FixSerialPort.OpenCOM();
                     var recvStr = "";
+                    {
 
-
-                  
-                                    
-                       {
-
-
-
-                        if (Global.STATIONNAME != "RTT")
+                        if (Global.STATIONNAME == "MBLT")
                         {
-                            loggerInfo("----------------->begin pop RJ45 fixture");
+                            loggerInfo("----------------->begin pop PressUP");
 
-                            FixSerialPort.SendCommandToFix("AT+PORTEJECT%", ref recvStr, "OK", 10);
+                            FixSerialPort.SendCommandToFix("AT+PRESSUP%", ref recvStr, "OK", 10);
 
                             Sleep(500);
 
-                            loggerInfo("----------------->begin push RJ45 fixture");
+                            loggerInfo("----------------->begin push PressDown");
 
-                            FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
+                            FixSerialPort.SendCommandToFix("AT+PRESSDOWN%", ref recvStr, "OK", 10);
 
                             Sleep(500);
-                        }
-                        else {
-                            var rr = "";
-                            loggerInfo("----------------->reboot 软重启");
-                            DUTCOMM.SendCommand("reboot", ref rr, "", 120);
-                        }
-                          
 
-                           
-
-
-
-
-
-                        if ((Global.STATIONNAME == "SFT" && (item.ItemName == "WaitingToStart") && item.EeroName == "ENTER_KERNEL") == false)
-                        {
-                            loggerInfo("-------------------> waiting for start");
-                            var rr = "";
-                            if (DUTCOMM != null)
+                            if (item.EeroName != "V_POE_POWER_RAIL")
                             {
-                                if (DUTCOMM.SendCommand("", ref rr, "luxshare SW Version :", 120))
+                                if (DUTCOMM != null)
                                 {
-                                    // byte[] quit = { 0x03 };
-                                    // var cmd = Encoding.ASCII.GetString(quit).ToUpper();
-                                    if (DUTCOMM.SendCommand(" \r\n", ref rr, "root@OpenWrt:/#", 1))
+                                    var rr = "";
+                                    for (var i = 0; i < 120; i++)
                                     {
-
+                                        if (DUTCOMM.SendCommand("0x30", ref rr, "IPQ5332#", 0.5))
+                                        {
+                                            break;
+                                        }
                                     }
-                                }
-
-                                //
-                                if (Global.STATIONNAME == "SFT")
-                                {
-
-                                  //  DUTCOMM.SendCommand("modprobe qca_nss_netlink", ref rr, "root@OpenWrt:/#", 10);
-
-                                   // DUTCOMM.SendCommand("ifconfig br-lan down && brctl delbr br-lan && ifconfig eth0 192.168.1.1 up && ifconfig eth1 192.168.0.101 up", ref rr, "root@OpenWrt:/#", 10);
-
 
                                 }
-                                //if (Global.STATIONNAME == "RTT")
-                                //{
-                                //    //重启后重新加载wifi和蓝牙
 
-                                //    DUTCOMM.SendCommand(@"insmod qorvo_com\nQorvoFirmwareUpdater /lib/firmware/qorvo/Firmware_QPG7015M/Firmware_QPG7015M.hex > /tmp/qorvo_dl_fw.log", ref rr, "root@OpenWrt:/#", 30);
-                                //    Thread.Sleep(6000);
-
-                                    
-                                //    DUTCOMM.SendCommand($"wifi_init 6 {SSID_2G} {SSID_5G} > /tmp/wifi_test_result.txt", ref rr, "root@OpenWrt:/#", 30);
-                                //    Thread.Sleep(50000);
-
-                                //    DUTCOMM.Close();
-                                //    DUTCOMM.Open();
-
-                                //}
-
-                              }
+                            }
 
 
                         }
 
-
-
-
-
-
-
-
-
-
                     }
 
 
-
-
-                 
-
-
-                    }
+                }
             }
         }
 
 
 
-        private void CollectionCSVRowData(Items item) {
+        //private static void HandleSpecialMethed(Items item, bool rReturn, string revStr)
+        //{
+
+        //    //loggerInfo("屏蔽特殊处理!!!");
+        //    return;
+
+
+        //    //if (!rReturn && Global.STATIONNAME == "MBLT" && 
+
+        //    //    (
+        //    //       (item.ItemName == "USBMount" && item.EeroName == "USB_MOUNT")
+        //    //       ||
+        //    //       (item.ItemName == "USB_DETECT" && item.EeroName == "USB_DETECT")
+        //    //    )
+
+        //    //    )
+        //    //{
+        //    //    //loggerInfo(">>>>>>>>>>>> do it again");
+        //    //    //MessageBox.Show("重新拔插U盘，完成后点击确定/Đặt lại đĩa flash USB, và nhắp vào OK khi xong\r\n");
+        //    //    USBConfirmDialog usbDialog = new USBConfirmDialog();
+        //    //    usbDialog.TextHandler = (str) => { };
+        //    //    usbDialog.StartPosition = FormStartPosition.CenterScreen;
+        //    //    usbDialog.TopMost = true;
+        //    //    usbDialog.ShowDialog();
+        //    //    Thread.Sleep(3000);
+        //    //}
+
+
+
+
+        //    loggerInfo("~~~~~~~~~~~~~~~~~~~~~~~~~~~StationName:" + Global.STATIONNAME + ",itemName:" + item.ItemName + ",eeroName:" + item.EeroName);
+
+        //    if (
+
+        //        !rReturn &&
+        //        (
+        //        (Global.STATIONNAME == "SFT" && (item.ItemName == "WaitingToStart") && item.EeroName == "ENTER_KERNEL")
+        //        ||
+        //        (Global.STATIONNAME == "RTT" && (item.ItemName == "DUT_PING") && item.EeroName == "DUT_PING")
+        //        ||
+        //         (Global.STATIONNAME == "SFT" && (item.ItemName == "DUT_PING") && item.EeroName == "DUT_PING")
+        //         ||
+        //        (Global.STATIONNAME == "SRF" && (item.ItemName == "DUT_PING") && item.EeroName == "DUT_PING")
+        //         ||
+        //        (Global.STATIONNAME == "MBFT" && (item.ItemName == "DUT_PING") && item.EeroName == "DUT_PING")
+        //         ||
+        //        (Global.STATIONNAME == "SFT" && (item.ItemName == "I_VDD_5V_OPEN") && item.EeroName == "I_VDD_5V_OPEN")
+        //         ||
+        //        (Global.STATIONNAME == "SFT" && (item.ItemName == "ETH0_DATA_RATE"))
+        //        ||
+        //        (Global.STATIONNAME == "SFT" && (item.ItemName == "ETH1_DATA_RATE"))
+        //        ||
+        //        (Global.STATIONNAME == "MBLT" && (item.ItemName == "ETH0_DATA_RATE"))
+        //        ||
+        //        (Global.STATIONNAME == "MBLT" && (item.ItemName == "ETH1_DATA_RATE"))
+        //        ||
+        //         (Global.STATIONNAME == "SFT" && (item.ItemName == "ETH0_PING"))
+        //         ||
+        //         (Global.STATIONNAME == "SFT" && (item.ItemName == "ETH1_PING"))
+
+        //       //  ||
+        //       // (Global.STATIONNAME == "RTT" && (item.ItemName == "PING_GU"))
+
+        //       //   ||
+        //      //  (Global.STATIONNAME == "RTT" && (item.ItemName == "WiFi_SPEED_5650_TX_SERIAL_Repeat" || item.ItemName == "WiFi_SPEED_5650_RX_SERIAL_Repeat" || item.ItemName == "WiFi_SPEED__TX_SERIAL_Repeat" || item.ItemName == "WiFi_SPEED__RX_SERIAL_Repeat"))
+
+        //        )
+        //        )
+        //    {
+
+        //        if (Global.FIXTUREFLAG == "1")
+        //        {
+
+        //            FixSerialPort.OpenCOM();
+        //            var recvStr = "";
+
+
+
+
+        //               {
+
+
+
+        //                if (Global.STATIONNAME != "RTT")
+        //                {
+        //                    loggerInfo("----------------->begin pop RJ45 fixture");
+
+        //                    FixSerialPort.SendCommandToFix("AT+PORTEJECT%", ref recvStr, "OK", 10);
+
+        //                    Sleep(500);
+
+        //                    loggerInfo("----------------->begin push RJ45 fixture");
+
+        //                    FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
+
+        //                    Sleep(500);
+        //                }
+        //                else {
+        //                    var rr = "";
+        //                    loggerInfo("----------------->reboot 软重启");
+        //                    DUTCOMM.SendCommand("reboot", ref rr, "", 120);
+        //                }
+
+
+
+
+
+
+
+
+        //                if ((Global.STATIONNAME == "SFT" && (item.ItemName == "WaitingToStart") && item.EeroName == "ENTER_KERNEL") == false)
+        //                {
+        //                    loggerInfo("-------------------> waiting for start");
+        //                    var rr = "";
+        //                    if (DUTCOMM != null)
+        //                    {
+        //                        if (DUTCOMM.SendCommand("", ref rr, "luxshare SW Version :", 120))
+        //                        {
+        //                            // byte[] quit = { 0x03 };
+        //                            // var cmd = Encoding.ASCII.GetString(quit).ToUpper();
+        //                            if (DUTCOMM.SendCommand(" \r\n", ref rr, "root@OpenWrt:/#", 1))
+        //                            {
+
+        //                            }
+        //                        }
+
+        //                        //
+        //                        if (Global.STATIONNAME == "SFT")
+        //                        {
+
+        //                          //  DUTCOMM.SendCommand("modprobe qca_nss_netlink", ref rr, "root@OpenWrt:/#", 10);
+
+        //                           // DUTCOMM.SendCommand("ifconfig br-lan down && brctl delbr br-lan && ifconfig eth0 192.168.1.1 up && ifconfig eth1 192.168.0.101 up", ref rr, "root@OpenWrt:/#", 10);
+
+
+        //                        }
+        //                        //if (Global.STATIONNAME == "RTT")
+        //                        //{
+        //                        //    //重启后重新加载wifi和蓝牙
+
+        //                        //    DUTCOMM.SendCommand(@"insmod qorvo_com\nQorvoFirmwareUpdater /lib/firmware/qorvo/Firmware_QPG7015M/Firmware_QPG7015M.hex > /tmp/qorvo_dl_fw.log", ref rr, "root@OpenWrt:/#", 30);
+        //                        //    Thread.Sleep(6000);
+
+
+        //                        //    DUTCOMM.SendCommand($"wifi_init 6 {SSID_2G} {SSID_5G} > /tmp/wifi_test_result.txt", ref rr, "root@OpenWrt:/#", 30);
+        //                        //    Thread.Sleep(50000);
+
+        //                        //    DUTCOMM.Close();
+        //                        //    DUTCOMM.Open();
+
+        //                        //}
+
+        //                      }
+
+
+        //                }
+
+
+
+
+
+
+
+
+
+
+        //            }
+
+
+
+
+
+
+
+        //            }
+        //    }
+        //}
+
+
+
+        private void CollectionCSVRowData(Items item)
+        {
             //收集csv数据
             if (!IsNullOrEmpty(item.Limit_min) || !IsNullOrEmpty(item.Limit_max))
             {
