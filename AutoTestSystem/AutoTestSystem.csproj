@@ -391,7 +391,6 @@
     <None Include="1.20Revert\tftpd32.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-<<<<<<< HEAD
     <None Include="Config\serial\serialposix.pyc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -410,8 +409,6 @@
     <None Include="Config\Snowbird.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-=======
->>>>>>> ab440e7c0c8028cd2b9bf5ae21065c38bf360e55
     <None Include="Resources\blueled.jpg" />
     <None Include="Resources\greenled.jpg" />
     <None Include="Resources\offled.jpg" />
