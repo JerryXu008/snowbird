@@ -5306,7 +5306,7 @@ namespace AutoTestSystem.Model
                             //loggerWarn($"Warning!!!,this is default DUT test-method, ErrorList.Length is {ErrorList.Length.ToString()}");
                             var revStr = "";
                             inPutValue = "";
-
+                             
                             if ((Global.TESTMODE == "debug" || Global.TESTMODE == "fa" || IsDebug) && Global.STATIONNAME == "SRF" && item.TestKeyword.Contains("SetIpaddrEnv"))
                             {
                                 rReturn = true;
