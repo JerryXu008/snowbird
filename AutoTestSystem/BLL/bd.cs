@@ -2545,6 +2545,48 @@ namespace AutoTestSystem.BLL
             return result;
         }
 
+        public static Dictionary<string, object> HttpGets(string url)
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    // Perform the GET request synchronously
+                    var response = client.GetAsync(url).GetAwaiter().GetResult();
+
+                    // Create a dictionary to store the response
+                    var result = new Dictionary<string, object>
+            {
+                { "StatusCode", (int)response.StatusCode },
+                { "Content", response.Content.ReadAsStringAsync().GetAwaiter().GetResult() }
+            };
+
+                    return result;
+                }
+                catch (HttpRequestException ex)
+                {
+                    // Log error or handle appropriately
+                    Console.WriteLine($"HttpRequestException occurred: {ex.Message}");
+                    return new Dictionary<string, object>
+            {
+                { "StatusCode", 500 },
+                { "Content", "HttpRequestException occurred" }
+            };
+                }
+                catch (Exception ex)
+                {
+                    // Log any other exceptions
+                    Console.WriteLine($"Exception occurred: {ex.Message}");
+                    return new Dictionary<string, object>
+            {
+                { "StatusCode", 500 },
+                { "Content", "An unexpected error occurred" }
+            };
+                }
+            }
+        }
+
+
         public static string HttpPost(string url, HttpContent content, out string statusCode)
         {
             var client = new HttpClient();

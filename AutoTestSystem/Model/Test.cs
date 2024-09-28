@@ -984,6 +984,46 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
+                    case "CheckLink":
+                        {
+                            string getUrl = $@"http://{Global.MESIP}:{Global.MESPORT}/api/SNCheck/serial/{SN}/station/{Global.STATIONNO}";
+                            loggerDebug($"Start get CheckLink from MES, http url: {getUrl}");
+
+                            Dictionary<string, object> responseResult = HttpGets(getUrl);
+
+                            // Log the response
+                            int statusCode = (int)responseResult["StatusCode"];
+                            string responseContent = (string)responseResult["Content"];
+                            loggerDebug($"Response from MES: Status Code: {statusCode}, Content: {responseContent}");
+
+                            if (statusCode == 200)
+                            {
+                                // Remove quotes and trim whitespace
+                                responseContent = responseContent.Replace("\"", "").Trim();
+
+                                if (responseContent.ToLower() == "ok")
+                                {
+                                    rReturn = true;
+                                }
+                                else
+                                {
+                                    loggerDebug("Unexpected content in response. Setting rReturn to false.");
+                                    return rReturn = false;
+                                }
+                            }
+                            else if (statusCode == 400)
+                            {
+                                loggerDebug($"Error: {responseContent}. Setting rReturn to false.");
+                                return rReturn = false;
+                            }
+                            else
+                            {
+                                loggerDebug($"Unhandled status code: {statusCode}. Setting rReturn to false.");
+                                return rReturn = false;
+                            }
+
+                        }
+                        break;
                     case "POEconfig":
                         {
 
