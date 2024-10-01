@@ -443,7 +443,7 @@ namespace AutoTestSystem.Model
 
                             var ret = "";
                             try
-                            {
+                            { 
                                 // ret = HttpGet(url);
                                 ret = HttpPost(url, null, out _);
 
@@ -463,7 +463,7 @@ namespace AutoTestSystem.Model
                             }
                             catch (Exception ex)
                             {
-
+                                MainForm.f1.ShowLbl_FAIL_TEXT(ret);
                                 loggerInfo(">>>>:" + ex.Message);
                                 rReturn = false;
                             }
