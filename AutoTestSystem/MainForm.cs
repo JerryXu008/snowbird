@@ -1,4 +1,4 @@
-using AutoTestSystem.BLL;
+﻿using AutoTestSystem.BLL;
 using AutoTestSystem.DAL;
 using AutoTestSystem.Model;
 using Checkroute;
@@ -56,7 +56,7 @@ namespace AutoTestSystem
         public bool isFirstRun = true;
         public static string TempItemFAILName;
         //UBOOT fail ,LED_W保存
-        public string UBOOT_LED_W_ReMSG1="";
+        public string UBOOT_LED_W_ReMSG1 = "";
         public string UBOOT_LED_W_ReMSG2 = "";
         public string UBOOT_LED_W_ReMSG3 = "";
         public string UBOOT_LED_W_ReMSG4 = "";
@@ -76,12 +76,12 @@ namespace AutoTestSystem
         private List<Sequence> sequences = null;                                                         //!测试用例队列
         public static MesPhases mesPhases = null;
         public test_phases TestPhase = new test_phases();
-        
-        
+
+
         public static Station stationObj = null;
-       
-        
-        
+
+
+
         public static Mescheckroute mescheckroute;
         public static Test test;
 
@@ -95,7 +95,7 @@ namespace AutoTestSystem
         public static Comport FixSerialPort;
 
 
-      
+
 
         //public static GPIB GPIBCOMM;                                                                      //!GPIB连接
         public static Communication SampleComm;
@@ -127,17 +127,17 @@ namespace AutoTestSystem
         bool isTestAgain = false;
         int AUTOTESTNOFIXUTRE_COUNT = -1;
 
-        public  static bool NoiseGlobalReturn = false;
+        public static bool NoiseGlobalReturn = false;
 
-      
+
 
 
         //SRF/MBFT RF 数据缓存
 
         public static Dictionary<string, List<Items>> RFTempSequenceDict = new Dictionary<string, List<Items>>();
 
-        public static Dictionary<string,string> RFTempFailItemNameDict = new Dictionary<string, string>();
-         
+        public static Dictionary<string, string> RFTempFailItemNameDict = new Dictionary<string, string>();
+
         ///***************************  定义DUT产品相关全局变量  ********************************\\
         public const string regexp_GATEWAY = @"^((N)([1-9]|[A-Z])([1-9]|[A-C])([A-HJ-KM-NP-TV-Z]|[1-9]))([A-HJ-KM-NP-TV-Z]|[0-9]){4}$";
         public const string regexp_LEAF = @"^((Q)([1-9]|[A-Z])([1-9]|[A-C])([A-HJ-KM-NP-TV-Z]|[1-9]))([A-HJ-KM-NP-TV-Z]|[0-9]){4}$";
@@ -206,7 +206,7 @@ namespace AutoTestSystem
 
         //ALK 气压值和 泄漏值
 
-        public static int Pressure2 = -1;   
+        public static int Pressure2 = -1;
         public static int AirLeakValue = -1;
 
 
@@ -242,10 +242,10 @@ namespace AutoTestSystem
                 }
                 else
                 {
-                 //   20200228 操作的 KillProcess("Scan_Barcode_C03");
+                    //   20200228 操作的 KillProcess("Scan_Barcode_C03");
                 }
 #endif
-                
+
             }
         }
 
@@ -262,7 +262,7 @@ namespace AutoTestSystem
         }
 
 
-    
+
         public MainForm()
         {
 
@@ -270,75 +270,75 @@ namespace AutoTestSystem
 
 
 
-                ////先输入数值
-                //InutMEASPOP usbDialog2 = new InutMEASPOP();
+            ////先输入数值
+            //InutMEASPOP usbDialog2 = new InutMEASPOP();
 
-                //usbDialog2.lowLimit = "35.1";
-                //usbDialog2.highLimit = "89.9";
-                //double value = -1;
-                //usbDialog2.TextHandler = (str) => {
+            //usbDialog2.lowLimit = "35.1";
+            //usbDialog2.highLimit = "89.9";
+            //double value = -1;
+            //usbDialog2.TextHandler = (str) => {
 
-                //    value = double.Parse(str);
-                //};
-                //usbDialog2.StartPosition = FormStartPosition.CenterScreen;
-                //usbDialog2.TopMost = true;
-                //usbDialog2.ShowTip("Please record sound level");
-                //usbDialog2.ShowDialog();
-
-
-
-
-
-                //// 获取当前可执行文件的路径
-                //string exeFilePath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-                //// 配置文件路径（假设在同一目录下）
-                //string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory+"/config", "config.ini");
-
-                //// 计算当前可执行文件的MD5校验码
-                //string exeMd5 = GetMD5HashFromFile(exeFilePath);
-                //// 计算配置文件的MD5校验码
-                //string configMd5 = GetMD5HashFromFile(configFilePath);
-
-                //// 打印MD5校验码
-                //Console.WriteLine("Executable MD5: " + exeMd5);
-                //Console.WriteLine("Config.ini MD5: " + configMd5);
-
-                //// 将两个或更多MD5校验码组合起来，计算最终的MD5校验码
-                //string combinedMd5 = GetCombinedMd5(exeMd5, configMd5);
-
-                //// 打印最终的MD5校验码
-                //Console.WriteLine("Final Combined MD5: " + combinedMd5);
-
-
-
-
-                //TestingNoise usbDialog = new TestingNoise();
-
-                //var result = "";
-                //usbDialog.TextHandler = (str) => {
-
-                //    result = str;
-                //};
-
-                //usbDialog.StartPosition = FormStartPosition.CenterScreen;
-                //usbDialog.ShowTip();
-
-
-                ////// 设置窗体为无边框样式
-                //usbDialog.FormBorderStyle = FormBorderStyle.None;
-                //// 最大化窗体
-                //usbDialog.WindowState = FormWindowState.Maximized;
-
-                //usbDialog.TopMost = true;
-
-                //usbDialog.ShowDialog();
+            //    value = double.Parse(str);
+            //};
+            //usbDialog2.StartPosition = FormStartPosition.CenterScreen;
+            //usbDialog2.TopMost = true;
+            //usbDialog2.ShowTip("Please record sound level");
+            //usbDialog2.ShowDialog();
 
 
 
 
 
+            //// 获取当前可执行文件的路径
+            //string exeFilePath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            //// 配置文件路径（假设在同一目录下）
+            //string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory+"/config", "config.ini");
 
-                this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi; //设定按分辨率来缩放控件
+            //// 计算当前可执行文件的MD5校验码
+            //string exeMd5 = GetMD5HashFromFile(exeFilePath);
+            //// 计算配置文件的MD5校验码
+            //string configMd5 = GetMD5HashFromFile(configFilePath);
+
+            //// 打印MD5校验码
+            //Console.WriteLine("Executable MD5: " + exeMd5);
+            //Console.WriteLine("Config.ini MD5: " + configMd5);
+
+            //// 将两个或更多MD5校验码组合起来，计算最终的MD5校验码
+            //string combinedMd5 = GetCombinedMd5(exeMd5, configMd5);
+
+            //// 打印最终的MD5校验码
+            //Console.WriteLine("Final Combined MD5: " + combinedMd5);
+
+
+
+
+            //TestingNoise usbDialog = new TestingNoise();
+
+            //var result = "";
+            //usbDialog.TextHandler = (str) => {
+
+            //    result = str;
+            //};
+
+            //usbDialog.StartPosition = FormStartPosition.CenterScreen;
+            //usbDialog.ShowTip();
+
+
+            ////// 设置窗体为无边框样式
+            //usbDialog.FormBorderStyle = FormBorderStyle.None;
+            //// 最大化窗体
+            //usbDialog.WindowState = FormWindowState.Maximized;
+
+            //usbDialog.TopMost = true;
+
+            //usbDialog.ShowDialog();
+
+
+
+
+
+
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi; //设定按分辨率来缩放控件
             InitializeComponent();
 
 
@@ -355,7 +355,7 @@ namespace AutoTestSystem
                 Cycle_Count = int.Parse(Global.CYCLE_COUNT);
             }
 
-            if (Global.CameraType=="1")
+            if (Global.CameraType == "1")
             {
                 scanManager = new ScanManager();
                 scanManager.ScanFinished += ScanManager_ScanFinished;
@@ -376,11 +376,11 @@ namespace AutoTestSystem
 
 
 
-             
 
-               // this.textBox1.MaxLength = Global.SN_LENGTH;
-           
-            
+
+            // this.textBox1.MaxLength = Global.SN_LENGTH;
+
+
 #if DEBUG
 #else
             if (!RunDosCmd("tzutil /g").Contains("China Standard"))
@@ -414,15 +414,17 @@ namespace AutoTestSystem
                 {
                     if (!SetDisplay.ChangeRes(1366, 768))
                     {
-                       // MessageBox.Show($"设置屏幕分辨率为1366*768,60Hz失败！请确认显示器是否支持此分辨率.");
+                        // MessageBox.Show($"设置屏幕分辨率为1366*768,60Hz失败！请确认显示器是否支持此分辨率.");
                     }
                 }
 
             }
         }
-         
-        private string CheckVersion() {
-            try {
+
+        private string CheckVersion()
+        {
+            try
+            {
                 var client = new HttpClient();
                 client.Timeout = TimeSpan.FromSeconds(5);
 
@@ -437,7 +439,7 @@ namespace AutoTestSystem
                         if (item.Key.ToString() == "version")//获取header数据
                         {
                             version = (string)item.Value;
-                           
+
                             break;
                         }
                     }
@@ -445,11 +447,12 @@ namespace AutoTestSystem
                 loggerInfo("Get Online version:" + version);
                 return version;
             }
-            catch {
+            catch
+            {
                 loggerInfo("Get Online version: error");
                 return "";
             }
-           
+
         }
 
 
@@ -510,7 +513,7 @@ namespace AutoTestSystem
                                 TimeSpan oneMonth = TimeSpan.FromDays(30);
 
 
- 
+
 
 
 
@@ -574,19 +577,20 @@ namespace AutoTestSystem
 
 
 
-        private async void  DownloadPathloss(string type) {
+        private async void DownloadPathloss(string type)
+        {
             try
             {
-               // var url = $@"http://localhost:9000/upload/public/snowbird/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
+                // var url = $@"http://localhost:9000/upload/public/snowbird/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
                 var url = $@"http://{Global.LOGSERVER}:9000/upload/public/snowbird/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
 
 
-               // MessageBox.Show("下载地址:" + url);
-                
+                // MessageBox.Show("下载地址:" + url);
+
                 var save = @"";
                 if (type == "wifi")
                 {
-                    
+
                     save = @"E:\Eero_snowbird_LUX_MBFT_ATSuitev1.0.2\release\" + "path_loss.csv";
                 }
                 else if (type == "bluetooth")
@@ -600,13 +604,14 @@ namespace AutoTestSystem
                     await web.DownloadFileTaskAsync(url, save);
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 MessageBox.Show(ex.Message);
 
 
                 loggerError("download path_loss fail：" + ex.Message);
             }
-           
+
         }
 
 
@@ -614,15 +619,15 @@ namespace AutoTestSystem
         {
             try
             {
-               
-                
+
+
                 var url = $@"http://{Global.LOGSERVER}:9000/upload/public/snowbird/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}/path_loss.csv";
 
 
                 // var url = $@"http://172.23.241.211:9000/upload/public/snowbird/SRF/SRF-8402/wifi/path_loss.csv";
 
-               
-                
+
+
                 var save = @"";
                 if (type == "wifi")
                 {
@@ -666,11 +671,11 @@ namespace AutoTestSystem
         void AddConsume()
         {
             try
-            { 
+            {
                 var URL = Global.VersionMURL;
 
 
-               // URL = "http://172.23.241.211:9000";
+                // URL = "http://172.23.241.211:9000";
 
                 var name = Global.STATIONNAME;
                 var NO = Global.STATIONNO;
@@ -694,7 +699,7 @@ namespace AutoTestSystem
             }
             catch (Exception ex)
             {
-                loggerError("error1:"+ex.Message);
+                loggerError("error1:" + ex.Message);
             }
         }
         void DownLoadPathlossFile()
@@ -705,7 +710,7 @@ namespace AutoTestSystem
                 if (Global.IsDownloadPathloss == "1")
                 {
 
-                    if (CheckPathloss("wifi","snowbird") && CheckPathloss("bluetooth", "snowbird"))
+                    if (CheckPathloss("wifi", "snowbird") && CheckPathloss("bluetooth", "snowbird"))
                     {
                         DownloadPathloss("wifi");
                         DownloadPathloss("bluetooth");
@@ -762,10 +767,11 @@ namespace AutoTestSystem
             {
                 bt_debug.Visible = true;
             }
-            else {
+            else
+            {
                 bt_debug.Visible = false;
             }
-                
+
 #endif
             DUTIP = Global.DUTIP;
             // 初始化通信信息
@@ -831,11 +837,12 @@ namespace AutoTestSystem
                 scanThread = new Thread(new ThreadStart(ScanThreadNew))
                 {
                     IsBackground = true
-                   
-                };      
+
+                };
 
             }
-            else if (Global.CameraType == "0" && Global.STATIONNAME != "CCT") {
+            else if (Global.CameraType == "0" && Global.STATIONNAME != "CCT")
+            {
 
 
 
@@ -848,7 +855,8 @@ namespace AutoTestSystem
                     };
 
                 }
-                else {
+                else
+                {
 
 
                     scanThread = new Thread(new ThreadStart(ScanThread1_Nofixutre))
@@ -856,20 +864,20 @@ namespace AutoTestSystem
                         IsBackground = true
                     };
 
-                    
+
 
 
                 }
-                
-               
-            
-            
-     
+
+
+
+
+
             }
 
 
 
-       
+
 
 #if DEBUG
             //if (Global.STATIONNAME != "CCT")
@@ -885,8 +893,8 @@ namespace AutoTestSystem
 
                 scanThread.Start();
             }
-          
-           
+
+
 #endif
             testThread = new Thread(new ThreadStart(TestThread))
             {
@@ -895,7 +903,7 @@ namespace AutoTestSystem
             testThread.Start();
 
 
- 
+
 
 
             // textBox1.Text = "GGC3530132850621";
@@ -903,7 +911,8 @@ namespace AutoTestSystem
 
         private void ScanManager_ScanFinished(string sn)
         {
-            if (sn.Length > 0) {
+            if (sn.Length > 0)
+            {
                 scanManager.Close();
 
                 Global.time2 = DateTime.Now;
@@ -911,27 +920,29 @@ namespace AutoTestSystem
                 //SetTextBox(textBox1, true, sn);
                 Console.WriteLine("Scan finish...");
                 AfterScanAction(sn);
-                
+
                 scanManager.Close();
             }
-              
+
         }
         private bool CheckALKBSN(string ScanSN)
         {
 
-            if (ScanSN.Trim().Length != 21) {
+            if (ScanSN.Trim().Length != 21)
+            {
                 MessageBox.Show($"SN matching rule is wrong ,Please find TE!", "SN Match Rule", 0, MessageBoxIcon.Error);
                 return false;
             }
-            if (!ScanSN.StartsWith("353")) {
+            if (!ScanSN.StartsWith("353"))
+            {
                 MessageBox.Show($"SN matching rule is wrong ,Please find TE!", "SN Match Rule", 0, MessageBoxIcon.Error);
                 return false;
             }
-         
+
             return true;
         }
 
-            private bool CheckSNRole(string ScanSN)
+        private bool CheckSNRole(string ScanSN)
         {
 
 
@@ -989,7 +1000,7 @@ namespace AutoTestSystem
                 else
                 {
 
-                 
+
                 }
                 if (!SetTextBoxNewScan(textBox1, true, sn))
                 {
@@ -1020,7 +1031,7 @@ namespace AutoTestSystem
             }));
             return re;
 
-            
+
         }
 
         private bool TriggerKeyDown()
@@ -1029,11 +1040,12 @@ namespace AutoTestSystem
 
 
             //如果正在测试，扫码无效
-            if (isTesting) {
+            if (isTesting)
+            {
 
                 logger.Error("testing ,scan not work");
                 return false;
-            
+
             }
 
 
@@ -1044,8 +1056,8 @@ namespace AutoTestSystem
                 //  MessageBox.Show(@"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp\QUTSStatusApp.exe");
 
                 //   if (Global.STATIONNAME == "SRF") {
-                RunDosCmd("taskkill /IM QUTSStatusApp.exe /F",0,false);
-             
+                RunDosCmd("taskkill /IM QUTSStatusApp.exe /F", 0, false);
+
 
                 Task.Run(async () =>
                 {
@@ -1068,8 +1080,8 @@ namespace AutoTestSystem
 
             }
 
-                 
-       
+
+
 
             // 扫描SN
             string ScanSN = textBox1.Text.Trim().TrimEnd(new char[] { '\n', '\t', '\r' }).ToUpper();
@@ -1078,21 +1090,22 @@ namespace AutoTestSystem
 
             if (Global.STATIONNAME != "ALKB")
             {
-                if (!CheckSNRole(ScanSN)) 
+                if (!CheckSNRole(ScanSN))
                 {
                     return false;
                 }
 
             }
-            else {
+            else
+            {
 
                 if (!CheckALKBSN(ScanSN))
                 {
                     return false;
                 }
-                
+
             }
-            
+
 
             StartScanFlag = false;
 
@@ -1143,7 +1156,8 @@ namespace AutoTestSystem
 #else
 
             var getlimitOK = false;
-            for (var i = 0; i < 5; i++) {
+            for (var i = 0; i < 5; i++)
+            {
 
                 getlimitOK = GetLimit();
 
@@ -1152,18 +1166,20 @@ namespace AutoTestSystem
                     Thread.Sleep(1000);
                     continue;
                 }
-                else {
+                else
+                {
                     break;
                 }
-                    
+
             }
 
-            if (getlimitOK == false) {
+            if (getlimitOK == false)
+            {
                 //修改扫码标志
 
                 StartScanFlag = true;
                 return false;
-            
+
             }
 #endif
 
@@ -1184,7 +1200,7 @@ namespace AutoTestSystem
         {
 
             string fixcomRcv = "";
-         
+
             try
             {
                 if (Global.STATIONNAME != "CCT" && Global.FIXTUREFLAG == "1")
@@ -1196,13 +1212,13 @@ namespace AutoTestSystem
                         {
                             fixcomRcv += FixSerialPort.Read();
                             if (
-                                
+
                                 (fixcomRcv.Contains("AT+SCAN") && !startFlag)
                                 ||
                                 (isFirstRun == false && Cycle_Count > 0 && !startFlag)
 
                                 ) // 通过按治具的scan button发送执行扫描命令
-                              {
+                            {
 
                                 if (isFirstRun == false && Cycle_Count > 0 && !startFlag)
                                 {
@@ -1226,7 +1242,7 @@ namespace AutoTestSystem
                                 if (!isTesting)
                                 {
                                     //开启扫描
-                                    scanManager.Scan(); 
+                                    scanManager.Scan();
                                 }
 
                                 //这里注释掉，不然扫码超时之后，无法再次扫码
@@ -1237,7 +1253,7 @@ namespace AutoTestSystem
                                     scanManager.Close();
                                 }
 
-                                
+
                             }
                             else
                             {
@@ -1245,10 +1261,11 @@ namespace AutoTestSystem
                             }
 
                         }
-                        else {
+                        else
+                        {
                             Thread.Sleep(1);
                         }
-                          
+
                     }
                 }
                 // scanThread.Abort();
@@ -1325,163 +1342,164 @@ namespace AutoTestSystem
                     {
                         if (StartScanFlag)
                         {
-                             
-                                       
+
+
                             fixcomRcv += FixSerialPort.Read();
-                                if (
+                            if (
 
-                                    (fixcomRcv.Contains("AT+SCAN") && !startFlag)
-                                    ||
-                                    (isFirstRun == false && Cycle_Count > 0 && !startFlag)
+                                (fixcomRcv.Contains("AT+SCAN") && !startFlag)
+                                ||
+                                (isFirstRun == false && Cycle_Count > 0 && !startFlag)
 
-                                    ) // 通过按治具的scan button发送执行扫描命令
+                                ) // 通过按治具的scan button发送执行扫描命令
 
 
+                            {
+                                try
                                 {
-                                    try
+                                    //杀死驻波程序
+
+
+                                    if (Global.STATIONNAME == "SRF")
                                     {
-                                        //杀死驻波程序
-
-
-                                        if (Global.STATIONNAME == "SRF")
-                                        {
-                                            KillProcessNoRes("QCATestSuite"); //SRF
-                                            KillProcessNoRes("QPSTConfig"); //SRF
-                                            KillProcessNoRes("BTTestSuite");//SRF
-                                            KillProcessNoRes("QPSTServer");//SRF
-
-                                        }
-
-                                        if (Global.STATIONNAME == "MBFT")
-                                        {
-                                            KillProcessNoRes("ATSuite"); //MBFT
-                                            KillProcessNoRes("BTTestSuiteRD");//MBFT
-                                            KillProcessNoRes("QPSTConfig"); //MBFT
-                                            KillProcessNoRes("QPSTServer");//MBFT
-                                        }
+                                        KillProcessNoRes("QCATestSuite"); //SRF
+                                        KillProcessNoRes("QPSTConfig"); //SRF
+                                        KillProcessNoRes("BTTestSuite");//SRF
+                                        KillProcessNoRes("QPSTServer");//SRF
 
                                     }
-                                    catch (Exception ex)
+
+                                    if (Global.STATIONNAME == "MBFT")
                                     {
-                                        loggerError("error2:" + ex.ToString());
+                                        KillProcessNoRes("ATSuite"); //MBFT
+                                        KillProcessNoRes("BTTestSuiteRD");//MBFT
+                                        KillProcessNoRes("QPSTConfig"); //MBFT
+                                        KillProcessNoRes("QPSTServer");//MBFT
                                     }
 
+                                }
+                                catch (Exception ex)
+                                {
+                                    loggerError("error2:" + ex.ToString());
+                                }
 
 
-                                    if (isFirstRun == false && Cycle_Count > 0 && !startFlag)
+
+                                if (isFirstRun == false && Cycle_Count > 0 && !startFlag)
+                                {
+                                    Cycle_Count--;
+                                }
+
+                                fixcomRcv = "";
+                                loggerDebug("Check Prompt AT+SCAN OK...");
+                                Global.time1 = DateTime.Now;
+
+
+
+                                int retryTimes = 6;
+                                for (int i = 1; i <= retryTimes; i++)
+                                {
+                                    if (File.Exists(barcode))
+                                        File.Delete(barcode);
+
+
+
+
+
+                                    loggerDebug("------------------>start run1 Scan_Barcode_C03");
+
+                                    //修改电脑时间
+                                    preDateTime = DateTime.Now;//保存当前时间
+
+                                    DateTime oldTime = Convert.ToDateTime("2021-10-02 10:00:00");
+
+                                    SyDateTimeHelper.SetLocalDateTime2(oldTime);
+
+                                    Thread.Sleep(50);
+
+                                    RunDosCmd2("Scan_Barcode_C03.exe");
+                                    // StartProcess("Scan_Barcode_C03", $@"{System.Environment.CurrentDirectory}\Scan_Barcode_C03.exe");
+                                    var lngStart = DateTime.Now.AddSeconds(3).Ticks;
+                                    while (DateTime.Now.Ticks <= lngStart)
                                     {
-                                        Cycle_Count--;
-                                    }
-
-                                    fixcomRcv = "";
-                                    loggerDebug("Check Prompt AT+SCAN OK...");
-                                    Global.time1 = DateTime.Now;
-
-
-
-                                    int retryTimes = 6;
-                                    for (int i = 1; i <= retryTimes; i++)
-                                    {
-                                        if (File.Exists(barcode))
-                                            File.Delete(barcode);
-
-
-
-
-
-                                        loggerDebug("------------------>start run1 Scan_Barcode_C03");
-
-                                        //修改电脑时间
-                                        preDateTime = DateTime.Now;//保存当前时间
-
-                                        DateTime oldTime = Convert.ToDateTime("2021-10-02 10:00:00");
-
-                                        SyDateTimeHelper.SetLocalDateTime2(oldTime);
-
-                                        Thread.Sleep(50);
-
-                                        RunDosCmd2("Scan_Barcode_C03.exe");
-                                        // StartProcess("Scan_Barcode_C03", $@"{System.Environment.CurrentDirectory}\Scan_Barcode_C03.exe");
-                                        var lngStart = DateTime.Now.AddSeconds(3).Ticks;
-                                        while (DateTime.Now.Ticks <= lngStart)
+                                        //loggerDebug("开始查找Barcode.txt......");
+                                        // loggerInfo($@"{System.Environment.CurrentDirectory}\Barcode.txt");
+                                        bool found = false;
+                                        var re = RunDosCmd("type " + $@"{System.Environment.CurrentDirectory}\Barcode.txt");
+                                        //  loggerInfo("dos返回:" + re);
+                                        if (re.Contains("找不到") || re.Contains("cannot find "))
                                         {
-                                            //loggerDebug("开始查找Barcode.txt......");
-                                            // loggerInfo($@"{System.Environment.CurrentDirectory}\Barcode.txt");
-                                            bool found = false;
-                                            var re = RunDosCmd("type " + $@"{System.Environment.CurrentDirectory}\Barcode.txt");
-                                            //  loggerInfo("dos返回:" + re);
-                                            if (re.Contains("找不到") || re.Contains("cannot find "))
-                                            {
-                                                found = false;
-                                            }
-                                            else
-                                            {
-                                                found = true;
-                                            }
-                                            if (found)
-                                            {
-                                                loggerDebug(" find Barcode.txt，close scan software");
-                                                //关闭扫码软件
-
-                                                // 20200228 操作的   KillProcess("Scan_Barcode_C03");
-
-                                                //扫码完成，重置时间，获取的是谷歌时间
-
-                                                SyDateTimeHelper.SetLocalDateTime2(SyDateTimeHelper.GetNetDateTime(preDateTime.AddMilliseconds(0)));
-
-                                                using (var sr = new StreamReader(barcode, Encoding.Default))
-                                                {
-                                                    string readAll = sr.ReadToEnd();
-                                                    loggerDebug(readAll);
-                                                    string textBox1Sn = readAll.Trim().Replace("1_", "").Replace("\n", "").Replace("\r\n", "");
-                                                    loggerDebug("------------------>give textbox value:" + textBox1Sn);
-                                                    Global.time2 = DateTime.Now;
-
-                                                    SetTextBox(textBox1, true, textBox1Sn);
-                                                }
-                                                break;
-                                            }
-                                            else
-                                            {
-                                                // loggerDebug("没找到");
-                                            }
-
-
-
-
-                                            Thread.Sleep(1);
+                                            found = false;
                                         }
-
-                                        if (textBox1.Text.Length == Global.SN_LENGTH && Regex.IsMatch(textBox1.Text, regexp))
+                                        else
                                         {
-                                            loggerDebug("------------------>give standard SN value:" + textBox1.Text);
-                                            TextBox1_KeyDown(null, null);
-                                            fixcomRcv = "";
+                                            found = true;
+                                        }
+                                        if (found)
+                                        {
+                                            loggerDebug(" find Barcode.txt，close scan software");
+                                            //关闭扫码软件
+
+                                            // 20200228 操作的   KillProcess("Scan_Barcode_C03");
+
+                                            //扫码完成，重置时间，获取的是谷歌时间
+
                                             SyDateTimeHelper.SetLocalDateTime2(SyDateTimeHelper.GetNetDateTime(preDateTime.AddMilliseconds(0)));
+
+                                            using (var sr = new StreamReader(barcode, Encoding.Default))
+                                            {
+                                                string readAll = sr.ReadToEnd();
+                                                loggerDebug(readAll);
+                                                string textBox1Sn = readAll.Trim().Replace("1_", "").Replace("\n", "").Replace("\r\n", "");
+                                                loggerDebug("------------------>give textbox value:" + textBox1Sn);
+                                                Global.time2 = DateTime.Now;
+
+                                                SetTextBox(textBox1, true, textBox1Sn);
+                                            }
                                             break;
                                         }
                                         else
                                         {
-                                            loggerDebug("------------------> SN not standard:" + textBox1.Text);
-                                            KillProcess("Scan_Barcode_C03");
-
+                                            // loggerDebug("没找到");
                                         }
 
-                                        loggerDebug($"Scan_Barcode get SN:{textBox1.Text} error.");
-                                        //重置UTC时间
-                                        SyDateTimeHelper.SetLocalDateTime2(SyDateTimeHelper.GetNetDateTime(preDateTime.AddMilliseconds(0)));
 
-                                        if (i != retryTimes) continue;
 
-                                        loggerDebug($"Scan_Barcode have fail {retryTimes} times,pls tell TE.");
-                                        // MessageBox.Show($"Scan_Barcode have fail {retryTimes} times,pls tell TE.");
+
+                                        Thread.Sleep(1);
                                     }
+
+                                    if (textBox1.Text.Length == Global.SN_LENGTH && Regex.IsMatch(textBox1.Text, regexp))
+                                    {
+                                        loggerDebug("------------------>give standard SN value:" + textBox1.Text);
+                                        TextBox1_KeyDown(null, null);
+                                        fixcomRcv = "";
+                                        SyDateTimeHelper.SetLocalDateTime2(SyDateTimeHelper.GetNetDateTime(preDateTime.AddMilliseconds(0)));
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        loggerDebug("------------------> SN not standard:" + textBox1.Text);
+                                        KillProcess("Scan_Barcode_C03");
+
+                                    }
+
+                                    loggerDebug($"Scan_Barcode get SN:{textBox1.Text} error.");
+                                    //重置UTC时间
+                                    SyDateTimeHelper.SetLocalDateTime2(SyDateTimeHelper.GetNetDateTime(preDateTime.AddMilliseconds(0)));
+
+                                    if (i != retryTimes) continue;
+
+                                    loggerDebug($"Scan_Barcode have fail {retryTimes} times,pls tell TE.");
+                                    // MessageBox.Show($"Scan_Barcode have fail {retryTimes} times,pls tell TE.");
                                 }
-                                else {
-                                    Thread.Sleep(1);
-                                }
-                              
-                            
+                            }
+                            else
+                            {
+                                Thread.Sleep(1);
+                            }
+
+
                         }
                         else
                             Thread.Sleep(1);
@@ -1503,10 +1521,11 @@ namespace AutoTestSystem
 
         private void TextBox1_KeyDown(object sender, KeyEventArgs e)
         {
-           
 
-                // e=null时候，不执行&&后面的
-             if ( e != null && e.KeyCode != Keys.Enter) {
+
+            // e=null时候，不执行&&后面的
+            if (e != null && e.KeyCode != Keys.Enter)
+            {
                 return;
             }
 
@@ -1516,7 +1535,7 @@ namespace AutoTestSystem
 
 
 
-   
+
 
 
 
@@ -1557,11 +1576,12 @@ namespace AutoTestSystem
             }
 
 
-       
 
 
 
-            if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF") {
+
+            if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF")
+            {
 
                 //  MessageBox.Show(@"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp\QUTSStatusApp.exe");
 
@@ -1570,20 +1590,20 @@ namespace AutoTestSystem
 
                 Task.Run(async () =>
                 {
-                Thread.Sleep(1000);
-                Process outProcess;
-                RestartProcess("QUTSStatusApp", @"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp\QUTSStatusApp.exe", out outProcess);
-                if (outProcess != null)
-                {
-                 
+                    Thread.Sleep(1000);
+                    Process outProcess;
+                    RestartProcess("QUTSStatusApp", @"C:\Program Files (x86)\QUALCOMM\QUTSStatusApp\QUTSStatusApp.exe", out outProcess);
+                    if (outProcess != null)
+                    {
+
 
                         await Task.Delay(3000);
 
                         // 最小化窗口
                         ShowWindow(outProcess.MainWindowHandle, SW_MINIMIZE);
-                   
 
-                }
+
+                    }
 
                 });
 
@@ -1591,7 +1611,7 @@ namespace AutoTestSystem
 
             }
 
-         
+
 
 
             StartScanFlag = false;
@@ -1613,7 +1633,7 @@ namespace AutoTestSystem
                 LoadSeqTreeView();
             }
             // 连续FAIL提示
-            if (!IsDebug && Global.TESTMODE.ToLower() != "debug" && Global.TESTMODE.ToLower()!="fa" && !CheckContinueFailNum()) { return; }
+            if (!IsDebug && Global.TESTMODE.ToLower() != "debug" && Global.TESTMODE.ToLower() != "fa" && !CheckContinueFailNum()) { return; }
             // 创建测试主线程
             if (!testThread.IsAlive)
             {
@@ -1623,8 +1643,8 @@ namespace AutoTestSystem
                 };
                 testThread.Start();
             }
-            
-           
+
+
             // 检查扫描的SN的长度
             //if (ScanSN.Length != Global.SN_LENGTH && !IsDebug)
             //{
@@ -1643,7 +1663,7 @@ namespace AutoTestSystem
             }
             SN = ScanSN;
 
-            
+
 
 
             //解析goldenSN数据
@@ -1651,7 +1671,7 @@ namespace AutoTestSystem
             if (Global.GoldenSN.Contains(SN) && Global.STATIONNAME == "MBFT")
             {
 
-                var GoldenSNDirectoryPath = $@"{ System.Environment.CurrentDirectory}\Config\GoldenSN";
+                var GoldenSNDirectoryPath = $@"{System.Environment.CurrentDirectory}\Config\GoldenSN";
                 if (Directory.Exists(GoldenSNDirectoryPath))
                 {
                     DirectoryInfo directory = new DirectoryInfo(GoldenSNDirectoryPath);
@@ -1692,7 +1712,7 @@ namespace AutoTestSystem
 
 
 
- 
+
             SaveRichText(true);
 
 
@@ -1700,19 +1720,21 @@ namespace AutoTestSystem
 #if DEBUG
             Global.OnlineLimit = "0";
 #else
-            if (!GetLimit()) {
+            if (!GetLimit())
+            {
 
                 Thread.Sleep(3000);
 
-                if (!GetLimit()) {
+                if (!GetLimit())
+                {
                     return;
                 }
 
-               
+
             }
-               
-               
-              
+
+
+
 #endif
             StartTestInit();
         }
@@ -1786,7 +1808,8 @@ namespace AutoTestSystem
         {
 
 
-            if (sn.Length == 21) {
+            if (sn.Length == 21)
+            {
                 return true;
             }
 
@@ -1879,9 +1902,9 @@ namespace AutoTestSystem
                     if (Name.Contains("ALK"))
                     {
                         iniConfig.Writeini("Station", "FAIL_CONTINUE", "1");
-                        Global.FAIL_CONTINUE = "1";  
+                        Global.FAIL_CONTINUE = "1";
 
-                    } 
+                    }
                     return;
 
                 }
@@ -1896,7 +1919,7 @@ namespace AutoTestSystem
             }
 
 
- 
+
             try
             {
 
@@ -1920,7 +1943,7 @@ namespace AutoTestSystem
                         iniConfig.Writeini("Station", "STATIONNAME", Global.STATIONNAME);
                         iniConfig.Writeini("Station", "STATIONNO", Global.STATIONNO);
                         // iniConfig.Writeini("Station", "FIXTURENAME", Global.FIXTURENAME);
-                        logger.Debug($"Read fix number success,stationName:{ Global.STATIONNAME}");
+                        logger.Debug($"Read fix number success,stationName:{Global.STATIONNAME}");
                         break;
                     }
 
@@ -2001,9 +2024,9 @@ namespace AutoTestSystem
         //            System.Environment.Exit(0);
         //            return;
         //        }
-                
+
         //    }
-           
+
 
 
 
@@ -2014,17 +2037,17 @@ namespace AutoTestSystem
         //        FixSerialPort = new Comport(FixCOMinfo);
         //        FixSerialPort.OpenCOM();
 
-            
+
         //        return;
         //    }
         //    try
         //    {
-               
+
         //        FixSerialPort = new Comport(FixCOMinfo);
         //        FixSerialPort.OpenCOM();
 
 
-                
+
 
         //        string recvStr = "";
         //        for (int i = 0; i < 3; i++)
@@ -2075,7 +2098,7 @@ namespace AutoTestSystem
         //        if (Global.STATIONNAME != "CCT" && Global.STATIONNAME != ("ALK")) {
         //            GetPoePort();
         //        }
-                
+
         //    }
         //    catch (Exception ex)
         //    {
@@ -2110,12 +2133,12 @@ namespace AutoTestSystem
                     {
                         string port = recvStr.Replace("\r\n", "").Replace("POE-", "").Replace("%", "").Trim();
 
-                        
-                        if (port == "010" || port=="0010")
+
+                        if (port == "010" || port == "0010")
                         {
                             Global.POE_PORT = "10";
                             iniConfig.Writeini("DUT", "POE_PORT", Global.POE_PORT);
-                            loggerDebug($"Read fix POE port success:{ Global.POE_PORT}");
+                            loggerDebug($"Read fix POE port success:{Global.POE_PORT}");
                             break;
 
                         }
@@ -2123,27 +2146,28 @@ namespace AutoTestSystem
                         {
                             Global.POE_PORT = "20";
                             iniConfig.Writeini("DUT", "POE_PORT", Global.POE_PORT);
-                            loggerDebug($"Read fix POE port success:{ Global.POE_PORT}");
+                            loggerDebug($"Read fix POE port success:{Global.POE_PORT}");
                             break;
 
-                        }
-                        else { 
-                       
-                        Global.POE_PORT = port.Substring(port.LastIndexOf("0") + 1);
-
-
-
-                        if (int.TryParse(Global.POE_PORT, out int ds))
-                        {
-                            iniConfig.Writeini("DUT", "POE_PORT", Global.POE_PORT);
-                            loggerDebug($"Read fix POE port success:{ Global.POE_PORT}");
-                            break;
                         }
                         else
                         {
-                            MessageBox.Show($"Error! Read fix POE port:{Global.POE_PORT},pls check it.");
-                            Application.Exit();
-                        }
+
+                            Global.POE_PORT = port.Substring(port.LastIndexOf("0") + 1);
+
+
+
+                            if (int.TryParse(Global.POE_PORT, out int ds))
+                            {
+                                iniConfig.Writeini("DUT", "POE_PORT", Global.POE_PORT);
+                                loggerDebug($"Read fix POE port success:{Global.POE_PORT}");
+                                break;
+                            }
+                            else
+                            {
+                                MessageBox.Show($"Error! Read fix POE port:{Global.POE_PORT},pls check it.");
+                                Application.Exit();
+                            }
 
                         }
                     }
@@ -2180,7 +2204,7 @@ namespace AutoTestSystem
             }
 #endif
 
-           
+
             loggerInfo("~~~~~~~~~~~~~~~~~~~Scan Start Time:" + Global.time1.ToLongTimeString());
             loggerInfo("~~~~~~~~~~~~~~~~~~~Scan End Time:" + Global.time2.ToLongTimeString());
 
@@ -2201,17 +2225,18 @@ namespace AutoTestSystem
 
             DUTCOMM = null;
             test = new Test(SN, DutMode, DUTIP);
-           
+
             ResetData();
             SRF_POP_RETRY = 1;
             RTT_PING_RETRY = 1;
             SetLables(lbl_failCount, "", Color.White, false);
 
-           
+
             SetTestStatus(TestStatus.START);
         }
 
-        void ResetData(bool needresetTime = true) {
+        void ResetData(bool needresetTime = true)
+        {
             mesPhases = new MesPhases();
             stationObj = new Station(SN, Global.FIXTURENAME, Global.STATIONNAME, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Global.TESTMODE, Global.QSDKVER, Global.Version.ToString());
             InitCreateDirs();
@@ -2234,13 +2259,14 @@ namespace AutoTestSystem
             MesMac = "";
             QSDKVER = Global.QSDKVER;
             ImageVer = QSDKVER.Substring(QSDKVER.LastIndexOf(".") + 1).ToLower();
-            UploadImageIP = Global.UploadImageIP; 
+            UploadImageIP = Global.UploadImageIP;
             CSN = "";
 
-            if (needresetTime) {
+            if (needresetTime)
+            {
                 sec = 0;
             }
-           
+
 
 
             seqNo = 0;
@@ -2253,8 +2279,8 @@ namespace AutoTestSystem
             SSID_2G = "2G_" + Global.STATIONNO;
             SSID_5G = "5G_" + Global.STATIONNO;
 
-           // SSID_2G = "2G_FA"  ;
-           // SSID_5G = "5G_FA";
+            // SSID_2G = "2G_FA"  ;
+            // SSID_5G = "5G_FA";
 
 
             MD52G = "xxx";
@@ -2262,8 +2288,8 @@ namespace AutoTestSystem
             retry = 0;
             WorkOrder = "1";
 
-           Pressure2 = -1;
-           AirLeakValue = -1;
+            Pressure2 = -1;
+            AirLeakValue = -1;
 
 
             Machine1_Pressure2 = -1;
@@ -2279,9 +2305,10 @@ namespace AutoTestSystem
             ALKBaoYATimeList = new List<string>();
 
 
-           BURNINWAITTIME = Global.BURNINWAITTIME;
+            BURNINWAITTIME = Global.BURNINWAITTIME;
 
-            if (Global.STATIONNAME == "BURNIN" && Global.TESTMODE == "production") {
+            if (Global.STATIONNAME == "BURNIN" && Global.TESTMODE == "production")
+            {
                 WorkOrder = "2";
             }
 
@@ -2293,7 +2320,7 @@ namespace AutoTestSystem
             RFTempFailItemNameDict = new Dictionary<string, string>();
 
             PowerToTelnetStartTime = new DateTime();
-               PowerToTelnetEndTime = new DateTime();
+            PowerToTelnetEndTime = new DateTime();
 
             NoiseGlobalReturn = false;
 
@@ -2304,25 +2331,26 @@ namespace AutoTestSystem
         private bool GetLimit()
         {
 
-            
+
             if (Global.STATIONNAME == "BURNIN" || Global.STATIONNAME.ToLower() == "revert" || Global.STATIONNAME.ToLower() == "noisetest")
             {
 
                 return true;
             }
 
-            
+
 
             bool rReturn = false;
-            if (Online_Limit != null) {
-               
+            if (Online_Limit != null)
+            {
+
                 loggerInfo("not get online data");
 
                 return true;
             }
             try
             {
-                if (Global.OnlineLimit.Trim()=="1")
+                if (Global.OnlineLimit.Trim() == "1")
                 {
 
 
@@ -2358,7 +2386,7 @@ namespace AutoTestSystem
                     string responseStr2 = responseStr.Substring(a).Replace('}', ']');
                     responseStr = responseStr1 + responseStr2 + "}";
 
-                    
+
                     if (result.IsSuccessStatusCode)
                     {
                         Online_Limit = JsonConvert.DeserializeObject<Limits>(responseStr);
@@ -2374,7 +2402,7 @@ namespace AutoTestSystem
                 }
                 else
                 {
-               
+
                     rReturn = true;
                     loggerWarn("OnlineLimit is false,using program limit in excel script:");
                 }
@@ -2387,7 +2415,7 @@ namespace AutoTestSystem
             }
             return rReturn;
         }
-        
+
         public void SetTestStatus(TestStatus testStatus)
         {
             try
@@ -2399,7 +2427,7 @@ namespace AutoTestSystem
                         SetButton(this.bt_Status, "Testing", Color.Yellow);
                         SetButton(this.bt_errorCode, " ", Color.Yellow);
 
- 
+
 
 
                         startTime = DateTime.Now;
@@ -2433,7 +2461,7 @@ namespace AutoTestSystem
                         SetButtonPro(buttonBegin, Properties.Resources.pause);
                         SetButtonPro(buttonExit, Properties.Resources.stop);
                         singleStepTest = false;
-                        startFlag = true; 
+                        startFlag = true;
                         pauseEvent.Set();
                         loggerDebug($"Start test...SN:{SN},Station:{Global.FIXTURENAME},DUTMode:{DutMode},TestMode:{Global.TESTMODE},Isdebug:{IsDebug.ToString()},FCT:{Global.FAIL_CONTINUE},onlineLimit:{Global.OnlineLimit},SoftVersion:{Global.Version}");
                         UpdateDetailViewClear();
@@ -2443,33 +2471,35 @@ namespace AutoTestSystem
                         logger.Info(">>>>>>>>>>>>>>: jump to fail");
                         if (testStatus == TestStatus.FAIL && SetIPflag)
                         {//SRF 测试失败设回默认IP重测
-                            if (DUTCOMM != null) {
+                            if (DUTCOMM != null)
+                            {
                                 string recvStr = "";
                                 DUTCOMM.SendCommand($"luxsetip {DUTIP} 255.255.255.0", ref recvStr, Global.PROMPT, 10);
                             }
-                         
+
                         }
-                    
+
                         if (Global.STATIONNAME == "RTT")
                         {
                             string recvStr = "";
                             DUTCOMM.SendCommand($"wifi_init 0", ref recvStr, Global.PROMPT, 10);
                         }
-                       
+
                         Global.Total_Fail_Num++;
 
-                      
+
                         if (lbl_failCount.Text == "")
                         {
-                            this.bt_Status.Font = new System.Drawing.Font("宋体",36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+                            this.bt_Status.Font = new System.Drawing.Font("宋体", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
                             SetButton(this.bt_Status, "FAIL", Color.Red);
                         }
-                        else {
+                        else
+                        {
                             this.bt_Status.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-                            SetButton(this.bt_Status, "FAIL\r\n"+"("+lbl_failCount.Text+")", Color.Red);
+                            SetButton(this.bt_Status, "FAIL\r\n" + "(" + lbl_failCount.Text + ")", Color.Red);
                         }
 
-                        SetLables(lbl_failCount, lbl_failCount.Text, Color.White,false);
+                        SetLables(lbl_failCount, lbl_failCount.Text, Color.White, false);
 
 
 
@@ -2523,13 +2553,13 @@ namespace AutoTestSystem
                                 if (Global.STATIONNAME == "MBLT")
                                 {
                                     string recvStr = "";
-                                  //  DUTCOMM.SendCommand($"umount /mnt", ref recvStr, Global.PROMPT, 10);
+                                    //  DUTCOMM.SendCommand($"umount /mnt", ref recvStr, Global.PROMPT, 10);
                                 }
 
 
-                                if (Global.STATIONNAME == "RTT" && 
-                                    (Cycle_Count != -1 || AUTOTESTNOFIXUTRE_COUNT!=-1)
-                                    
+                                if (Global.STATIONNAME == "RTT" &&
+                                    (Cycle_Count != -1 || AUTOTESTNOFIXUTRE_COUNT != -1)
+
                                     )
                                 {
                                     var revStr = "";
@@ -2544,7 +2574,8 @@ namespace AutoTestSystem
                                 DUTCOMM.Close();
                             }
 
-                            if (Global.STATIONNAME == "ALKB") {
+                            if (Global.STATIONNAME == "ALKB")
+                            {
 
                                 //清空数据
                                 var cmd2 = @"python ./Config/testLeak.py -p " + Global.LeakTwoCOM1 + " -cmd 01050008ff000df8";
@@ -2554,11 +2585,11 @@ namespace AutoTestSystem
                                 RunDosCmd(cmd2, 3);
                             }
 
-                          
 
 
-                                // 无论测试pass/fail，都弹出治具
-                                if (Global.FIXTUREFLAG == "1")
+
+                            // 无论测试pass/fail，都弹出治具
+                            if (Global.FIXTUREFLAG == "1")
                             {
 
 
@@ -2575,22 +2606,24 @@ namespace AutoTestSystem
 
                                 else
                                 {
-                                    if (FixSerialPort != null) {
+                                    if (FixSerialPort != null)
+                                    {
                                         FixSerialPort.OpenCOM();
 
 
 
                                         var recvStr = "";
 
-                                        if (Global.STATIONNAME == "MBLT") {
+                                        if (Global.STATIONNAME == "MBLT")
+                                        {
                                             FixSerialPort.SendCommandToFix("AT+USB_PWROFF%", ref recvStr, "OK", 5);
 
 
-                                         
+
 
                                             if (Global.POE_PORT != "19" && Global.POE_PORT != "20")
                                             {
-                                                 PoeConfigSetting(Global.POE_PORT, "disable");
+                                                PoeConfigSetting(Global.POE_PORT, "disable");
                                             }
                                             else
                                             {
@@ -2602,7 +2635,8 @@ namespace AutoTestSystem
 
                                         //FixSerialPort.SendCommandToFix("AT+VBUS_OFF%", ref recvStr, "OK", 5);
 
-                                        if (testStatus == TestStatus.FAIL || testStatus == TestStatus.PASS) {
+                                        if (testStatus == TestStatus.FAIL || testStatus == TestStatus.PASS)
+                                        {
                                             loggerInfo("pop up fixture");
 
 
@@ -2614,26 +2648,26 @@ namespace AutoTestSystem
                                             //    loggerDebug("特殊问题，不退出治具");
                                             //}
                                             //else {
-                                                FixSerialPort.SendCommandToFix("AT+TESTEND%", ref recvStr, "OK", 5);
+                                            FixSerialPort.SendCommandToFix("AT+TESTEND%", ref recvStr, "OK", 5);
 
-                                           // }
-
-                                           
-                                         
-                                                                                   
-                                            
                                             // }
-                                           
-                                           
-                                             
+
+
+
+
+
+                                            // }
+
+
+
 
 
 
                                         }
- 
 
-                                      
-                                      
+
+
+
                                     }
 
 
@@ -2641,16 +2675,18 @@ namespace AutoTestSystem
 
                             }
 
-                            if (testStatus != TestStatus.PASS) {
+                            if (testStatus != TestStatus.PASS)
+                            {
                                 if (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF" || Global.STATIONNAME == "BURNIN")
                                 {
                                     // loggerInfo("失败了连续ping 10次");
                                     // PingIP("192.168.1.1", 10);
                                 }
-                                else if(Global.STATIONNAME=="MBLT") {
+                                else if (Global.STATIONNAME == "MBLT")
+                                {
 
-                                  //  loggerInfo("失败了连续ping 10次");
-                                  //  PingIP("192.168.1.10", 10);
+                                    //  loggerInfo("失败了连续ping 10次");
+                                    //  PingIP("192.168.1.10", 10);
                                 }
 
 
@@ -2665,7 +2701,7 @@ namespace AutoTestSystem
 
                                     //var recv = RunDosCmd($"ping 192.168.1.200 -n 2");
                                     //if (recv.Contains("(0%") && recv.Contains("TTL="))
-                                    if(TempItemFAILName!= "VERIFYSFIS")
+                                    if (TempItemFAILName != "VERIFYSFIS")
                                     {
 
 
@@ -2746,19 +2782,21 @@ namespace AutoTestSystem
 
 
                                 }
-                                catch (Exception ex) {
+                                catch (Exception ex)
+                                {
 
                                     loggerError("RTT GU Read Temp Fail: " + ex.Message);
-                                
+
                                 }
 
                             }
 
 
 
-                            if (Global.STATIONNAME != "BURNIN" && Global.STATIONNAME!="CCT" && Global.STATIONNAME != "SRF") {
-                               // logger.Info("关闭poe");
-                               // Bd.PoeConfigSetting(Global.POE_PORT, "disable");
+                            if (Global.STATIONNAME != "BURNIN" && Global.STATIONNAME != "CCT" && Global.STATIONNAME != "SRF")
+                            {
+                                // logger.Info("关闭poe");
+                                // Bd.PoeConfigSetting(Global.POE_PORT, "disable");
 
                             }
 
@@ -2789,12 +2827,13 @@ namespace AutoTestSystem
                                 KillProcessNoRes("QPSTConfig"); //SRF
                                 KillProcessNoRes("BTTestSuite");//SRF
                                 KillProcessNoRes("QPSTServer");//SRF
-                        
-                                
+
+
 
                             }
 
-                            if (Global.STATIONNAME == "MBFT") {
+                            if (Global.STATIONNAME == "MBFT")
+                            {
 
                                 RunDosCmd("taskkill /IM QUTSStatusApp.exe /F", 0, false);
 
@@ -2839,10 +2878,11 @@ namespace AutoTestSystem
                             timer.Dispose();
                             endTime = DateTime.Now;
                             loggerDebug($"Test end,ElapsedTime:{sec}s.");
-                            if (testStatus == TestStatus.PASS || testStatus == TestStatus.FAIL) {
+                            if (testStatus == TestStatus.PASS || testStatus == TestStatus.FAIL)
+                            {
                                 collectCsvResult();
                             }
-                          
+
 
                             startFlag = false;
                             SetTextBox(textBox1);
@@ -2862,17 +2902,19 @@ namespace AutoTestSystem
                             // {finalTestResult}_{SN}_{error_details_firstfail}_{DateTime.Now.ToString("hh-mm-ss")}
 
 
-                            if (error_details_firstfail.Contains("JSON_UPLOAD")) {
+                            if (error_details_firstfail.Contains("JSON_UPLOAD"))
+                            {
                                 error_details_firstfail = "JSON_UPLOAD";
                             }
 
                             cellLogPath = $@"{Global.LogPath}\{WorkOrder}\{finalTestResult}_{SN}_{error_details_firstfail}_{DateTime.Now.ToString("hh-mm-ss")}.txt";
-                            
+
                             loggerInfo("final path:" + cellLogPath);
 
-                            if (Global.STATIONNAME == "BURNIN") {
-                               
-                                FileInfo fi = new FileInfo( Global.LogPath  + "\\" + Bd.TempCellLogPath);
+                            if (Global.STATIONNAME == "BURNIN")
+                            {
+
+                                FileInfo fi = new FileInfo(Global.LogPath + "\\" + Bd.TempCellLogPath);
 
                                 var newPath = Global.LogPath + "\\" + $@"{finalTestResult}_{SN}_{error_details_firstfail}_{DateTime.Now.ToString("hh-mm-ss")}.txt";
 
@@ -2884,10 +2926,11 @@ namespace AutoTestSystem
 
                                 fi.MoveTo(newPath);
                             }
-                          
 
 
-                            if (Global.STATIONNAME == "SRF" || Global.STATIONNAME == "MBFT") {
+
+                            if (Global.STATIONNAME == "SRF" || Global.STATIONNAME == "MBFT")
+                            {
 
                                 try
                                 {
@@ -2917,8 +2960,9 @@ namespace AutoTestSystem
                                     string successPath = $@"D:\SaveData\{mode}\pass";
                                     string failPath = $@"D:\SaveData\{mode}\fail";
 
-                                    if (!Directory.Exists(successPath)) { 
-                                       Directory.CreateDirectory (successPath);
+                                    if (!Directory.Exists(successPath))
+                                    {
+                                        Directory.CreateDirectory(successPath);
                                     }
                                     if (!Directory.Exists(failPath))
                                     {
@@ -2943,7 +2987,7 @@ namespace AutoTestSystem
                                         }
                                     }
 
-                                    
+
 
 
                                     //找到时间戳最新的那一个，肯定就是刚测试的
@@ -2971,14 +3015,15 @@ namespace AutoTestSystem
                                         }
                                     }
                                 }
-                                catch (Exception ex) {
-                                    loggerInfo("copy error log:"+ex.Message.ToString());
+                                catch (Exception ex)
+                                {
+                                    loggerInfo("copy error log:" + ex.Message.ToString());
                                 }
                             }
-                         
-                            
+
+
                             SaveRichText(false, RichTextBoxStreamType.UnicodePlainText, cellLogPath);
-                           
+
                             if (finalTestResult == "FAIL")
                             {
                                 SetButton(this.bt_errorCode, error_details_firstfail, Color.Red);
@@ -3004,11 +3049,11 @@ namespace AutoTestSystem
 
 
                             StartScanFlag = true;
-                       
+
                             isFirstRun = false;
 
 
-                            if (Global.AUTOTESTNOFIXUTRE_COUNT != "-1" && AUTOTESTNOFIXUTRE_COUNT>0)
+                            if (Global.AUTOTESTNOFIXUTRE_COUNT != "-1" && AUTOTESTNOFIXUTRE_COUNT > 0)
                             {
                                 AUTOTESTNOFIXUTRE_COUNT = AUTOTESTNOFIXUTRE_COUNT - 1;
                                 logger.Info("wati 1s");
@@ -3023,7 +3068,7 @@ namespace AutoTestSystem
                         StartScanFlag = true;
                         isFirstRun = false;
                         //autoScanEvent.Set();
-                        loggerFatal("错误:"+ex.ToString());
+                        loggerFatal("错误:" + ex.ToString());
                     }
                 }
             }
@@ -3032,28 +3077,29 @@ namespace AutoTestSystem
 
         //D:\SaveData\production\pass\GGC21D0422540108_2022-06-20_12-22-29.zip
 
-        static string getNewestFile(List<string>FullNameArray)
+        static string getNewestFile(List<string> FullNameArray)
         {
             var ret = "";
 
             var dayList = new List<string>();
             var newTime = "";
-            for (var i = 0; i < FullNameArray.Count;i++)
+            for (var i = 0; i < FullNameArray.Count; i++)
             {
                 var fullName = FullNameArray[i];
                 //提取时间
                 var fileName = Path.GetFileName(fullName);
-                fileName = Regex.Replace(fileName,".zip","");
+                fileName = Regex.Replace(fileName, ".zip", "");
                 var fArr = fileName.Split('_');
                 var date = "";
                 var time = "";
-                if (fArr.Length >= 3) { 
-                   date = fArr[1];
-                   time = fArr[2].Replace('-',':');
+                if (fArr.Length >= 3)
+                {
+                    date = fArr[1];
+                    time = fArr[2].Replace('-', ':');
                 }
                 var dateTime = date + " " + time;
 
-                 
+
                 if (newTime == "")
                 {
                     newTime = dateTime;
@@ -3070,7 +3116,7 @@ namespace AutoTestSystem
 
             }
             return ret;
-             
+
 
         }
 
@@ -3095,7 +3141,8 @@ namespace AutoTestSystem
         {
 
 
-            if (Global.STATIONNAME == "CCT" || Global.STATIONNAME.ToLower()== "noisetest") {
+            if (Global.STATIONNAME == "CCT" || Global.STATIONNAME.ToLower() == "noisetest")
+            {
                 return;
             }
 
@@ -3159,9 +3206,10 @@ namespace AutoTestSystem
                     }
 
                 }
-                else {
+                else
+                {
 
-                    loggerError("not find csv:"+ CSVFilePath);
+                    loggerError("not find csv:" + CSVFilePath);
                 }
             }
             catch (Exception ex)
@@ -3171,7 +3219,7 @@ namespace AutoTestSystem
 
         }
 
-        
+
         /// <summary>
         /// 根据测试结果更新连续Fail计数
         /// </summary>
@@ -3221,7 +3269,7 @@ namespace AutoTestSystem
                     // 如果开始标志为假则不运行程序
                     if (startFlag)
                     {
-                        TX_RX_RETRY:
+                    TX_RX_RETRY:
                         // 如果是第一个测试项，则记录sequence开始测试时间
                         if (itemsNo == 0)
                         {
@@ -3235,22 +3283,22 @@ namespace AutoTestSystem
                                 SyDateTimeHelper.SetLocalDateTime2(dateTime);
                             }
 
- 
+
                             sequences[seqNo].start_time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                            loggerDebug($"---------Start testSuite:{sequences[seqNo].SeqName}  starttime:{ sequences[seqNo].start_time}----------");
+                            loggerDebug($"---------Start testSuite:{sequences[seqNo].SeqName}  starttime:{sequences[seqNo].start_time}----------");
                         }
-                        
-                        
-                        
-                        
+
+
+
+
                         // 当前测试用例项
                         Items tempItem = sequences[seqNo].SeqItems[itemsNo];
-                      
-                        
-                        
-                        
-                        
-                        
+
+
+
+
+
+
                         // 用于保存item测试结果，生成JSON格式文件
                         phase_items phase_item = new phase_items();
                         // 把测试结果置真,所有的测试步的结果,如果有一个假的测试项结果就会为假
@@ -3266,7 +3314,7 @@ namespace AutoTestSystem
 
                         // 根据测试步骤的IF条件决定下一步骤不执行，
                         // if (tempItem.IfElse.ToLower() == "else")
-                        if (tempItem.IfElse.ToLower() == "else" || tempItem.IfElse.ToLower()=="elseif")
+                        if (tempItem.IfElse.ToLower() == "else" || tempItem.IfElse.ToLower() == "elseif")
                         {
                             // if为true不执行else部分的,false执行。
                             tempItem.isTest = !IfCond;
@@ -3287,7 +3335,8 @@ namespace AutoTestSystem
                                 tempItem.Clear();
                                 loggerDebug($"Start:{tempItem.ItemName},Keyword:{tempItem.TestKeyword},Retry {tempItem.RetryTimes},Timeout {tempItem.TimeOut}s,SubStr:{tempItem.SubStr1}-{tempItem.SubStr2},MesVer:{tempItem.MES_var},FTC:{tempItem.FTC}");
                                 //纠正一下时间：
-                                if (DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss").Contains("0001-01-01")) {
+                                if (DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss").Contains("0001-01-01"))
+                                {
                                     //重置时间，防止starttime出错
                                     RunDosCmd("tzutil /s \"UTC_dstoff\"", 0, false);// 设置电脑时区为UTC
                                     var dateTime = SyDateTimeHelper.GetNetDateTime(DateTime.Now);
@@ -3331,23 +3380,25 @@ namespace AutoTestSystem
                                     {
                                         retryTimes = int.Parse(tempItem.RetryTimes);
                                     }
-                                    else {
+                                    else
+                                    {
                                         //提取出retry之间的间隔时间
                                         var arr = tempItem.RetryTimes.Split('-');
-                                        if (arr.Length >= 2) {
+                                        if (arr.Length >= 2)
+                                        {
                                             retryTimes = int.Parse(arr[0]);
                                             retryInterval = int.Parse(arr[1]);
                                         }
                                     }
-                                    
+
                                 }
                                 // 运行测试步骤
                                 bool result = false;
 
                                 //为了应对SFT 网口通信断开的问题，把retry==0 的 改为retry==1
-                               
-                                
-                                
+
+
+
 
 
 
@@ -3362,13 +3413,13 @@ namespace AutoTestSystem
 
 
 
-                                
+
                                 //if ( (Global.STATIONNAME == "SFT" || Global.STATIONNAME == "MBFT" 
                                 //    || Global.STATIONNAME == "RTT" || Global.STATIONNAME == "SRF")
-                                    
-                                    
+
+
                                 //    && retryTimes == 0 && tempItem.TestKeyword == "default"
-                                    
+
                                 //    )
                                 //{
                                 //    loggerInfo(Global.STATIONNAME +" net problem，add retryTimes=1");
@@ -3394,7 +3445,7 @@ namespace AutoTestSystem
                                 for (retry = retryTimes; retry > -1; retry--)
                                 {
                                     //TestPhase 忽略不计
-                                    if (test.StepTest(TestPhase, tempItem, retry, phase_item,ref retry))
+                                    if (test.StepTest(TestPhase, tempItem, retry, phase_item, ref retry))
                                     {
                                         result = true;
                                         break;
@@ -3405,8 +3456,10 @@ namespace AutoTestSystem
                                         if (retry == 0)
                                             result = false;
                                     }
-                                    if (retry > 0) {
-                                        if (retryInterval > 0) {
+                                    if (retry > 0)
+                                    {
+                                        if (retryInterval > 0)
+                                        {
                                             loggerInfo("retry Interval:" + retryInterval + " seconds");
                                             Thread.Sleep(retryInterval * 1000);
                                         }
@@ -3437,21 +3490,23 @@ namespace AutoTestSystem
                                 // if条件语句
                                 switch (tempItem.IfElse.ToLower())
                                 {
-                                    case "if": 
+                                    case "if":
                                         {
                                             SetTreeViewSeqColor(result ? Color.Green : Color.Pink);
                                             // 设置if执行反馈结果，下面的测试步骤根据这个结果决定是否执行。
                                             IfCond = result;
-                                            if (!result) {
+                                            if (!result)
+                                            {
                                                 loggerInfo($"if statement FAIL needs to continue, setting the test result to true");
                                             }
-                                               
+
                                             result = true;
                                             break;
                                         }
 
 
-                                    case "elseif": {
+                                    case "elseif":
+                                        {
 
                                             SetTreeViewSeqColor(result ? Color.Green : Color.Pink);
                                             // 设置if执行反馈结果，下面的测试步骤根据这个结果决定是否执行。
@@ -3465,11 +3520,11 @@ namespace AutoTestSystem
 
                                             break;
                                         }
-                                        
+
                                     case "else":
                                         break;
 
-                                  
+
 
                                     case "&&if":
                                         {
@@ -3521,7 +3576,7 @@ namespace AutoTestSystem
                                         error_details_firstfail = error_details;
                                     }
                                 }
-                                
+
 
                                 if (!result)
                                 {
@@ -3587,8 +3642,8 @@ namespace AutoTestSystem
 
 
                                                     //loggerDebug("waiting 35s");
-                                                   // Thread.Sleep(35000);
-                                                   
+                                                    // Thread.Sleep(35000);
+
 
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
                                                     seqNo = 2;
@@ -3882,15 +3937,15 @@ namespace AutoTestSystem
                                         //if (tempItem.Json != null && tempItem.Json.ToLower() == "y")
                                         //{ stationObj.tests.Add(phase_item); loggerDebug($"{tempItem.ItemName} add test item to station"); }
                                         // 把testPhase初始化
-                                       
-                                        
-                                        
-                                        
+
+
+
+
                                         TestPhase = new test_phases();
                                         AddStationResult(false, error_code_firstfail, error_details_firstfail);
-                                      
-                                        
-                                        
+
+
+
                                         if (sequences[seqNo].IsTest)
                                         {
                                             // 上传测试时间到EMS
@@ -3901,41 +3956,46 @@ namespace AutoTestSystem
                                         if (
                                                (tempItem.ErrorCode.Contains("ShopFloor.WrongStation"))
                                             || (tempItem.ErrorCode.Contains("ShopFloor.ABXRetestError"))
-                                            || (tempItem.ErrorCode.Contains("1.4.1.4:") &&( (Global.STATIONNAME=="MBFT") || (Global.STATIONNAME == "SRF")))
+                                            || (tempItem.ErrorCode.Contains("1.4.1.4:") && ((Global.STATIONNAME == "MBFT") || (Global.STATIONNAME == "SRF")))
                                             //|| (tempItem.ErrorCode.Contains("1.4.3.6:") && ((Global.STATIONNAME == "MBFT") || (Global.STATIONNAME == "SRF")))
                                             || (tempItem.ErrorCode.Contains("1.11.5:"))
                                             || (tempItem.ErrorCode.Contains("3.1.0:"))
                                              || (tempItem.ErrorCode.Contains("1.11.7:"))
                                               || (tempItem.ErrorCode.Contains("2.1.1:"))
                                             || (tempItem.ErrorCode.Contains("1.12.3.3:"))
-                                            || (tempItem.ErrorCode.Contains("1.4.3.6:")) 
-                                              
-                                            
+                                            || (tempItem.ErrorCode.Contains("1.4.3.6:"))
+
+
                                             )
                                         {
 
-                                            if ((tempItem.ErrorCode.Contains("3.1.0:"))) {
+                                            if ((tempItem.ErrorCode.Contains("3.1.0:")))
+                                            {
                                                 MessageBox.Show("COM口打开失败,请检查\nPlease call TE check com port");
                                             }
 
 
 
                                         }
-                                        else {
+                                        else
+                                        {
 
                                             bool rReturn = false;
                                             //针对于MBLT uboot fail需要做下判断fail 后 ping dut 192.168.1.101
                                             //如果ping pass这个SN fail 不上传MES和JSON
-                                            if (tempItem.ItemName == "ENTER_UBOOT_Spe" && Global.STATIONNAME == "MBLT") {
+                                            if (tempItem.ItemName == "ENTER_UBOOT_Spe" && Global.STATIONNAME == "MBLT")
+                                            {
                                                 loggerInfo("ENTER_UBOOT fail,开始ping");
-                                                rReturn = PingIP("192.168.1.1",10);
-                                                if (rReturn) {
+                                                rReturn = PingIP("192.168.1.1", 10);
+                                                if (rReturn)
+                                                {
                                                     loggerInfo("开机没问题,不上传");
                                                 }
 
                                             }
 
-                                            if (rReturn == false) {
+                                            if (rReturn == false)
+                                            {
 
                                                 loggerInfo("再次校准时间");
                                                 SyDateTimeHelper.SetLocalDateTime2(SyDateTimeHelper.GetNetDateTime(preDateTime.AddMilliseconds(0)));
@@ -3948,9 +4008,9 @@ namespace AutoTestSystem
                                                 }
                                             }
 
-                                           
+
                                         }
-                                       
+
 
                                         saveTestResult();
                                         SetTestStatus(TestStatus.FAIL);
@@ -3983,7 +4043,7 @@ namespace AutoTestSystem
                                 string elapsedTime = String.Format("{0,0:F0}", Convert.ToDouble((DateTime.Now - datetime).TotalSeconds));
                                 // 把seq测试结果保存到test_phase变量中.
                                 TestPhase.Copy(sequences[seqNo], this);
-                              
+
                                 // 把testPhase初始化
                                 TestPhase = new test_phases();
                                 if (sequences[seqNo].IsTest)
@@ -4009,7 +4069,7 @@ namespace AutoTestSystem
                                         //上传结果到MES失败,此处用&而不用&&。
 
 
- 
+
 
                                         //上传结果到MES失败,此处用&而不用&&。
                                         bool uploadjsonResult = UploadJsonToClient();
@@ -4055,7 +4115,7 @@ namespace AutoTestSystem
 
 
 
-                                         
+
                                     }
                                     Thread.Sleep(10);
                                 }
@@ -4255,7 +4315,7 @@ namespace AutoTestSystem
                 }
             }
 
-        
+
 
             if (startFlag == false)
             {
@@ -4351,7 +4411,7 @@ namespace AutoTestSystem
             try
             {
 
-               
+
 
                 //// 创建测试主线程
                 if (!testThread.IsAlive)
@@ -4498,7 +4558,7 @@ namespace AutoTestSystem
         private bool UploadJsonToClient()
         {
 
-           
+
 
             DateTime startUpload = DateTime.Now;
             bool result = false;
@@ -4593,7 +4653,7 @@ namespace AutoTestSystem
                 }
 
 
-                if (Global.SkipSweep == "1" && (Global.STATIONNAME=="MBFT" ||  Global.STATIONNAME=="SRF"))
+                if (Global.SkipSweep == "1" && (Global.STATIONNAME == "MBFT" || Global.STATIONNAME == "SRF"))
                 {
 
                     for (var i = 0; i < stationObj.tests.Count; i++)
@@ -4604,27 +4664,32 @@ namespace AutoTestSystem
                             || test.test_name.Contains("DesenseTest_WiFi")
                             || test.test_name.Contains("RadioValidation_Zigbee")
 
-                            ) {
+                            )
+                        {
 
                             var Name = Regex.Replace(test.test_name, "Compile", "");
 
 
-                            if (RFTempSequenceDict.ContainsKey(Name)) {
+                            if (RFTempSequenceDict.ContainsKey(Name))
+                            {
 
-                                foreach (var testItem in RFTempSequenceDict[Name]) {
-                                   phase_items phaseItems = new phase_items();
-                                   phaseItems.CopyFrom(true, testItem, true);
-                                   phaseItems.start_time = test.start_time;
-                                   phaseItems.finish_time = test.finish_time;
-                                   if (RFTempFailItemNameDict.ContainsKey(Name)) {
+                                foreach (var testItem in RFTempSequenceDict[Name])
+                                {
+                                    phase_items phaseItems = new phase_items();
+                                    phaseItems.CopyFrom(true, testItem, true);
+                                    phaseItems.start_time = test.start_time;
+                                    phaseItems.finish_time = test.finish_time;
+                                    if (RFTempFailItemNameDict.ContainsKey(Name))
+                                    {
                                         var value = RFTempFailItemNameDict[Name];
-                                        if (phaseItems.test_name == value) {
+                                        if (phaseItems.test_name == value)
+                                        {
 
                                             phaseItems.status = "failed";
-                                        
+
                                         }
 
-                                   }
+                                    }
                                     if (phaseItems.test_value == "False" || testItem.testValue == "False")
                                     {
 
@@ -4632,9 +4697,9 @@ namespace AutoTestSystem
                                     }
                                     stationObj.tests.Add(phaseItems);
 
-                                   
+
                                 }
-                            
+
                             }
 
                         }
@@ -4645,7 +4710,8 @@ namespace AutoTestSystem
                         //移除辅助测试项
                         stationObj.tests.RemoveAll(test => test.test_name.Contains("RadioValidation_"));
                     }
-                    else {
+                    else
+                    {
 
                         //移除辅助测试项
                         stationObj.tests.RemoveAll(test => test.test_name.Contains("WiFiTransmitPower"));
@@ -4659,9 +4725,10 @@ namespace AutoTestSystem
                 }
 
 
- 
+
                 //如果是失败，进一步过滤一下，防止出现重复的测试项
-                if (stationObj.status == "failed") {
+                if (stationObj.status == "failed")
+                {
                     //移除tests中的重复项
                     stationObj.tests = stationObj.tests
                     .GroupBy(test => test.test_name)
@@ -4731,7 +4798,8 @@ namespace AutoTestSystem
 
                             Thread.Sleep(20000);
                         }
-                        else {
+                        else
+                        {
 
                             Thread.Sleep(5000);
                         }
@@ -4744,7 +4812,7 @@ namespace AutoTestSystem
 
 
 
-              //  result = UploadJson(JsonPath);
+                //  result = UploadJson(JsonPath);
             }
             catch (Exception ex)
             {
@@ -4779,7 +4847,7 @@ namespace AutoTestSystem
                             loggerInfo("StationName:RTT  DHCP Mode cancel fail");
                         }
 
- 
+
                     }
                     else
                     {
@@ -4813,7 +4881,8 @@ namespace AutoTestSystem
         }
         public Limit UpdateLimitFromOnline(string itemName, ref bool findFlag)
         {
-            if (Online_Limit == null) {
+            if (Online_Limit == null)
+            {
 
                 return null;
             }
@@ -4843,8 +4912,8 @@ namespace AutoTestSystem
         }
         public bool UploadJson(string JsonFilePath, int retryIndex)
         {
-            if (Global.STATIONNAME == "BURNIN" 
-                || Global.STATIONNAME.ToLower() == "revert" 
+            if (Global.STATIONNAME == "BURNIN"
+                || Global.STATIONNAME.ToLower() == "revert"
                 || Global.STATIONNAME.ToLower() == "noisetest"
 
                  || Global.STATIONNAME == "ALKB"
@@ -4860,8 +4929,8 @@ namespace AutoTestSystem
             try
             {
                 string cmd = $@"python {System.Environment.CurrentDirectory}\Config\{Global.PySCRIPT} -s {Global.STATIONNAME} -f {JsonFilePath} -l {cellLogPath}";
-              
-                loggerDebug("执行命令:"+cmd);
+
+                loggerDebug("执行命令:" + cmd);
 
                 if (Global.JSON == "0")
                 {
@@ -4873,7 +4942,7 @@ namespace AutoTestSystem
                 // string responds = RunDosCmd(cmd, out string errors, 30000);
                 string responds = RunDosCmd(cmd, out string errors, 180000);
 
-               
+
                 if (responds.Contains("Result:200"))
                 {
                     mesPhases.JSON_UPLOAD = "TRUE";
@@ -4893,7 +4962,7 @@ namespace AutoTestSystem
 
 
                     loggerError("Json-info upload to client fail:" + errors);
-                     
+
 
 
 
@@ -4924,7 +4993,7 @@ namespace AutoTestSystem
 
                     }
 
- 
+
                     return false;
                 }
             }
@@ -4937,10 +5006,11 @@ namespace AutoTestSystem
 
         private bool UploadToCustomServerByBurnin(bool result)
         {
-            if (Global.TESTMODE.ToLower() == "debug") {
+            if (Global.TESTMODE.ToLower() == "debug")
+            {
                 logger.Info("debug 模式 skip");
                 return true;
-            
+
             }
 
             if (result == false)
@@ -4978,7 +5048,7 @@ namespace AutoTestSystem
         /// <returns></returns>
         private bool PostAsyncJsonToMes(int retryTime)
         {
-            Label:
+        Label:
             if (Global.STATIONNAME == "CancelDHCP" || Global.STATIONNAME.ToLower() == "revert")
             {
                 return true;
@@ -4986,7 +5056,7 @@ namespace AutoTestSystem
             if (Global.STATIONNAME == "BURNIN")
             {
 
-                            
+
                 return UploadToCustomServerByBurnin(stationStatus);
 
 
@@ -5007,27 +5077,32 @@ namespace AutoTestSystem
                 mesPhases.AT_SCAN_END_TIME = Global.time2.ToLongTimeString();
 
                 mesPhases.TotalTimeExceptScanAndPopFixutre = $"{sec}s";
-                if (SN != null) {
+                if (SN != null)
+                {
                     mesPhases.SN = SN;
                 }
-                if (MesMac != null) {
+                if (MesMac != null)
+                {
                     mesPhases.MAC = MesMac;
                 }
 
 
-                
+
 
                 MesPhases mesPhasesUpload = ForeachClassFields<MesPhases>(mesPhases, "TRUE");
 
-                if (Global.TESTMODE.ToLower() == "fa") {
-                    if (mesPhasesUpload.status == "PASS") {
+                if (Global.TESTMODE.ToLower() == "fa")
+                {
+                    if (mesPhasesUpload.status == "PASS")
+                    {
                         mesPhasesUpload.status = "passed";
                     }
-                    else if (mesPhasesUpload.status == "FAIL") {
+                    else if (mesPhasesUpload.status == "FAIL")
+                    {
                         mesPhasesUpload.status = "failed";
                     }
-                       
-                
+
+
                 }
                 loggerDebug("执行到>>>>>>>>>>>>>>>>1");
                 //转换成字典对象：
@@ -5045,10 +5120,11 @@ namespace AutoTestSystem
                         }
 
 
-                        if (secDict.ContainsKey(testItems[i].test_name) == false) {
+                        if (secDict.ContainsKey(testItems[i].test_name) == false)
+                        {
                             secDict.Add(testItems[i].test_name, testItems[i].test_value);
                         }
-                        
+
 
 
                     }
@@ -5073,15 +5149,16 @@ namespace AutoTestSystem
 
                 if (Global.TESTMODE.ToLower() == "fa")
                 {
-                
+
                     mesUrl = $"http://10.90.116.132:8087/api/1/FA/serial/{SN}/station/{Global.FIXTURENAME}/result";
                 }
                 else
                 {
-            
-                    
-                    if (Global.STATIONNAME == "ALKB") {
-                    
+
+
+                    if (Global.STATIONNAME == "ALKB")
+                    {
+
                         mesUrl = $"http://{Global.MESIP}:{Global.MESPORT}/api/offline/serial/{SN}/station/{Global.FIXTURENAME}/result";
                     }
 
@@ -5092,8 +5169,8 @@ namespace AutoTestSystem
 
 
                 }
-                
-                
+
+
                 loggerDebug($"mesUrl:{mesUrl}");
                 if (Global.TESTMODE.ToLower() == "debug" || IsDebug)
                 {
@@ -5132,9 +5209,9 @@ namespace AutoTestSystem
                 loggerInfo(">>>>>>>>>>>>开始请求");
                 string responseBody = httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 loggerDebug("MES responseBody:" + responseBody);
-               
-                
-                
+
+
+
                 if (responseBody.ToLower().Contains("first test fail"))
                     SetLables(lbl_failCount, "1st fail", Color.White);
                 else if (responseBody.ToLower().Contains("second test fail"))
@@ -5196,11 +5273,11 @@ namespace AutoTestSystem
                 //}
 
 
-                
-                     
 
-                   
-                 retryTime--;
+
+
+
+                retryTime--;
                 if (retryTime != 0)
                 {
                     loggerDebug("重新post to MES");
@@ -5208,59 +5285,63 @@ namespace AutoTestSystem
                     goto Label;
 
                 }
-                else {
+                else
+                {
                     SetIPflag = true;
                 }
 
-                   
+
 
 
 
 
                 loggerFatal("UploadJsonToMESException:" + ex.ToString());
 
-              
+
             }
             string elapsedTime = $"{Convert.ToDouble((DateTime.Now - startUpload).TotalSeconds),0:F0}";
             UpdateDetailView(SN, "UploadMes", null, null, null, null, elapsedTime, startUpload.ToString(), result.ToString());
             loggerDebug($"PostAsyncJsonToMES {(result ? "PASS" : "FAIL")}!! ElapsedTime:{elapsedTime}.");
 
 
-            if (result == false) {
+            if (result == false)
+            {
 
-                
-                    //RTT DHCP模式取消,特殊处理
-                    if (Global.STATIONNAME == "RTT")
+
+                //RTT DHCP模式取消,特殊处理
+                if (Global.STATIONNAME == "RTT")
+                {
+                    loggerInfo("StationName:RTT uploadfail ,Cancel DHCP Mode...");
+                    var STAComm = new Telnet(new TelnetInfo { _Address = "192.168.1.1" });
+                    string revStr = "";
+                    if (STAComm.Open("root@OpenWrt:/#"))
                     {
-                        loggerInfo("StationName:RTT uploadfail ,Cancel DHCP Mode...");
-                        var STAComm = new Telnet(new TelnetInfo { _Address = "192.168.1.1" });
-                        string revStr = "";
-                       if (STAComm.Open("root@OpenWrt:/#")) {
 
                         STAComm.SendCommand("fw_setenv bootcmd bootipq", ref revStr, "root@OpenWrt:/#", 10);
                         STAComm.SendCommand("fw_setenv revert_mode", ref revStr, "root@OpenWrt:/#", 10);
                         STAComm.SendCommand("fw_setenv saveenv", ref revStr, "root@OpenWrt:/#", 10);
-                       
-                        
+
+
                         Thread.Sleep(1000);
                         if (STAComm.SendCommand("fw_printenv | grep bootipq", ref revStr, "bootcmd=bootipq", 5))
                         {
                             loggerInfo("StationName:RTT  DHCP Mode cancel success!");
                         }
-                        else {
+                        else
+                        {
                             loggerInfo("StationName:RTT  DHCP Mode cancel fail");
                         }
 
-                        
-                       }
-                                          
-                       else
-                       {
-                            loggerInfo("StationName:RTT  DHCP Mode cancel fail!");
-                       }
 
                     }
-               
+
+                    else
+                    {
+                        loggerInfo("StationName:RTT  DHCP Mode cancel fail!");
+                    }
+
+                }
+
 
 
             }
@@ -5290,7 +5371,7 @@ namespace AutoTestSystem
             }
         }
 
-       
+
 
         private void CollectResultToCsv()
         {
@@ -5414,7 +5495,7 @@ namespace AutoTestSystem
             }
             catch (Exception ex)
             {
-                loggerFatal($"Export test results to CSVFilePath error!:{ ex.Message} ");
+                loggerFatal($"Export test results to CSVFilePath error!:{ex.Message} ");
 
                 ReadyToTest usbDialog = new ReadyToTest();
 
@@ -5783,7 +5864,7 @@ namespace AutoTestSystem
                 //  {
                 if (!Directory.Exists(destPath))
                 {
-                    Directory.CreateDirectory(destPath); 
+                    Directory.CreateDirectory(destPath);
                 }
                 File.Copy(logfile, destPath + @"\" + FileName, true);
                 loggerDebug("Upload test log to logServer success.");
@@ -5875,8 +5956,9 @@ namespace AutoTestSystem
             }
         }
 
-        public void ShowLbl_FAIL_TEXT(string text) {
-            SetLables(lbl_failCount, text, Color.White,false);
+        public void ShowLbl_FAIL_TEXT(string text)
+        {
+            SetLables(lbl_failCount, text, Color.White, false);
         }
 
 
@@ -5901,8 +5983,9 @@ namespace AutoTestSystem
                     textBox.Text = text;
                     this.ActiveControl = textBox; //设置当前窗口的活动控件为textBox1
                     textBox.Focus();
-                    if (Global.CameraType == "1" && text!="") {
-                        
+                    if (Global.CameraType == "1" && text != "")
+                    {
+
                         SendKeys.Send("{ENTER}");
                     }
                 }

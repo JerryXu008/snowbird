@@ -6017,11 +6017,22 @@ namespace AutoTestSystem.Model
 
                             FixSerialPort.SendCommandToFix("AT+PRESSUP%", ref recvStr, "OK", 10);
 
-                            Sleep(500);
+                            Sleep(3000);
+
+
+
+
+                          // var re = FixSerialPort.SendCommandToFix("AT+DUT_CHECK%", ref recvStr, "EXIST", 10);
+
+
+                            //if (re) {
+
+                            //    loggerInfo("检测到载板上有产品，准备执行下压");
 
                             loggerInfo("----------------->begin push PressDown");
 
                             FixSerialPort.SendCommandToFix("AT+PRESSDOWN%", ref recvStr, "OK", 10);
+
 
                             Sleep(500);
 
@@ -6041,6 +6052,18 @@ namespace AutoTestSystem.Model
                                 }
 
                             }
+                           //}
+                           // else
+                           // {
+                           //     loggerInfo("检测到载板上无产品，停止下压");
+
+                           // }
+
+
+
+
+
+
 
 
                         }
