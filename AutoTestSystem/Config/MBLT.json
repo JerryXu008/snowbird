@@ -518,7 +518,7 @@
     "IsTest": true,
     "IsTestFinished": false,
     "TestResult": true,
-    "TotalNumber": 19,
+    "TotalNumber": 18,
     "TestSerial": 5,
     "TestVersion": null,
     "SystemName": null,
@@ -937,43 +937,6 @@
         "startIndex": 0,
         "start_time_json": "0001-01-01T00:00:00",
         "start_time": "0001-01-01T00:00:00",
-        "ItemName": "DUTCheck",
-        "ErrorCode": "2.2.44.1: Electric.Voltage.POE_POWER_RAIL.TooLow\n2.2.44.2: Electric.Voltage.POE_POWER_RAIL.TooHigh",
-        "RetryTimes": "0",
-        "TimeOut": "10",
-        "SubStr1": "",
-        "SubStr2": "",
-        "IfElse": "else",
-        "For": "",
-        "Mode": "",
-        "ComdOrParam": "AT+DUT_CHECK%",
-        "ExpectStr": "EXIST",
-        "CheckStr1": "",
-        "CheckStr2": "",
-        "Limit_max": "",
-        "testValue": null,
-        "Limit_min": "",
-        "ElapsedTime": null,
-        "ErrorDetails": null,
-        "Unit": "",
-        "MES_var": "",
-        "ByPassFail": "",
-        "FTC": "",
-        "TestKeyword": "FIXCOMSend",
-        "Spec": "",
-        "error_code": "",
-        "Json": "",
-        "EeroName": "V_POE_POWER_RAIL",
-        "NoContain": null,
-        "SpecStatic": ""
-      },
-      {
-        "testNumber": 12,
-        "tResult": true,
-        "isTest": true,
-        "startIndex": 0,
-        "start_time_json": "0001-01-01T00:00:00",
-        "start_time": "0001-01-01T00:00:00",
         "ItemName": "PressDOWN",
         "ErrorCode": "2.2.44.1: Electric.Voltage.POE_POWER_RAIL.TooLow\n2.2.44.2: Electric.Voltage.POE_POWER_RAIL.TooHigh",
         "RetryTimes": "0",
@@ -1005,7 +968,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 13,
+        "testNumber": 12,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1042,7 +1005,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 14,
+        "testNumber": 13,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1079,7 +1042,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 15,
+        "testNumber": 14,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1116,7 +1079,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 16,
+        "testNumber": 15,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1153,7 +1116,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 17,
+        "testNumber": 16,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,
@@ -1190,7 +1153,7 @@
         "SpecStatic": ""
       },
       {
-        "testNumber": 18,
+        "testNumber": 17,
         "tResult": true,
         "isTest": true,
         "startIndex": 0,

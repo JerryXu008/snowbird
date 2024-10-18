@@ -5049,7 +5049,7 @@ namespace AutoTestSystem
         private bool PostAsyncJsonToMes(int retryTime)
         {
         Label:
-            if (Global.STATIONNAME == "CancelDHCP" || Global.STATIONNAME.ToLower() == "revert")
+            if (Global.STATIONNAME == "CANCELDHCP" || Global.STATIONNAME.ToLower() == "revert")
             {
                 return true;
             }
@@ -5059,7 +5059,7 @@ namespace AutoTestSystem
 
                 return UploadToCustomServerByBurnin(stationStatus);
 
-
+               
             }
 
             DateTime startUpload = DateTime.Now;
