@@ -111,20 +111,20 @@ namespace AutoTestSystem
             this.statusStrip1.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-        this.toolStripContinuFailNum,
-        this.lb_ContinuousFailNum,
-        this.ContinuousFailReset,
-        this.runTime,
-        this.toolStripTestTime,
-        this.lable_totalpass,
-        this.lb_passNum,
-        this.lb_totalFail,
-        this.lb_FailNum,
-        this.lb_totalAbort,
-        this.lb_AbortNum,
-        this.yieldLable,
-        this.lb_YieldNum,
-        this.lb_loopTestStatistics});
+            this.toolStripContinuFailNum,
+            this.lb_ContinuousFailNum,
+            this.ContinuousFailReset,
+            this.runTime,
+            this.toolStripTestTime,
+            this.lable_totalpass,
+            this.lb_passNum,
+            this.lb_totalFail,
+            this.lb_FailNum,
+            this.lb_totalAbort,
+            this.lb_AbortNum,
+            this.yieldLable,
+            this.lb_YieldNum,
+            this.lb_loopTestStatistics});
             this.statusStrip1.Location = new System.Drawing.Point(0, 577);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1096, 22);
@@ -142,17 +142,17 @@ namespace AutoTestSystem
             // lb_ContinuousFailNum
             // 
             this.lb_ContinuousFailNum.Name = "lb_ContinuousFailNum";
-            this.lb_ContinuousFailNum.Size = new System.Drawing.Size(15, 17);
+            this.lb_ContinuousFailNum.Size = new System.Drawing.Size(13, 17);
             this.lb_ContinuousFailNum.Text = "0";
             // 
             // ContinuousFailReset
             // 
-            this.ContinuousFailReset.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top)
-            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right)
+            this.ContinuousFailReset.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.ContinuousFailReset.ForeColor = System.Drawing.Color.Blue;
             this.ContinuousFailReset.Name = "ContinuousFailReset";
-            this.ContinuousFailReset.Size = new System.Drawing.Size(44, 21);
+            this.ContinuousFailReset.Size = new System.Drawing.Size(39, 19);
             this.ContinuousFailReset.Text = "Reset";
             this.ContinuousFailReset.Visible = false;
             this.ContinuousFailReset.Click += new System.EventHandler(this.ContinuousFailReset_Click);
@@ -167,7 +167,7 @@ namespace AutoTestSystem
             // toolStripTestTime
             // 
             this.toolStripTestTime.Name = "toolStripTestTime";
-            this.toolStripTestTime.Size = new System.Drawing.Size(21, 17);
+            this.toolStripTestTime.Size = new System.Drawing.Size(18, 17);
             this.toolStripTestTime.Text = "0s";
             // 
             // lable_totalpass
@@ -181,7 +181,7 @@ namespace AutoTestSystem
             // lb_passNum
             // 
             this.lb_passNum.Name = "lb_passNum";
-            this.lb_passNum.Size = new System.Drawing.Size(15, 17);
+            this.lb_passNum.Size = new System.Drawing.Size(13, 17);
             this.lb_passNum.Text = "0";
             // 
             // lb_totalFail
@@ -195,7 +195,7 @@ namespace AutoTestSystem
             // lb_FailNum
             // 
             this.lb_FailNum.Name = "lb_FailNum";
-            this.lb_FailNum.Size = new System.Drawing.Size(15, 17);
+            this.lb_FailNum.Size = new System.Drawing.Size(13, 17);
             this.lb_FailNum.Text = "0";
             // 
             // lb_totalAbort
@@ -208,7 +208,7 @@ namespace AutoTestSystem
             // lb_AbortNum
             // 
             this.lb_AbortNum.Name = "lb_AbortNum";
-            this.lb_AbortNum.Size = new System.Drawing.Size(15, 17);
+            this.lb_AbortNum.Size = new System.Drawing.Size(13, 17);
             this.lb_AbortNum.Text = "0";
             // 
             // yieldLable
@@ -221,7 +221,7 @@ namespace AutoTestSystem
             // lb_YieldNum
             // 
             this.lb_YieldNum.Name = "lb_YieldNum";
-            this.lb_YieldNum.Size = new System.Drawing.Size(43, 17);
+            this.lb_YieldNum.Size = new System.Drawing.Size(38, 17);
             this.lb_YieldNum.Text = "0.00%";
             // 
             // lb_loopTestStatistics
@@ -270,12 +270,12 @@ namespace AutoTestSystem
             // 
             // lb_IPaddress
             // 
-            this.lb_IPaddress.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.lb_IPaddress.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lb_IPaddress.AutoSize = true;
             this.lb_IPaddress.BackColor = System.Drawing.Color.Transparent;
-            this.lb_IPaddress.Font = new System.Drawing.Font("宋体", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lb_IPaddress.Font = new System.Drawing.Font("SimSun", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lb_IPaddress.ForeColor = System.Drawing.Color.Black;
             this.lb_IPaddress.Location = new System.Drawing.Point(726, 11);
             this.lb_IPaddress.Name = "lb_IPaddress";
@@ -286,7 +286,7 @@ namespace AutoTestSystem
             // 
             // bt_debug
             // 
-            this.bt_debug.Font = new System.Drawing.Font("宋体", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.bt_debug.Font = new System.Drawing.Font("SimSun", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.bt_debug.ForeColor = System.Drawing.Color.Red;
             this.bt_debug.Location = new System.Drawing.Point(610, 11);
             this.bt_debug.Margin = new System.Windows.Forms.Padding(2);
@@ -306,7 +306,7 @@ namespace AutoTestSystem
             this.buttonExit.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonExit.FlatAppearance.BorderSize = 0;
             this.buttonExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonExit.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonExit.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonExit.ForeColor = System.Drawing.Color.Transparent;
             this.buttonExit.Image = global::AutoTestSystem.Properties.Resources.close;
             this.buttonExit.Location = new System.Drawing.Point(1011, 14);
@@ -325,7 +325,7 @@ namespace AutoTestSystem
             this.buttonBegin.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonBegin.FlatAppearance.BorderSize = 0;
             this.buttonBegin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonBegin.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonBegin.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonBegin.ForeColor = System.Drawing.Color.Transparent;
             this.buttonBegin.Image = global::AutoTestSystem.Properties.Resources.start;
             this.buttonBegin.Location = new System.Drawing.Point(967, 14);
@@ -338,12 +338,12 @@ namespace AutoTestSystem
             // 
             // groupBox3
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Controls.Add(this.lbl_StationNo);
-            this.groupBox3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.groupBox3.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupBox3.Location = new System.Drawing.Point(211, 2);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(2, 2, 8, 2);
             this.groupBox3.Name = "groupBox3";
@@ -355,12 +355,12 @@ namespace AutoTestSystem
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("宋体", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label1.Font = new System.Drawing.Font("SimSun", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(38, 20);
             this.label1.Name = "label1";
@@ -370,12 +370,12 @@ namespace AutoTestSystem
             // 
             // lbl_StationNo
             // 
-            this.lbl_StationNo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.lbl_StationNo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbl_StationNo.AutoSize = true;
             this.lbl_StationNo.BackColor = System.Drawing.Color.Transparent;
-            this.lbl_StationNo.Font = new System.Drawing.Font("宋体", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lbl_StationNo.Font = new System.Drawing.Font("SimSun", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lbl_StationNo.ForeColor = System.Drawing.Color.Black;
             this.lbl_StationNo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lbl_StationNo.Location = new System.Drawing.Point(6, 18);
@@ -387,11 +387,11 @@ namespace AutoTestSystem
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.lb_mode);
-            this.groupBox2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.groupBox2.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupBox2.Location = new System.Drawing.Point(14, 2);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox2.Name = "groupBox2";
@@ -403,28 +403,28 @@ namespace AutoTestSystem
             // 
             // lb_mode
             // 
-            this.lb_mode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.lb_mode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lb_mode.AutoSize = true;
             this.lb_mode.BackColor = System.Drawing.Color.Transparent;
-            this.lb_mode.Font = new System.Drawing.Font("宋体", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lb_mode.Font = new System.Drawing.Font("SimSun", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lb_mode.ForeColor = System.Drawing.Color.Black;
             this.lb_mode.Location = new System.Drawing.Point(5, 18);
             this.lb_mode.Name = "lb_mode";
-            this.lb_mode.Size = new System.Drawing.Size(86, 19);
+            this.lb_mode.Size = new System.Drawing.Size(97, 19);
             this.lb_mode.TabIndex = 1;
             this.lb_mode.Text = "Snowbird";
             this.lb_mode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.AutoSize = true;
             this.groupBox1.Controls.Add(this.lbl_testMode);
-            this.groupBox1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.groupBox1.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupBox1.Location = new System.Drawing.Point(408, 2);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
@@ -436,12 +436,12 @@ namespace AutoTestSystem
             // 
             // lbl_testMode
             // 
-            this.lbl_testMode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.lbl_testMode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbl_testMode.AutoSize = true;
             this.lbl_testMode.BackColor = System.Drawing.Color.Transparent;
-            this.lbl_testMode.Font = new System.Drawing.Font("宋体", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lbl_testMode.Font = new System.Drawing.Font("SimSun", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lbl_testMode.ForeColor = System.Drawing.Color.Black;
             this.lbl_testMode.Location = new System.Drawing.Point(5, 18);
             this.lbl_testMode.Name = "lbl_testMode";
@@ -489,7 +489,7 @@ namespace AutoTestSystem
             this.treeViewSeq.BackColor = System.Drawing.Color.White;
             this.treeViewSeq.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.treeViewSeq.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeViewSeq.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.treeViewSeq.Font = new System.Drawing.Font("Microsoft YaHei", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.treeViewSeq.ForeColor = System.Drawing.Color.Black;
             this.treeViewSeq.FullRowSelect = true;
             this.treeViewSeq.ImageIndex = 0;
@@ -525,7 +525,7 @@ namespace AutoTestSystem
             this.dataGridViewDetail.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Sunken;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.Blue;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -534,7 +534,7 @@ namespace AutoTestSystem
             this.dataGridViewDetail.ColumnHeadersHeight = 40;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("SimSun", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.ControlLight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.Desktop;
@@ -548,7 +548,7 @@ namespace AutoTestSystem
             this.dataGridViewDetail.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Sunken;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.Blue;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("SimSun", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
             dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -604,7 +604,7 @@ namespace AutoTestSystem
             this.bt_errorCode.BackColor = System.Drawing.Color.WhiteSmoke;
             this.bt_errorCode.Dock = System.Windows.Forms.DockStyle.Fill;
             this.bt_errorCode.Enabled = false;
-            this.bt_errorCode.Font = new System.Drawing.Font("宋体", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.bt_errorCode.Font = new System.Drawing.Font("SimSun", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.bt_errorCode.Location = new System.Drawing.Point(3, 175);
             this.bt_errorCode.Name = "bt_errorCode";
             this.bt_errorCode.Size = new System.Drawing.Size(244, 120);
@@ -624,27 +624,26 @@ namespace AutoTestSystem
             // 
             // textBox1
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.textBox1.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.textBox1.Location = new System.Drawing.Point(37, 7);
             this.textBox1.Margin = new System.Windows.Forms.Padding(0);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(202, 26);
             this.textBox1.TabIndex = 3;
-
             this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBox1_KeyDown);
             // 
             // label6
             // 
-            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.Color.Transparent;
-            this.label6.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label6.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label6.ForeColor = System.Drawing.Color.Black;
             this.label6.Location = new System.Drawing.Point(5, 11);
             this.label6.Name = "label6";
@@ -666,14 +665,13 @@ namespace AutoTestSystem
             // lbl_failCount
             // 
             this.lbl_failCount.AutoEllipsis = true;
-            // this.lbl_failCount.AutoSize = true;
             this.lbl_failCount.BackColor = System.Drawing.Color.White;
             this.lbl_failCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lbl_failCount.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lbl_failCount.Location = new System.Drawing.Point(0, 69);
+            this.lbl_failCount.Location = new System.Drawing.Point(0, 92);
             this.lbl_failCount.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_failCount.Name = "lbl_failCount";
-            this.lbl_failCount.Size = new System.Drawing.Size(259, 27);
+            this.lbl_failCount.Size = new System.Drawing.Size(244, 27);
             this.lbl_failCount.TabIndex = 1;
             this.lbl_failCount.Text = "Next:O-SFT /Current:O-RUNIN";
             this.lbl_failCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -686,7 +684,7 @@ namespace AutoTestSystem
             this.bt_Status.Dock = System.Windows.Forms.DockStyle.Fill;
             this.bt_Status.Enabled = false;
             this.bt_Status.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.bt_Status.Font = new System.Drawing.Font("宋体", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.bt_Status.Font = new System.Drawing.Font("SimSun", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.bt_Status.Location = new System.Drawing.Point(0, 0);
             this.bt_Status.Margin = new System.Windows.Forms.Padding(2);
             this.bt_Status.Name = "bt_Status";
@@ -699,7 +697,7 @@ namespace AutoTestSystem
             // 
             this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Font = new System.Drawing.Font("宋体", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.richTextBox1.Font = new System.Drawing.Font("SimSun", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.richTextBox1.Location = new System.Drawing.Point(0, 0);
             this.richTextBox1.Margin = new System.Windows.Forms.Padding(2);
             this.richTextBox1.Name = "richTextBox1";
@@ -710,7 +708,7 @@ namespace AutoTestSystem
             // label2
             // 
             this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label2.Font = new System.Drawing.Font("宋体", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label2.Font = new System.Drawing.Font("SimSun", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label2.Location = new System.Drawing.Point(56, 96);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(100, 23);
@@ -731,72 +729,55 @@ namespace AutoTestSystem
             // contextMenuStripRightKey
             // 
             this.contextMenuStripRightKey.ImageScalingSize = new System.Drawing.Size(20, 20);
-
-
-
             this.contextMenuStripRightKey.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                  this.ConsumbleMenuItem,
-                  this.ConsumbleMenuItem2,
-        this.OneStepTestMenuItem,
-        this.CycleToolStripMenuItem,
-        this.全不选ToolStripMenuItem,
-        this.全选ToolStripMenuItem});
-
-
-
-
-
+            this.ConsumbleMenuItem,
+            this.ConsumbleMenuItem2,
+            this.OneStepTestMenuItem,
+            this.CycleToolStripMenuItem,
+            this.全不选ToolStripMenuItem,
+            this.全选ToolStripMenuItem});
             this.contextMenuStripRightKey.Name = "contextMenuStripRightKey";
-            this.contextMenuStripRightKey.Size = new System.Drawing.Size(125, 92);
-
-
+            this.contextMenuStripRightKey.Size = new System.Drawing.Size(140, 136);
             // 
-            //  ConsumbleMenuItem
+            // ConsumbleMenuItem
             // 
             this.ConsumbleMenuItem.Name = "ConsumbleMenuItem";
-            this.ConsumbleMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.ConsumbleMenuItem.Size = new System.Drawing.Size(139, 22);
             this.ConsumbleMenuItem.Text = "耗材查看";
             this.ConsumbleMenuItem.Click += new System.EventHandler(this.SeeConsumeMenuItem_Click);
-
-
-
-
             // 
-            //  ConsumbleMenuItem
+            // ConsumbleMenuItem2
             // 
             this.ConsumbleMenuItem2.Name = "ConsumbleMenuItem2";
-            this.ConsumbleMenuItem2.Size = new System.Drawing.Size(124, 22);
+            this.ConsumbleMenuItem2.Size = new System.Drawing.Size(139, 22);
             this.ConsumbleMenuItem2.Text = "模拟摄像头";
             this.ConsumbleMenuItem2.Click += new System.EventHandler(this.SeeConsumeMenuItem_Click2);
-
-
-
             // 
             // OneStepTestMenuItem
             // 
             this.OneStepTestMenuItem.Name = "OneStepTestMenuItem";
-            this.OneStepTestMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.OneStepTestMenuItem.Size = new System.Drawing.Size(139, 22);
             this.OneStepTestMenuItem.Text = "单步测试";
             this.OneStepTestMenuItem.Click += new System.EventHandler(this.OneStepTestMenuItem_Click);
             // 
             // CycleToolStripMenuItem
             // 
             this.CycleToolStripMenuItem.Name = "CycleToolStripMenuItem";
-            this.CycleToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.CycleToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.CycleToolStripMenuItem.Text = "循环测试";
             this.CycleToolStripMenuItem.Click += new System.EventHandler(this.CycleToolStripMenuItem_Click);
             // 
             // 全不选ToolStripMenuItem
             // 
             this.全不选ToolStripMenuItem.Name = "全不选ToolStripMenuItem";
-            this.全不选ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.全不选ToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.全不选ToolStripMenuItem.Text = "全不选";
             this.全不选ToolStripMenuItem.Click += new System.EventHandler(this.全不选ToolStripMenuItem_Click);
             // 
             // 全选ToolStripMenuItem
             // 
             this.全选ToolStripMenuItem.Name = "全选ToolStripMenuItem";
-            this.全选ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.全选ToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.全选ToolStripMenuItem.Text = "全选";
             this.全选ToolStripMenuItem.Click += new System.EventHandler(this.全选ToolStripMenuItem_Click);
             // 
@@ -839,7 +820,6 @@ namespace AutoTestSystem
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             this.contextMenuStripRightKey.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -880,7 +860,6 @@ namespace AutoTestSystem
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Label lbl_failCount;
         private System.Windows.Forms.Button bt_Status;
         public System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.ToolTip toolTip1;
@@ -899,6 +878,7 @@ namespace AutoTestSystem
         private System.Windows.Forms.ToolStripStatusLabel toolStripTestTime;
         private System.Windows.Forms.ToolStripStatusLabel lb_loopTestStatistics;
         private System.Windows.Forms.Label lb_IPaddress;
+        public System.Windows.Forms.Label lbl_failCount;
 
         #endregion
         //// private System.Windows.Forms.Button button1;

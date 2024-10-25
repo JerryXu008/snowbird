@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using PDUSPAPI;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -54,8 +55,9 @@ namespace AutoTestSystem.Model
 
 
 
-        public bool StepTest(test_phases testPhase, Items item, int retryTimes, phase_items phaseItem, ref int retry)
+        public bool StepTest(test_phases testPhase, Items item, int retryTimes, phase_items phaseItem, ref int retry, out int failCountTimes)
         {
+            failCountTimes = 0;
 
             if (DateTime.Now.ToLongDateString().Contains("2021"))
             { //时间不对
@@ -989,25 +991,63 @@ namespace AutoTestSystem.Model
                             string getUrl = $@"http://{Global.MESIP}:{Global.MESPORT}/api/SNCheck/serial/{SN}/station/{Global.STATIONNO}";
                             loggerDebug($"Start get CheckLink from MES, http url: {getUrl}");
 
+                            // Gửi yêu cầu GET đến URL đã tạo
                             Dictionary<string, object> responseResult = HttpGets(getUrl);
 
-                            // Log the response
+                            // Ghi log phản hồi từ MES
                             int statusCode = (int)responseResult["StatusCode"];
                             string responseContent = (string)responseResult["Content"];
                             loggerDebug($"Response from MES: Status Code: {statusCode}, Content: {responseContent}");
 
+                            // Kiểm tra mã trạng thái phản hồi
                             if (statusCode == 200)
                             {
-                                // Remove quotes and trim whitespace
+                                // Xóa dấu ngoặc kép và cắt bỏ khoảng trắng
                                 responseContent = responseContent.Replace("\"", "").Trim();
 
-                                if (responseContent.ToLower() == "ok")
+                                // Kiểm tra xem phản hồi có bắt đầu bằng "OK"
+                                if (responseContent.StartsWith("OK", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    rReturn = true;
+                                    int failCount = 0;
+
+                                    try
+                                    {
+                                        // Tìm vị trí của "Fail Count: " và lấy giá trị sau đó
+                                        if (responseContent.Contains("Fail Count:"))
+                                        {
+                                            // Tách chuỗi để lấy giá trị Fail Count
+                                            string failCountText = responseContent.Split(new string[] { "Fail Count: " }, StringSplitOptions.None)[1];
+                                            failCountText = failCountText.Split(']')[0].Trim();
+                                            failCount = int.Parse(failCountText);
+                                            loggerDebug($"Fail Count retrieved: {failCount}");
+
+                                            failCountTimes = failCount;
+
+                                            if (failCount >= 3)
+                                            {
+                                                loggerDebug($"Fail Count is {failCount}, which is >= 3. Setting rReturn to false.");
+                                                return rReturn = false;
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            loggerDebug("Fail Count information not found in the response.");
+                                            return rReturn = false;
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        loggerDebug($"Error while parsing Fail Count: {ex.Message}");
+                                        return rReturn = false;
+                                    }
+
+                                    // Nếu mọi thứ đều ổn và Fail Count < 3, trả về true
+                                    return rReturn = true;
                                 }
                                 else
                                 {
-                                    loggerDebug("Unexpected content in response. Setting rReturn to false.");
+                                    loggerDebug("Response does not contain 'OK'. Setting rReturn to false.");
                                     return rReturn = false;
                                 }
                             }
@@ -1021,9 +1061,9 @@ namespace AutoTestSystem.Model
                                 loggerDebug($"Unhandled status code: {statusCode}. Setting rReturn to false.");
                                 return rReturn = false;
                             }
-
                         }
                         break;
+
                     case "POEconfig":
                         {
 

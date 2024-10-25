@@ -261,6 +261,7 @@ namespace AutoTestSystem
             ABORT = 4,
         }
 
+        public int FailCountTimes = 0;
 
 
         public MainForm()
@@ -2468,6 +2469,12 @@ namespace AutoTestSystem
                         break;
 
                     case TestStatus.FAIL:
+
+                        if (Global.STATIONNAME == "ALKB")
+                        {
+                            SetLables(lbl_failCount, "Fail Count:" + FailCountTimes, Color.Red);
+                        }
+
                         logger.Info(">>>>>>>>>>>>>>: jump to fail");
                         if (testStatus == TestStatus.FAIL && SetIPflag)
                         {//SRF 测试失败设回默认IP重测
@@ -2484,6 +2491,8 @@ namespace AutoTestSystem
                             string recvStr = "";
                             DUTCOMM.SendCommand($"wifi_init 0", ref recvStr, Global.PROMPT, 10);
                         }
+
+
 
                         Global.Total_Fail_Num++;
 
@@ -3445,13 +3454,24 @@ namespace AutoTestSystem
                                 for (retry = retryTimes; retry > -1; retry--)
                                 {
                                     //TestPhase 忽略不计
-                                    if (test.StepTest(TestPhase, tempItem, retry, phase_item, ref retry))
+                                    if (test.StepTest(TestPhase, tempItem, retry, phase_item, ref retry, out int failCount))
                                     {
+                                        if(tempItem.TestKeyword == "CheckLink")
+                                        {
+                                            FailCountTimes = failCount + 1 ;
+
+                                        }
+
                                         result = true;
                                         break;
                                     }
                                     else
                                     {
+                                        if (tempItem.TestKeyword == "CheckLink")
+                                        {
+                                            FailCountTimes = failCount;
+                                        }
+
                                         inPutValue = "";
                                         if (retry == 0)
                                             result = false;
