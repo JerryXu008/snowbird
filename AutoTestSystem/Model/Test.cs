@@ -5386,7 +5386,22 @@ namespace AutoTestSystem.Model
                             //loggerWarn($"Warning!!!,this is default DUT test-method, ErrorList.Length is {ErrorList.Length.ToString()}");
                             var revStr = "";
                             inPutValue = "";
-                             
+
+
+                            //SRF-1744 Fixture ORT skip SETIP
+                            if(Global.STATIONNAME == "SRF" && item.TestKeyword.Contains("SetIpaddrEnv") && Global.TESTMODE == "reliability")
+                            {
+                                
+                                loggerDebug("Reliability Mode SetIpaddrEnv SKip ,do not run");
+                                return rReturn = true;
+                            }
+                            //RTT-1772 Fixture ORT skip test SetDHCP
+                            if (Global.STATIONNAME == "RTT" && item.TestKeyword.Contains("SetDHCP") && Global.TESTMODE == "reliability")
+                            {
+                                loggerDebug("Reliability Mode SetDHCP SKip ,do not run");
+                                return rReturn = true;
+                            }
+
                             if ((Global.TESTMODE == "debug" || Global.TESTMODE == "fa" || IsDebug) && Global.STATIONNAME == "SRF" && item.TestKeyword.Contains("SetIpaddrEnv"))
                             {
                                 rReturn = true;
