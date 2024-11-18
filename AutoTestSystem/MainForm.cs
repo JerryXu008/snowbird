@@ -3981,7 +3981,7 @@ namespace AutoTestSystem
                                             || (tempItem.ErrorCode.Contains("1.11.5:"))
                                             || (tempItem.ErrorCode.Contains("3.1.0:"))
                                              || (tempItem.ErrorCode.Contains("1.11.7:"))
-                                              || (tempItem.ErrorCode.Contains("2.1.1:"))
+                                              //|| (tempItem.ErrorCode.Contains("2.1.1:"))
                                             || (tempItem.ErrorCode.Contains("1.12.3.3:"))
                                             || (tempItem.ErrorCode.Contains("1.4.3.6:"))
 
@@ -3993,8 +3993,6 @@ namespace AutoTestSystem
                                             {
                                                 MessageBox.Show("COM口打开失败,请检查\nPlease call TE check com port");
                                             }
-
-
 
                                         }
                                         else
@@ -4088,11 +4086,30 @@ namespace AutoTestSystem
                                         AddStationResult(stationStatus, error_code_firstfail, error_details_firstfail);
                                         //上传结果到MES失败,此处用&而不用&&。
 
-
-
-
                                         //上传结果到MES失败,此处用&而不用&&。
                                         bool uploadjsonResult = UploadJsonToClient();
+
+                                        //CCT 添加再次上传的功能
+                                        if (Global.STATIONNAME == "CCT")
+                                        {
+                                            if (uploadjsonResult == false)
+                                            {
+
+                                                MessageBox.Show("tải lên json không thành công, vui lòng kiểm tra và nhấp vào OK để tải lên lại");
+                                                uploadjsonResult = UploadJsonToClient();
+
+                                                if (uploadjsonResult == false)
+                                                {
+                                                    MessageBox.Show("upload json lại bị fail, bạn gọi TE kiểm tra nhé");
+                                                    uploadjsonResult = UploadJsonToClient();
+                                                }
+
+                                            }
+
+                                        }
+
+
+                                        
                                         if (uploadjsonResult)//客户系统上传成功
                                         {
                                             if (PostAsyncJsonToMes(5) & stationStatus)
@@ -5082,6 +5099,7 @@ namespace AutoTestSystem
                
             }
 
+
             DateTime startUpload = DateTime.Now;
             bool result = false;
             try
@@ -5124,6 +5142,16 @@ namespace AutoTestSystem
 
 
                 }
+
+                if ((mesPhasesUpload.status == "FAIL" || mesPhasesUpload.status == "failed") && Global.STATIONNAME == "CCT")
+                {
+                    if(mesPhasesUpload.error_details.ToLower().Contains("json_upload") || mesPhasesUpload.error_code == "JSON_UPLOAD")
+                    {
+                        return false;
+                    }
+
+                }
+
                 loggerDebug("执行到>>>>>>>>>>>>>>>>1");
                 //转换成字典对象：
                 var firstDict = ConvertToDictionary(mesPhasesUpload);

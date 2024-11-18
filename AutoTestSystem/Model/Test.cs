@@ -1091,6 +1091,7 @@ namespace AutoTestSystem.Model
                         {
                             //Random r = new Random();
                             //int num = r.Next(1, 101);
+                            Thread.Sleep(3000);
                             var cookies = new CookieContainer();
                             var client = GetClient(cookies, "admin", "admin123");
                             string url = $@"http://169.254.100.101/api/v1/service";
