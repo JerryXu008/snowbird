@@ -429,7 +429,7 @@
         "start_time_json": "0001-01-01T00:00:00",
         "start_time": "0001-01-01T00:00:00",
         "ItemName": "GROUND_POINT_MEAS_POP",
-        "ErrorCode": "2.2.21: Electric.Impedance.GROUND",
+        "ErrorCode": "2.2.21:?Electric.Impedance.GROUND",
         "RetryTimes": "1",
         "TimeOut": "60",
         "SubStr1": "",
