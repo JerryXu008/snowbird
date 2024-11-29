@@ -196,6 +196,7 @@ namespace AutoTestSystem
         public static int SRF_POP_RETRY = 1;  // SRF 射频fail之后
         public static int RTT_PING_RETRY = 1;
         public static int SFT_TXRX_RETRY = 1;
+        public static int MBLT_USB_RETRY = 1;
 
         public string CellLogPath = "";
 
@@ -3627,6 +3628,43 @@ namespace AutoTestSystem
                                     {
                                         TempItemFAILName = tempItem.EeroName;
 
+                                        if(Global.STATIONNAME == "MBLT")
+                                        {
+                                            if(tempItem.ItemName == "USB_DETECT"
+                                                || tempItem.ItemName == "USB_MOUNT"                                                                                            
+                                                || tempItem.ItemName == "USB_SPEED_READ")
+                                            {
+                                                MBLT_USB_RETRY--;
+                                                if(MBLT_USB_RETRY >= 0)
+                                                {
+                                                    FixSerialPort.OpenCOM();
+                                                    var recvStr = "";
+                                                    FixSerialPort.SendCommandToFix("AT+PORTEJECT%", ref recvStr, "OK", 10);
+                                                    Sleep(500);
+                                                    FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
+                                                    var rr = "";
+                                                    if (DUTCOMM != null)
+                                                    {
+                                                        if (DUTCOMM.SendCommand("", ref rr, "luxshare SW Version :", 120))
+                                                        {
+
+                                                            if (DUTCOMM.SendCommand(" \r\n", ref rr, "root@OpenWrt:/#", 1))
+                                                            {
+
+                                                            }
+                                                        }
+                                                    }
+                                                    sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
+                                                    seqNo = 8;
+                                                    itemsNo = 0;
+                                                    ResetData();
+
+                                                    Thread.Sleep(2000);
+                                                    goto TX_RX_RETRY;
+                                                }
+                                            }
+                                        }
+
                                         if (Global.STATIONNAME == "RTT")
                                         {
                                             if (tempItem.ItemName == "WiFi_SPEED_5650_TX_SERIAL_Repeat"
@@ -3984,8 +4022,8 @@ namespace AutoTestSystem
                                              || (tempItem.ErrorCode.Contains("2.1.1:"))
                                             || (tempItem.ErrorCode.Contains("1.12.3.3:"))
                                             || (tempItem.ErrorCode.Contains("1.4.3.6:"))
-
-
+                                            || (tempItem.ErrorCode.Contains("3.1.1:"))
+                                            || (tempItem.ErrorCode.Contains("3.3:"))
                                             )
                                         {
 
