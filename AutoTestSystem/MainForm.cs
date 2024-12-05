@@ -3655,7 +3655,7 @@ namespace AutoTestSystem
                                                         }
                                                     }
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
-                                                    seqNo = 8;
+                                                    seqNo = 27;
                                                     itemsNo = 0;
                                                     ResetData();
 
