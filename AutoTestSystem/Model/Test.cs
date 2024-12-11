@@ -1530,7 +1530,10 @@ namespace AutoTestSystem.Model
                             {
                                 //using (var FIXCOMM = new Comport(FixCOMinfo))
                                 //{
-
+                                if(Global.STATIONNAME == "MBFT" && MBFT_RETRY == 0 && item.ItemName == "FIXTURE_CLOSE")
+                                {
+                                    return rReturn = true;
+                                }
 
                                 if (FixSerialPort == null)
                                 {
@@ -6123,7 +6126,6 @@ namespace AutoTestSystem.Model
 
 
                         }
-
                     }
 
 

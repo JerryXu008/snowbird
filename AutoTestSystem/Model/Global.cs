@@ -146,6 +146,8 @@ namespace AutoTestSystem.Model
 
         public static string NoiseUpperLimit;
 
+        public static string ERRORCODELIST;
+
 
         /// <summary>
         /// 把STATIONALL所有Excel测试用例转换成Json文件格式
@@ -560,7 +562,9 @@ namespace AutoTestSystem.Model
 
                 NoiseUpperLimit = iniConfig.Readini("NOISETEST", "NoiseUpperLimit").Trim();
 
- 
+                ERRORCODELIST = iniConfig.Readini("Station", "ERRORCODELIST").Trim();
+
+
 
                 //#if DEBUG
                 try
