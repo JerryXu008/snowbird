@@ -2811,20 +2811,20 @@ namespace AutoTestSystem
 
 
 
-                            //Thread thread = new Thread(() =>
-                            //{
-                            //    try
-                            //    {
-                            //        AddConsume();
-                            //    }
-                            //    catch (Exception ex)
-                            //    {
-                            //        loggerError("error3:" + ex.Message);
-                            //    }
+                            Thread thread = new Thread(() =>
+                            {
+                                try
+                                {
+                                    AddConsume();
+                                }
+                                catch (Exception ex)
+                                {
+                                    loggerError("error3:" + ex.Message);
+                                }
 
-                            //});
-                            //thread.IsBackground = true;
-                            //thread.Start();
+                            });
+                            thread.IsBackground = true;
+                            thread.Start();
 
                             if (Global.STATIONNAME == "SRF")
                             {
@@ -3667,26 +3667,26 @@ namespace AutoTestSystem
 
                                         if(Global.STATIONNAME == "SFT")
                                         {
-                                            if (
-                                                tempItem.ItemName == "ETH0_SPEED_VALID"
-                                                || tempItem.ItemName == "ETH0_SPEED_VALID_2ND"
-                                                || tempItem.ItemName == "ETH_SPEED_TX"
-                                                || tempItem.ItemName == "ETH_SPEED_RX"
-                                                )
-                                            {
-                                                SFT_POP_RETRY--;
-                                                if (SFT_POP_RETRY >= 0)
-                                                {
-                                                    seqNo = 0;
-                                                    itemsNo = 0;
+                                            //if (
+                                            //    tempItem.ItemName == "ETH0_SPEED_VALID"
+                                            //    || tempItem.ItemName == "ETH0_SPEED_VALID_2ND"
+                                            //    || tempItem.ItemName == "ETH_SPEED_TX"
+                                            //    || tempItem.ItemName == "ETH_SPEED_RX"
+                                            //    )
+                                            //{
+                                            //    SFT_POP_RETRY--;
+                                            //    if (SFT_POP_RETRY >= 0)
+                                            //    {
+                                            //        seqNo = 0;
+                                            //        itemsNo = 0;
 
-                                                    ResetData();
+                                            //        ResetData();
 
-                                                    Thread.Sleep(2000);
+                                            //        Thread.Sleep(2000);
 
-                                                    goto TX_RX_RETRY;
-                                                }
-                                            }
+                                            //        goto TX_RX_RETRY;
+                                            //    }
+                                            //}
                                         }
                                         if (Global.STATIONNAME == "MBFT")
                                         {

@@ -737,47 +737,47 @@ namespace AutoTestSystem
             this.全不选ToolStripMenuItem,
             this.全选ToolStripMenuItem});
             this.contextMenuStripRightKey.Name = "contextMenuStripRightKey";
-            this.contextMenuStripRightKey.Size = new System.Drawing.Size(138, 136);
+            this.contextMenuStripRightKey.Size = new System.Drawing.Size(140, 136);
             // 
             // ConsumbleMenuItem
             // 
             this.ConsumbleMenuItem.Name = "ConsumbleMenuItem";
-            this.ConsumbleMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.ConsumbleMenuItem.Size = new System.Drawing.Size(139, 22);
             this.ConsumbleMenuItem.Text = "耗材查看";
             this.ConsumbleMenuItem.Click += new System.EventHandler(this.SeeConsumeMenuItem_Click);
             // 
             // ConsumbleMenuItem2
             // 
             this.ConsumbleMenuItem2.Name = "ConsumbleMenuItem2";
-            this.ConsumbleMenuItem2.Size = new System.Drawing.Size(137, 22);
+            this.ConsumbleMenuItem2.Size = new System.Drawing.Size(139, 22);
             this.ConsumbleMenuItem2.Text = "模拟摄像头";
             this.ConsumbleMenuItem2.Click += new System.EventHandler(this.SeeConsumeMenuItem_Click2);
             // 
             // OneStepTestMenuItem
             // 
             this.OneStepTestMenuItem.Name = "OneStepTestMenuItem";
-            this.OneStepTestMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.OneStepTestMenuItem.Size = new System.Drawing.Size(139, 22);
             this.OneStepTestMenuItem.Text = "单步测试";
             this.OneStepTestMenuItem.Click += new System.EventHandler(this.OneStepTestMenuItem_Click);
             // 
             // CycleToolStripMenuItem
             // 
             this.CycleToolStripMenuItem.Name = "CycleToolStripMenuItem";
-            this.CycleToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.CycleToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.CycleToolStripMenuItem.Text = "循环测试";
             this.CycleToolStripMenuItem.Click += new System.EventHandler(this.CycleToolStripMenuItem_Click);
             // 
             // 全不选ToolStripMenuItem
             // 
             this.全不选ToolStripMenuItem.Name = "全不选ToolStripMenuItem";
-            this.全不选ToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.全不选ToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.全不选ToolStripMenuItem.Text = "全不选";
             this.全不选ToolStripMenuItem.Click += new System.EventHandler(this.全不选ToolStripMenuItem_Click);
             // 
             // 全选ToolStripMenuItem
             // 
             this.全选ToolStripMenuItem.Name = "全选ToolStripMenuItem";
-            this.全选ToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.全选ToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.全选ToolStripMenuItem.Text = "全选";
             this.全选ToolStripMenuItem.Click += new System.EventHandler(this.全选ToolStripMenuItem_Click);
             // 

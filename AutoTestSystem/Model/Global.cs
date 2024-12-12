@@ -134,7 +134,7 @@ namespace AutoTestSystem.Model
 
         public static string NeedCheckSum;
         //versionManager URL
-        public static string VersionMURL = "http://10.90.122.80:9000";
+        public static string VersionMURL = "http://10.90.116.128:9000";
 
 
         public static string UploadImageIP;

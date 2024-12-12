@@ -557,6 +557,12 @@ namespace AutoTestSystem.Model
                                 SampleComm.Close();
                             }
                             SampleComm = new Telnet(new TelnetInfo { _Address = item.ComdOrParam });
+
+                            if(Global.STATIONNAME == "RTT")
+                            {
+                                Thread.Sleep(2000);
+                            }
+
                             rReturn = SampleComm.Open(item.ExpectStr);
                         }
                         break;
@@ -1528,6 +1534,10 @@ namespace AutoTestSystem.Model
                         {
                             if (Global.FIXTUREFLAG == "1")
                             {
+                                if(Global.STATIONNAME == "SFT" && item.ComdOrParam.Contains("AT+VALVE4"))
+                                {
+                                    Thread.Sleep(2000);
+                                }
                                 //using (var FIXCOMM = new Comport(FixCOMinfo))
                                 //{
                                 if(Global.STATIONNAME == "MBFT" && MBFT_RETRY == 0 && item.ItemName == "FIXTURE_CLOSE")
