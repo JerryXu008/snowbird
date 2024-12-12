@@ -1535,6 +1535,11 @@ namespace AutoTestSystem.Model
                                     return rReturn = true;
                                 }
 
+                                if (Global.STATIONNAME == "SFT" && SFT_POP_RETRY == 0 && item.ItemName == "FIXTURE_CLOSE")
+                                {
+                                    return rReturn = true;
+                                }
+
                                 if (FixSerialPort == null)
                                 {
 

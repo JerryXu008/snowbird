@@ -198,6 +198,7 @@ namespace AutoTestSystem
         public static int SFT_TXRX_RETRY = 1;
         public static int MBLT_USB_RETRY = 1;
         public static int MBFT_RETRY = 1;
+        public static int SFT_POP_RETRY = 1;
 
         public string CellLogPath = "";
 
@@ -3666,6 +3667,30 @@ namespace AutoTestSystem
                                             }
                                             
                                         }
+
+                                        if(Global.STATIONNAME == "SFT")
+                                        {
+                                            if (
+                                                tempItem.ItemName == "ETH0_SPEED_VALID"
+                                                || tempItem.ItemName == "ETH0_SPEED_VALID_2ND"
+                                                || tempItem.ItemName == "ETH_SPEED_TX"
+                                                || tempItem.ItemName == "ETH_SPEED_RX"
+                                                )
+                                            {
+                                                SFT_POP_RETRY--;
+                                                if (SFT_POP_RETRY >= 0)
+                                                {
+                                                    seqNo = 0;
+                                                    itemsNo = 0;
+
+                                                    ResetData();
+
+                                                    Thread.Sleep(2000);
+
+                                                    goto TX_RX_RETRY;
+                                                }
+                                            }
+                                        }
                                         if (Global.STATIONNAME == "MBFT")
                                         {
                                             if (
@@ -3701,7 +3726,7 @@ namespace AutoTestSystem
 
                                                     //        }
                                                     //    }
-                                                    //}
+                                                    //}q
 
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
 
