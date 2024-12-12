@@ -2810,20 +2810,20 @@ namespace AutoTestSystem
 
 
 
-                            //Thread thread = new Thread(() =>
-                            //{
-                            //    try
-                            //    {
-                            //        AddConsume();
-                            //    }
-                            //    catch (Exception ex)
-                            //    {
-                            //        loggerError("error3:" + ex.Message);
-                            //    }
+                            Thread thread = new Thread(() =>
+                            {
+                                try
+                                {
+                                    AddConsume();
+                                }
+                                catch (Exception ex)
+                                {
+                                    loggerError("error3:" + ex.Message);
+                                }
 
-                            //});
-                            //thread.IsBackground = true;
-                            //thread.Start();
+                            });
+                            thread.IsBackground = true;
+                            thread.Start();
 
                             if (Global.STATIONNAME == "SRF")
                             {
