@@ -1523,7 +1523,6 @@ namespace AutoTestSystem
         private void TextBox1_KeyDown(object sender, KeyEventArgs e)
         {
 
-
             // e=null时候，不执行&&后面的
             if (e != null && e.KeyCode != Keys.Enter)
             {
@@ -1531,15 +1530,6 @@ namespace AutoTestSystem
             }
 
             isTestAgain = false;
-
-
-
-
-
-
-
-
-
 
 
             // 扫描SN
@@ -1611,9 +1601,6 @@ namespace AutoTestSystem
                 //  }
 
             }
-
-
-
 
             StartScanFlag = false;
             //autoScanEvent.Reset();      // 停止自动扫描
@@ -2230,6 +2217,9 @@ namespace AutoTestSystem
             ResetData();
             SRF_POP_RETRY = 1;
             RTT_PING_RETRY = 1;
+
+            SFT_POP_RETRY = 1;
+            MBFT_RETRY = 1;
             SetLables(lbl_failCount, "", Color.White, false);
 
 
@@ -2882,6 +2872,7 @@ namespace AutoTestSystem
                 {
                     try
                     {
+                       
                         if (testStatus != TestStatus.START)
                         {
                             timer.Dispose();
@@ -3271,11 +3262,13 @@ namespace AutoTestSystem
         /// </summary>
         private void TestThread()
         {
+
             try
             {
                 while (true)
                 {
                     // 如果开始标志为假则不运行程序
+
                     if (startFlag)
                     {
                     TX_RX_RETRY:
@@ -3627,14 +3620,14 @@ namespace AutoTestSystem
                                     {
                                         TempItemFAILName = tempItem.EeroName;
 
-                                        if(Global.STATIONNAME == "MBLT")
+                                        if (Global.STATIONNAME == "MBLT")
                                         {
-                                            if(tempItem.ItemName == "USB_DETECT"
-                                                || tempItem.ItemName == "USB_MOUNT"                                                                                            
+                                            if (tempItem.ItemName == "USB_DETECT"
+                                                || tempItem.ItemName == "USB_MOUNT"
                                                 || tempItem.ItemName == "USB_SPEED_READ")
                                             {
                                                 MBLT_USB_RETRY--;
-                                                if(MBLT_USB_RETRY >= 0)
+                                                if (MBLT_USB_RETRY >= 0)
                                                 {
                                                     FixSerialPort.OpenCOM();
                                                     var recvStr = "";
@@ -3662,45 +3655,53 @@ namespace AutoTestSystem
                                                     goto TX_RX_RETRY;
                                                 }
                                             }
-                                            
+
                                         }
 
-                                        if(Global.STATIONNAME == "SFT")
+                                        if (Global.STATIONNAME == "SFT")
                                         {
-                                            //if (
-                                            //    tempItem.ItemName == "ETH0_SPEED_VALID"
-                                            //    || tempItem.ItemName == "ETH0_SPEED_VALID_2ND"
-                                            //    || tempItem.ItemName == "ETH_SPEED_TX"
-                                            //    || tempItem.ItemName == "ETH_SPEED_RX"
-                                            //    )
-                                            //{
-                                            //    SFT_POP_RETRY--;
-                                            //    if (SFT_POP_RETRY >= 0)
-                                            //    {
-                                            //        seqNo = 0;
-                                            //        itemsNo = 0;
+                                            if (
+                                                tempItem.ItemName == "ETH0_SPEED_VALID"
+                                                || tempItem.ItemName == "ETH0_SPEED_VALID_2ND"
+                                                || tempItem.ItemName == "ETH_SPEED_TX"
+                                                || tempItem.ItemName == "ETH_SPEED_RX"
+                                                )
+                                            {
+                                                SFT_POP_RETRY--;
+                                                if (SFT_POP_RETRY >= 0)
+                                                {
+                                                    seqNo = 0;
+                                                    itemsNo = 0;
 
-                                            //        ResetData();
+                                                    ResetData();
 
-                                            //        Thread.Sleep(2000);
+                                                    Thread.Sleep(2000);
 
-                                            //        goto TX_RX_RETRY;
-                                            //    }
-                                            //}
+                                                    goto TX_RX_RETRY;
+                                                }
+                                                
+                                            }
                                         }
                                         if (Global.STATIONNAME == "MBFT")
                                         {
                                             if (
                                                 tempItem.ItemName == "RadioValidation_5GCompile"
-                                                ||tempItem.ItemName == "RadioValidation_2GCompile"
-                                                ||tempItem.ItemName == "RadioValidation_6GCompile"
-                                                ||tempItem.ItemName == "WiFiTransmitPowerCompile"
-                                                ||tempItem.ItemName == "DesenseTest_WiFiCompile"
-                                                ||tempItem.ItemName == "RadioValidation_ZigbeeCompile"
+                                                || tempItem.ItemName == "RadioValidation_2GCompile"
+                                                || tempItem.ItemName == "RadioValidation_6GCompile"
+                                                || tempItem.ItemName == "WiFiTransmitPowerCompile"
+                                                || tempItem.ItemName == "DesenseTest_WiFiCompile"
+                                                || tempItem.ItemName == "RadioValidation_ZigbeeCompile"
+                                                || tempItem.ItemName == "WaitingcsvlogBT"
+                                                || tempItem.ItemName == "CompressFile"
+                                                || tempItem.ItemName == "WIFI_5G_XTAL_CAL"
+                                                || tempItem.ItemName == "WIFI_5G_TX_CAL"
+                                                || tempItem.ItemName == "WIFI_5G_RX_CAL"
+                                                || tempItem.ItemName == "WIFI_2G_TX_CAL"
+                                                || tempItem.ItemName == "WIFI_2G_RX_CAL"
                                                 )
                                             {
                                                 MBFT_RETRY--;
-                                                if(MBFT_RETRY >= 0)
+                                                if (MBFT_RETRY >= 0)
                                                 {
                                                     FixSerialPort.OpenCOM();
                                                     var recvStr = "";
@@ -3730,13 +3731,47 @@ namespace AutoTestSystem
                                                     seqNo = 0;
                                                     itemsNo = 0;
 
-                                                    ResetData(false);
+                                                    ResetData();
 
                                                     Thread.Sleep(2000);
                                                     goto TX_RX_RETRY;
                                                 }
                                             }
-                                            
+
+                                        }
+
+                                        if (Global.STATIONNAME == "SRF")
+                                        {
+                                            if (tempItem.ItemName == "WiFiTransmitPowerCompile"
+                                                || tempItem.ItemName == "DesenseTest_WiFiCompile"
+                                                || tempItem.ItemName == "RadioValidation_ZigbeeCompile"
+                                                || tempItem.ItemName == "WaitingcsvlogBT"
+                                                || tempItem.ItemName == "CompressFile"
+                                                || tempItem.ItemName == "StartProcessATSuite"
+                                                || tempItem.ItemName == "PassSN"
+                                                || tempItem.TestKeyword == "SRFTempScrap"
+                                                )
+                                            {
+                                                SRF_POP_RETRY--;
+                                                if (SRF_POP_RETRY >= 0)
+                                                {
+
+                                                    var rr = "";
+                                                    loggerDebug("special fail,begin reboot>>>>>>>>>>>>");
+                                                    DUTCOMM.SendCommand("reboot", ref rr, "", 120);
+
+                                                    Thread.Sleep(2000);
+
+                                                    sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
+                                                    seqNo = 2;
+                                                    itemsNo = 0;
+
+                                                    ResetData();
+                                                    Thread.Sleep(2000);
+
+                                                    goto TX_RX_RETRY;
+                                                }
+                                            }
                                         }
 
                                         if (Global.STATIONNAME == "RTT")
@@ -3759,10 +3794,10 @@ namespace AutoTestSystem
                                                 if (RTT_PING_RETRY >= 0)
                                                 {
 
-
                                                     var rr = "";
                                                     loggerDebug("special fail,begin reboot>>>>>>>>>>>>");
                                                     DUTCOMM.SendCommand("reboot", ref rr, "", 120);
+                                                    
 
 
                                                     var STAComm = new Telnet(new TelnetInfo { _Address = "192.168.1.200" });
@@ -4057,6 +4092,7 @@ namespace AutoTestSystem
 
                                         //}
 
+                                        //SFT_POP_RETRY = 1;
 
                                         // sequence结束时间.
                                         sequences[seqNo].finish_time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -4320,6 +4356,7 @@ namespace AutoTestSystem
             }
             finally
             {
+
                 testThread.Abort();
             }
         }
@@ -6208,5 +6245,6 @@ namespace AutoTestSystem
 
 
         }
+
     }
 }
