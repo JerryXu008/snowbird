@@ -197,6 +197,7 @@ namespace AutoTestSystem
         public static int RTT_PING_RETRY = 1;
         public static int SFT_TXRX_RETRY = 1;
         public static int MBLT_USB_RETRY = 1;
+        public static int MBFT_RETRY = 1;
 
         public string CellLogPath = "";
 
@@ -3660,6 +3661,57 @@ namespace AutoTestSystem
                                                     goto TX_RX_RETRY;
                                                 }
                                             }
+                                            
+                                        }
+                                        if (Global.STATIONNAME == "MBFT")
+                                        {
+                                            if (
+                                                tempItem.ItemName == "RadioValidation_5GCompile"
+                                                ||tempItem.ItemName == "RadioValidation_2GCompile"
+                                                ||tempItem.ItemName == "RadioValidation_6GCompile"
+                                                ||tempItem.ItemName == "WiFiTransmitPowerCompile"
+                                                ||tempItem.ItemName == "DesenseTest_WiFiCompile"
+                                                ||tempItem.ItemName == "RadioValidation_ZigbeeCompile"
+                                                )
+                                            {
+                                                MBFT_RETRY--;
+                                                if(MBFT_RETRY >= 0)
+                                                {
+                                                    FixSerialPort.OpenCOM();
+                                                    var recvStr = "";
+                                                    FixSerialPort.SendCommandToFix("AT+PORTEJECT%", ref recvStr, "OK", 10);
+                                                    Sleep(500);
+                                                    FixSerialPort.SendCommandToFix("AT+PRESSUP%", ref recvStr, "OK", 10);
+                                                    Sleep(500);
+                                                    FixSerialPort.SendCommandToFix("AT+PRESSDOWN%", ref recvStr, "OK", 10);
+                                                    Sleep(500);
+                                                    FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
+
+                                                    //var rr = "";
+                                                    //if (DUTCOMM != null)
+                                                    //{
+                                                    //    if (DUTCOMM.SendCommand("", ref rr, "luxshare SW Version :", 120))
+                                                    //    {
+
+                                                    //        if (DUTCOMM.SendCommand(" \r\n", ref rr, "root@OpenWrt:/#", 1))
+                                                    //        {
+
+                                                    //        }
+                                                    //    }
+                                                    //}
+
+                                                    sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
+
+                                                    seqNo = 0;
+                                                    itemsNo = 0;
+
+                                                    ResetData(false);
+
+                                                    Thread.Sleep(2000);
+                                                    goto TX_RX_RETRY;
+                                                }
+                                            }
+                                            
                                         }
 
                                         if (Global.STATIONNAME == "RTT")
@@ -3704,6 +3756,7 @@ namespace AutoTestSystem
                                                     seqNo = 2;
                                                     itemsNo = 0;
                                                     ResetData(false);
+
 
                                                     Thread.Sleep(2000);
                                                     goto TX_RX_RETRY;
@@ -4047,20 +4100,43 @@ namespace AutoTestSystem
 
                                             }
 
+                                            
+
                                             if (rReturn == false)
                                             {
+                                                var notupload = false;
+                                                var ErrorList = Global.ERRORCODELIST.Split(',');
 
-                                                loggerInfo("再次校准时间");
-                                                SyDateTimeHelper.SetLocalDateTime2(SyDateTimeHelper.GetNetDateTime(preDateTime.AddMilliseconds(0)));
-
-                                                UploadJsonToClient();
-
-                                                if (uploadJsonSpecialFail == false)
+                                                foreach (var error in ErrorList)
                                                 {
-                                                    PostAsyncJsonToMes(5);
+                                                    var err = "";
+                                                    var arr = tempItem.ErrorCode.Split(':');
+                                                    if (arr.Length > 0)
+                                                    {
+                                                        err = arr[0];
+                                                        if (err.Trim() == error.Trim())
+                                                        {
+                                                            notupload = true;
+                                                            break;
+                                                        }
+                                                    }
                                                 }
-                                            }
 
+                                                if (notupload == false)
+                                                {
+                                                    loggerInfo("再次校准时间");
+                                                    SyDateTimeHelper.SetLocalDateTime2(SyDateTimeHelper.GetNetDateTime(preDateTime.AddMilliseconds(0)));
+
+                                                    UploadJsonToClient();
+
+                                                    if (uploadJsonSpecialFail == false)
+                                                    {
+                                                        PostAsyncJsonToMes(5);
+                                                    }
+
+                                                }
+
+                                            }
 
                                         }
 
