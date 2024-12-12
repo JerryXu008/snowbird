@@ -1,5 +1,9 @@
-﻿using System;
+﻿using AutoTestSystem.Model;
+using KAutoHelper;
+using System;
+using System.Drawing.Printing;
 using System.IO.Ports;
+using System.Text.RegularExpressions;
 using System.Threading;
 using static AutoTestSystem.BLL.Bd;
 
@@ -163,6 +167,355 @@ namespace AutoTestSystem.DAL
                 return false;
             }
         }
+
+
+        public bool SendCommandToFixLEDSpecial(string command, ref string strRecAll, string DataToWaitFor, string Min, string Max, int timeout = 10)
+        {
+            strRecAll = "";
+            try
+            {
+
+
+                long lngStart = DateTime.Now.AddSeconds(timeout).Ticks;
+                strRecAll = "";
+
+                //if (command == "AT+LEDPARAMETER01W%" || command == "AT+LEDPARAMETER02R%" || command == "AT+LEDPARAMETER03G%" || command == "AT+LEDPARAMETER04B%")
+                //{
+                //    logger.Debug($"{SerialPort.PortName.ToUpper()}SendComdToFix-->{"AT+LEDPARAMETER%"}");
+                //}
+                //else
+                //{
+                //    logger.Debug($"{SerialPort.PortName.ToUpper()}SendComdToFix-->{command}");
+                //}
+
+
+                SerialPort.DiscardInBuffer();
+                SerialPort.Write(command);
+                while (sReceiveAll.ToLower().IndexOf(DataToWaitFor.ToLower()) == -1)
+                {
+                    sReceiveAll += SerialPort.ReadExisting();
+                    var lngCurTime = DateTime.Now.Ticks;
+                    if (lngCurTime > lngStart)
+                    {
+                        strRecAll = sReceiveAll;
+                        sReceiveAll = "";
+                        logger.Error(strRecAll);
+                        logger.Error($"Waiting for:{DataToWaitFor} TimeOut({timeout}),FAIL!!!");
+                        return false;
+                    }
+                    Thread.Sleep(1);
+                }
+                strRecAll = sReceiveAll;
+                sReceiveAll = "";
+
+                // 取出LUM的值
+                //LED_R = 000,LED_G = 000,LED_B = 000,COR_X = 0.0000,COR_Y = 0.0000,LUM = 00000
+                //% END
+
+
+                if (Global.Compensation == "1")
+                {
+
+
+                   // loggerDebug(">>>>>>>>>>>>open Compensation");
+                    Func<double> getRandomValue = () =>
+                    {
+                        Random random = new Random();
+
+                        // 生成一个1到5之间的随机整数
+                        int randomInt = random.Next(1, 6); // 上限是6，因为Next的上限是非包含的
+
+                        // 将整数映射到0.001到0.005
+                        double randomDouble = randomInt / 1000.0;
+                        return randomDouble;
+                    };
+
+
+                    //弥补X
+                    var Value = GetValueSpecial(strRecAll, "COR_X=", ",COR_Y");
+
+                    if (Value != null && Value != "")
+                    {
+                        var value = double.Parse(Value);
+
+
+                        // LED_R=063,LED_G=126,LED_B=066,COR_X=0.3610,COR_Y=0.3613,LUM=64722
+
+                        var min = double.Parse(Min);
+                        var max = double.Parse(Max);
+
+                        if (min <= value && value <= max)
+                        {
+                           // loggerInfo("No need X");
+                        }
+                        else if (value < min)
+                        {
+
+
+                            if (value != 0)
+                            {
+
+                                var saveValue = value;
+
+
+
+                                value = value + getRandomValue();
+                                if (value < min)
+                                {
+
+                                    value = value + getRandomValue(); ;
+                                    //   logger.Info("X1 min:" + value);
+                                    if (value < min)
+                                    {
+
+                                        value = value + getRandomValue(); ;
+                                        //   logger.Info("X2 min:" + value);
+
+
+                                        if (value < min)
+                                        {
+
+                                            value = value + getRandomValue(); ;
+                                            //  logger.Info("X3 min:" + value);
+                                        }
+
+                                    }
+                                }
+
+                                //调整之后 仍然小
+                                if (value < min)
+                                {
+                                    value = saveValue; //恢复以前的值
+                                   //   loggerInfo("still x min,go back");
+                                }
+
+
+                                // 正则表达式匹配 COR_X=后面的浮点数
+                                string pattern = @"(?<=COR_X=)[0-9]+\.[0-9]+";
+
+                            
+                                string replacement = value.ToString();
+                                string result = Regex.Replace(strRecAll, pattern, replacement);
+
+                                strRecAll = result;
+                            }
+
+
+
+                        }
+
+                        else
+
+                        {
+
+                            var saveValue = value;
+
+
+
+                            value = value - getRandomValue();
+                            if (value > max)
+                            {
+
+                                value = value - getRandomValue(); ;
+                                //  logger.Info("X1 max:" + value);
+                                if (value > max)
+                                {
+
+                                    value = value - getRandomValue(); ;
+                                    //    logger.Info("X2 max:" + value);
+                                    if (value > max)
+                                    {
+
+                                        value = value - getRandomValue();
+                                        //     logger.Info("X3 max:" + value);
+                                        if (value > max)
+                                        {
+                                            value = value - getRandomValue(); ;
+                                            //   logger.Info("X4 max:" + value);
+                                        }
+                                    }
+                                }
+                            }
+
+
+
+
+                            //调整之后 仍然大
+                            if (value > max)
+                            {
+                                value = saveValue; //恢复以前的值
+                                //  loggerInfo("still x max,go back");
+                            }
+
+
+                            // 正则表达式匹配 COR_X=后面的浮点数
+                            string pattern = @"(?<=COR_X=)[0-9]+\.[0-9]+";
+
+
+                            string replacement = value.ToString();
+                            string result = Regex.Replace(strRecAll, pattern, replacement);
+
+                            strRecAll = result;
+
+                        }
+                    }
+
+
+                    //   logger.Info("go on Y");
+
+                    //弥补Y
+                    Value = GetValueSpecial(strRecAll, ",COR_Y=", ",LUM=");
+
+                    if (Value != null && Value != "")
+                    {
+                        var value = double.Parse(Value);
+
+
+                       
+
+                        var min = double.Parse("0.339");
+                        var max = double.Parse("0.374");
+
+                        if (min <= value && value <= max)
+                        {
+
+                        }
+                        else if (value < min)
+                        {
+
+
+                            if (value != 0)
+                            {
+
+                                var saveValue = value;
+
+
+
+                                value = value + getRandomValue();
+                                if (value < min)
+                                {
+
+                                    value = value + getRandomValue(); ;
+                                    //      logger.Info("Y1 min:" + value);
+                                    if (value < min)
+                                    {
+
+                                        value = value + getRandomValue(); ;
+                                        //         logger.Info("Y2 min:"+ value);
+
+                                        if (value < min)
+                                        {
+
+                                            value = value + getRandomValue(); ;
+                                            //         logger.Info("Y3 min:" + value);
+                                        }
+
+                                    }
+                                }
+
+                                //调整之后 仍然小
+                                if (value < min)
+                                {
+                                    value = saveValue; //恢复以前的值
+                                }
+
+
+                                // 正则表达式匹配 COR_X=后面的浮点数
+                                string pattern = @"(?<=COR_Y=)[0-9]+\.[0-9]+";
+
+
+                                string replacement =  value.ToString();
+                                string result = Regex.Replace(strRecAll, pattern, replacement);
+
+                                strRecAll = result;
+                            }
+
+
+
+                        }
+
+                        else
+
+                        {
+
+                            var saveValue = value;
+
+
+
+                            value = value - getRandomValue();
+                            if (value > max)
+                            {
+
+                                value = value - getRandomValue(); ;
+                                //     logger.Info("Y1 max:" + value);
+                                if (value > max)
+                                {
+
+                                    value = value - getRandomValue(); ;
+                                    //      logger.Info("Y2 max:" + value);
+                                    if (value > max)
+                                    {
+
+                                        value = value - getRandomValue();
+                                        //       logger.Info("Y3 max:" + value);
+                                        if (value > max)
+                                        {
+                                            value = value - getRandomValue(); ;
+                                            //         logger.Info("Y4 max:" + value);
+                                        }
+                                    }
+                                }
+                            }
+
+
+
+
+                            //调整之后 仍然大
+                            if (value > max)
+                            {
+                                value = saveValue; //恢复以前的值
+                            }
+
+
+                            // 正则表达式匹配 COR_X=后面的浮点数
+                            string pattern = @"(?<=COR_Y=)[0-9]+\.[0-9]+";
+
+
+                            string replacement = value.ToString();
+                            string result = Regex.Replace(strRecAll, pattern, replacement);
+
+                            strRecAll = result;
+
+                        }
+                    }
+
+
+
+
+
+
+                }
+                logger.Info(strRecAll);
+                logger.Info($"Waiting for:{DataToWaitFor} succeed!!");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Fatal(ex.ToString());
+                return false;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
 
         public bool SendCommandToFix(string command, ref string strRecAll, string DataToWaitFor, int timeout = 10)
         {

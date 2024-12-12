@@ -2023,10 +2023,50 @@ namespace AutoTestSystem.BLL
             if (!string.IsNullOrEmpty(SubStr1) || !string.IsNullOrEmpty(SubStr2)) //需要提取TestValue
             {
                 TestValue = GetSubStringOfMid(revStr, SubStr1, SubStr2);
+                if (string.IsNullOrEmpty(TestValue)) {
+                    
+                        loggerDebug("Error! Get TestValue IsNullOrEmpty.");
+                    
+                }
+                 
+                else {
+                    
+                        loggerDebug($"GetTestValue:{TestValue}");
+                     
+                 }
+                   
+            }
+
+            return TestValue;
+        }
+
+        /// <summary>
+        ///     截取字符串，获取测试值
+        /// </summary>
+        /// <param name="revStr"></param>
+        /// <param name="SubStr1"></param>
+        /// <param name="SubStr2"></param>
+        /// <returns></returns>
+        public static string GetValueSpecial(string revStr, string SubStr1, string SubStr2)
+        {
+            var TestValue = "";
+            if (!string.IsNullOrEmpty(SubStr1) || !string.IsNullOrEmpty(SubStr2)) //需要提取TestValue
+            {
+                TestValue = GetSubStringOfMid(revStr, SubStr1, SubStr2);
                 if (string.IsNullOrEmpty(TestValue))
-                    loggerDebug("Error! Get TestValue IsNullOrEmpty.");
+                {
+
+                   // loggerDebug("Error! Get TestValue IsNullOrEmpty.");
+
+                }
+
                 else
-                    loggerDebug($"GetTestValue:{TestValue}");
+                {
+
+                  //  loggerDebug($"GetTestValue:{TestValue}");
+
+                }
+
             }
 
             return TestValue;

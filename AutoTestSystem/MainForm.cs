@@ -268,10 +268,7 @@ namespace AutoTestSystem
         public MainForm()
         {
 
-
-
-
-
+ 
             ////先输入数值
             //InutMEASPOP usbDialog2 = new InutMEASPOP();
 

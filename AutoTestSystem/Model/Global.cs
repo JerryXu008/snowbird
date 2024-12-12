@@ -68,7 +68,7 @@ namespace AutoTestSystem.Model
         public static string SweepVersion;
         public static string AUTOTESTNOFIXUTRE_COUNT;
         public static string POEType;
-
+        public static string Compensation;
 
         public static string GUPORT;
         ///**************************ini配置文件DUT全局配置变量**********************/
@@ -464,7 +464,7 @@ namespace AutoTestSystem.Model
                 SweepVersion = iniConfig.Readini("Station", "SweepVersion").Trim();
 
                 AUTOTESTNOFIXUTRE_COUNT = iniConfig.Readini("Station", "AUTOTESTNOFIXUTRE_COUNT").Trim();
-
+                Compensation = iniConfig.Readini("Station", "Compensation").Trim();
                 UploadImageIP = iniConfig.Readini("Station", "UploadImageIP").Trim();
 
 #if DEBUG
