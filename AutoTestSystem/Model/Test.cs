@@ -2209,6 +2209,68 @@ namespace AutoTestSystem.Model
                     //    break;
 
 
+                    case "LEDTestSpecialWXY":
+                        if (inPutValue == "")
+                        {
+                            //using (var FIXCOMM = new Comport(FixCOMinfo))
+                            //{
+                            FixSerialPort.OpenCOM();
+                            Thread.Sleep(500);
+                            var revStr = "";
+                            if (FixSerialPort.SendCommandToFixLEDSpecial(item.ComdOrParam, ref revStr, item.ExpectStr, item.Limit_min, item.Limit_max, short.Parse(item.TimeOut))
+                                 && revStr.CheckStr(item.CheckStr1) && revStr.CheckStr(item.CheckStr2))
+                            {
+                                rReturn = true;
+                                inPutValue = revStr;
+                            }
+                            else
+                            {
+                                inPutValue = "";
+                                return rReturn = false;
+                            }
+                            //FIXCOMM.Close();
+                            //}
+                        }
+                        {
+                            var revStr = inPutValue;
+                            // 需要提取测试值
+                            if (!string.IsNullOrEmpty(item.SubStr1) || !string.IsNullOrEmpty(item.SubStr2))
+                            {
+                                item.testValue = GetValue(revStr, item.SubStr1, item.SubStr2);
+                            }
+                            else
+                            {
+                                return rReturn = true;
+                            }
+                            // 需要比较Spec
+                            if (!string.IsNullOrEmpty(item.Spec) && string.IsNullOrEmpty(item.Limit_min) && string.IsNullOrEmpty(item.Limit_max))
+                            {
+                                return rReturn = CheckSpec(item.Spec, item.testValue);
+                            }
+
+
+
+                            // 需要比较Limit
+                            if (!string.IsNullOrEmpty(item.Limit_min) || !string.IsNullOrEmpty(item.Limit_max))
+                            {
+                                rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
+                            }
+
+
+
+
+
+
+
+                        }
+                        if (!rReturn)
+                        {
+                            inPutValue = "";
+                        }
+                        break;
+
+
+
                     case "LEDTestSpecial":
                     case "LEDTest":
                         if (inPutValue == "")
