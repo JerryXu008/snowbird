@@ -199,6 +199,7 @@ namespace AutoTestSystem
         public static int MBLT_USB_RETRY = 1;
         public static int MBFT_RETRY = 1;
         public static int SFT_POP_RETRY = 1;
+        public static int MBLT_POP_RETRY = 1;
 
         public string CellLogPath = "";
 
@@ -2219,7 +2220,9 @@ namespace AutoTestSystem
             RTT_PING_RETRY = 1;
 
             SFT_POP_RETRY = 1;
+            MBLT_POP_RETRY = 1;
             MBFT_RETRY = 1;
+            MBLT_USB_RETRY = 1;
             SetLables(lbl_failCount, "", Color.White, false);
 
 
@@ -3622,6 +3625,32 @@ namespace AutoTestSystem
 
                                         if (Global.STATIONNAME == "MBLT")
                                         {
+
+                                            if (tempItem.ItemName == "ETH0_DHCP")
+                                            {
+                                                MBLT_POP_RETRY--;
+                                                if (MBLT_POP_RETRY >= 0)
+                                                {
+                                                    FixSerialPort.OpenCOM();
+                                                    var recvStr = "";
+                                                    FixSerialPort.SendCommandToFix("AT+PORTEJECT%", ref recvStr, "OK", 10);
+                                                    Sleep(500);
+                                                    FixSerialPort.SendCommandToFix("AT+PRESSUP%", ref recvStr, "OK", 10);
+                                                    Sleep(500);
+                                                    FixSerialPort.SendCommandToFix("AT+PRESSDOWN%", ref recvStr, "OK", 10);
+                                                    Sleep(500);
+                                                    FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
+
+                                                    sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
+                                                    seqNo = 0;
+                                                    itemsNo = 0;
+                                                    ResetData();
+
+                                                    Thread.Sleep(2000);
+                                                    goto TX_RX_RETRY;
+                                                }
+                                            }
+
                                             if (tempItem.ItemName == "USB_DETECT"
                                                 || tempItem.ItemName == "USB_MOUNT"
                                                 || tempItem.ItemName == "USB_SPEED_READ")
@@ -3758,15 +3787,27 @@ namespace AutoTestSystem
 
                                                     var rr = "";
                                                     loggerDebug("special fail,begin reboot>>>>>>>>>>>>");
+
                                                     DUTCOMM.SendCommand("reboot", ref rr, "", 120);
+
+
+                                                    if (DUTCOMM.SendCommand("", ref rr, "luxshare SW Version :", 120))
+                                                    {
+                                                        if (DUTCOMM.SendCommand(" \r\n", ref rr, "root@OpenWrt:/#", 1))
+                                                        {
+
+                                                        }
+                                                    }
 
                                                     Thread.Sleep(2000);
 
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
-                                                    seqNo = 2;
-                                                    itemsNo = 0;
 
                                                     ResetData();
+
+                                                    seqNo = 7;
+                                                    itemsNo = 0;
+
                                                     Thread.Sleep(2000);
 
                                                     goto TX_RX_RETRY;
