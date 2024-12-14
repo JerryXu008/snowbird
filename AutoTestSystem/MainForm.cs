@@ -2229,10 +2229,70 @@ namespace AutoTestSystem
             SetTestStatus(TestStatus.START);
         }
 
-        void ResetData(bool needresetTime = true)
+        public Station CopyTestsBeforeLoadBZT(Station stationObj)
+        {
+            if (stationObj == null || stationObj.tests == null)
+            {
+                throw new ArgumentNullException("stationObj or its tests cannot be null.");
+            }
+
+            List<phase_items> tests = new List<phase_items>();
+
+            Station copiedStationObj = new Station(
+                SN,                             
+                Global.FIXTURENAME,                         
+                Global.STATIONNAME,                         
+                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                Global.TESTMODE,                           
+                Global.QSDKVER,                          
+                Global.Version.ToString(),               
+                tests                                       
+            );
+
+            foreach (var test in stationObj.tests)
+            {
+                if (test.test_name == "LOAD_BZT" || test.test_name == "LoadBZTFirmware")
+                {
+                    break; 
+                }
+
+                phase_items copiedTest = new phase_items
+                {
+                    test_name = test.test_name ?? string.Empty,
+                    test_value = test.test_value ?? string.Empty,
+                    units = test.units ?? string.Empty,      
+                    status = test.status,
+                    error_code = test.error_code ?? string.Empty,
+                    start_time = test.start_time,
+                    finish_time = test.finish_time,
+                    lower_limit = test.lower_limit ?? string.Empty,
+                    upper_limit = test.upper_limit ?? string.Empty
+                };
+
+                copiedStationObj.tests.Add(copiedTest);
+            }
+
+            return copiedStationObj;
+        }
+
+
+
+        void ResetData(bool needresetTime = true, int numSqe = 0)
         {
             mesPhases = new MesPhases();
-            stationObj = new Station(SN, Global.FIXTURENAME, Global.STATIONNAME, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Global.TESTMODE, Global.QSDKVER, Global.Version.ToString());
+
+
+            if (numSqe == 0)
+            {
+                stationObj = new Station(SN, Global.FIXTURENAME, Global.STATIONNAME, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Global.TESTMODE, Global.QSDKVER, Global.Version.ToString());
+            }
+            else
+            {
+                stationObj = CopyTestsBeforeLoadBZT(stationObj);
+            }
+
+            
+
             InitCreateDirs();
             ArrayListCsv = new List<string>();
             ArrayListCsvHeader = new List<string>();
@@ -2263,7 +2323,7 @@ namespace AutoTestSystem
 
 
 
-            seqNo = 0;
+            seqNo = numSqe;
             itemsNo = 0;
             stationStatus = true;
             inPutValue = "";
@@ -3742,25 +3802,55 @@ namespace AutoTestSystem
                                                     Sleep(500);
                                                     FixSerialPort.SendCommandToFix("AT+PORTINSERT%", ref recvStr, "OK", 10);
 
-                                                    //var rr = "";
-                                                    //if (DUTCOMM != null)
-                                                    //{
-                                                    //    if (DUTCOMM.SendCommand("", ref rr, "luxshare SW Version :", 120))
-                                                    //    {
+                                                    Thread.Sleep(5000);
 
-                                                    //        if (DUTCOMM.SendCommand(" \r\n", ref rr, "root@OpenWrt:/#", 1))
-                                                    //        {
+                                                    var isPing = false;
+                                                    var rr = "";
+                                                    int srf_ping_try = 3;
 
-                                                    //        }
-                                                    //    }
-                                                    //}q
+                                                    while (srf_ping_try > 0)
+                                                    {
+                                                        srf_ping_try--;
+
+                                                        isPing = PingIP(DUTIP, 15);
+
+                                                        if (isPing == false)
+                                                        {
+                                                            loggerDebug("清缓存");
+                                                            RunDosCmd("arp -d & exit");
+                                                        }
+                                                        else
+                                                        {
+                                                            break;
+                                                        }
+
+                                                    }
+
+                                                    if (isPing)
+                                                    {
+                                                        if (!DUTCOMM.IsOpen)
+                                                        {
+                                                            DUTCOMM.Open();
+                                                        }
+                                                        Thread.Sleep(1000);
+                                                        if (DUTCOMM.SendCommand(" ", ref rr, "root@OpenWrt:/#", 1))
+                                                        {
+
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        return;
+                                                    }
+
+                                                    Thread.Sleep(2000);
 
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
 
-                                                    seqNo = 0;
+                                                    seqNo = 7;
                                                     itemsNo = 0;
 
-                                                    ResetData();
+                                                    ResetData(true, 7);
 
                                                     Thread.Sleep(2000);
                                                     goto TX_RX_RETRY;
@@ -3790,23 +3880,57 @@ namespace AutoTestSystem
 
                                                     DUTCOMM.SendCommand("reboot", ref rr, "", 120);
 
+                                                    Thread.Sleep(5000);
 
-                                                    if (DUTCOMM.SendCommand("", ref rr, "luxshare SW Version :", 120))
+                                                    var isPing = false;
+                                                    
+                                                    int srf_ping_try = 3;
+
+                                                    while (srf_ping_try > 0)
                                                     {
+                                                        srf_ping_try--;
+
+                                                        isPing = PingIP(DUTIP, 15);
+
+                                                        if (isPing == false)
+                                                        {
+                                                            loggerDebug("清缓存");
+                                                            RunDosCmd("arp -d & exit");
+                                                        }
+                                                        else
+                                                        {
+                                                            break;
+                                                        }
+
+                                                    }
+
+                                                    if (isPing)
+                                                    {
+                                                        if (!DUTCOMM.IsOpen)
+                                                        {
+                                                            DUTCOMM.Open();
+                                                        }
+                                                        Thread.Sleep(1000);
                                                         if (DUTCOMM.SendCommand(" \r\n", ref rr, "root@OpenWrt:/#", 1))
                                                         {
 
                                                         }
+                                                    }
+                                                    else
+                                                    {
+                                                        return;
                                                     }
 
                                                     Thread.Sleep(2000);
 
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
 
-                                                    ResetData();
-
                                                     seqNo = 7;
                                                     itemsNo = 0;
+
+                                                    ResetData(true, 7);
+
+                                                    
 
                                                     Thread.Sleep(2000);
 

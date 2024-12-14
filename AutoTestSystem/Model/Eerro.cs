@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using static System.String;
 
 namespace AutoTestSystem.Model
@@ -29,6 +30,16 @@ namespace AutoTestSystem.Model
             //luxshare_qsdk_version = _QSDKVER;
             test_software_version = swVer;  //测试软件版本。
         }
+        public Station(string _sn, string _stationNo, string _station_name, string startTime, string _mode, string _QSDKVER, string swVer, List<phase_items> phaseItems)
+        {
+            serial = _sn;
+            station_name = _stationNo;
+            station_type = _station_name;
+            start_time = startTime;
+            mode = _mode;
+            test_software_version = swVer;  // Phiên bản phần mềm kiểm tra
+            tests = phaseItems ?? new List<phase_items>();  // Nếu không có giá trị, tạo một danh sách trống
+        }
 
         public void CopyToMES(MesPhases mesPhases)
         {
@@ -45,6 +56,8 @@ namespace AutoTestSystem.Model
             mesPhases.test_software_version = test_software_version;
             mesPhases.mode = mode;
         }
+
+
     }
 
     ///sequences
@@ -166,6 +179,7 @@ namespace AutoTestSystem.Model
                 }
             }
         }
+
     }
 
     public class MesPhases
