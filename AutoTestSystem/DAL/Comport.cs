@@ -179,14 +179,14 @@ namespace AutoTestSystem.DAL
                 long lngStart = DateTime.Now.AddSeconds(timeout).Ticks;
                 strRecAll = "";
 
-                //if (command == "AT+LEDPARAMETER01W%" || command == "AT+LEDPARAMETER02R%" || command == "AT+LEDPARAMETER03G%" || command == "AT+LEDPARAMETER04B%")
-                //{
-                //    logger.Debug($"{SerialPort.PortName.ToUpper()}SendComdToFix-->{"AT+LEDPARAMETER%"}");
-                //}
-                //else
-                //{
-                //    logger.Debug($"{SerialPort.PortName.ToUpper()}SendComdToFix-->{command}");
-                //}
+                if (command == "AT+LEDPARAMETER01W%" || command == "AT+LEDPARAMETER02R%" || command == "AT+LEDPARAMETER03G%" || command == "AT+LEDPARAMETER04B%")
+                {
+                    //logger.Debug($"{SerialPort.PortName.ToUpper()}SendComdToFix-->{"AT+LEDPARAMETER%"}");
+                }
+                else
+                {
+                    logger.Debug($"{SerialPort.PortName.ToUpper()}SendComdToFix-->{command}");
+                }
 
 
                 SerialPort.DiscardInBuffer();

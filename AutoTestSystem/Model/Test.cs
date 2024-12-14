@@ -1545,6 +1545,11 @@ namespace AutoTestSystem.Model
                                     return rReturn = true;
                                 }
 
+                                if (Global.STATIONNAME == "MBLT" && MBLT_POP_RETRY == 0 && item.ItemName == "FIXTURE_CLOSE")
+                                {
+                                    return rReturn = true;
+                                }
+
                                 if (Global.STATIONNAME == "SFT" && SFT_POP_RETRY == 0 && item.ItemName == "FIXTURE_CLOSE")
                                 {
                                     return rReturn = true;
@@ -2231,6 +2236,7 @@ namespace AutoTestSystem.Model
                             //{
                             FixSerialPort.OpenCOM();
                             Thread.Sleep(500);
+
                             var revStr = "";
                             if (FixSerialPort.SendCommandToFixLEDSpecial(item.ComdOrParam, ref revStr, item.ExpectStr, item.Limit_min, item.Limit_max, short.Parse(item.TimeOut))
                                  && revStr.CheckStr(item.CheckStr1) && revStr.CheckStr(item.CheckStr2))
@@ -2271,16 +2277,14 @@ namespace AutoTestSystem.Model
                                 rReturn = CompareLimit(item.Limit_min, item.Limit_max, item.testValue, out info);
                             }
 
-
-
-
-
-
-
                         }
                         if (!rReturn)
                         {
                             inPutValue = "";
+                        }
+                        if (!rReturn)
+                        {
+                            HandleSpecialMethed(item, rReturn, "", item.TestKeyword, retryTimes);
                         }
                         break;
 
