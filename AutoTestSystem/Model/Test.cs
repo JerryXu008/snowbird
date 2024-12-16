@@ -1538,27 +1538,15 @@ namespace AutoTestSystem.Model
                                 {
                                     Thread.Sleep(2000);
                                 }
-                                //using (var FIXCOMM = new Comport(FixCOMinfo))
-                                //{
-                                if(Global.STATIONNAME == "MBFT" && MBFT_RETRY == 0 && item.ItemName == "FIXTURE_CLOSE")
+
+                                if(SRF_POP_RETRY==0 || RTT_PING_RETRY==0|| SFT_TXRX_RETRY==0 || MBLT_USB_RETRY==0 || MBFT_RETRY==0
+                                    || SFT_POP_RETRY==0 || MBLT_POP_RETRY==0
+                                    )
                                 {
+
                                     return rReturn = true;
                                 }
 
-                                if (Global.STATIONNAME == "MBLT" && MBLT_POP_RETRY == 0 && item.ItemName == "FIXTURE_CLOSE")
-                                {
-                                    return rReturn = true;
-                                }
-
-                                if (Global.STATIONNAME == "SFT" && SFT_POP_RETRY == 0 && item.ItemName == "FIXTURE_CLOSE")
-                                {
-                                    return rReturn = true;
-                                }
-
-                                if (Global.STATIONNAME == "SRF" && SRF_POP_RETRY == 0 && item.ItemName == "FIXTURE_CLOSE")
-                                {
-                                    return rReturn = true;
-                                }
 
                                 if (FixSerialPort == null)
                                 {
@@ -5507,7 +5495,20 @@ namespace AutoTestSystem.Model
                                 rReturn = true;
                                 loggerDebug("Debug Mode CHECK_ART_PARTITION SKip ,do not run");
                             }
+                            else if (item.EeroName.Trim() == "TEMP_BOOT"
+                                   &&
 
+                                   (SRF_POP_RETRY == 0 || RTT_PING_RETRY == 0 || SFT_TXRX_RETRY == 0 || MBLT_USB_RETRY == 0 || MBFT_RETRY == 0
+                                    || SFT_POP_RETRY == 0 || MBLT_POP_RETRY == 0
+                                    )
+                                       
+                                )
+                            {
+                                rReturn = true;
+                                loggerDebug("getTemp:" +TempCPUTemperatureForRetry);
+                                item.testValue = TempCPUTemperatureForRetry;
+
+                            }
 
                             else if (DUTCOMM.SendCommand(item.ComdOrParam, ref revStr, item.ExpectStr, double.Parse(item.TimeOut))
                                 && revStr.CheckStr(item.CheckStr1) && revStr.CheckStr(item.CheckStr2)
@@ -5667,6 +5668,15 @@ namespace AutoTestSystem.Model
 
                                     rReturn = CheckSpec(item.Spec, item.testValue);
                                     loggerDebug(">>>>>>>>:" + rReturn);
+
+
+
+                                    if (item.EeroName == "TEMP_BOOT") {
+                                        loggerDebug("保存临时温度:" + item.testValue);
+                                        TempCPUTemperatureForRetry = item.testValue;
+                                    
+                                    }
+                                        
 
 
                                     //特殊处理MBLT MMC_MODEL，因为有时候会返回一些干扰信息，rd认为是对的

@@ -116,6 +116,8 @@ namespace AutoTestSystem
         public string FIXTURE_TIME = "";
         public string DUT_PING_TIME;
 
+        public static string TempCPUTemperatureForRetry = "";
+
         public static DateTime PowerToTelnetStartTime;
         public static DateTime PowerToTelnetEndTime;
 
@@ -200,6 +202,10 @@ namespace AutoTestSystem
         public static int MBFT_RETRY = 1;
         public static int SFT_POP_RETRY = 1;
         public static int MBLT_POP_RETRY = 1;
+
+
+
+
 
         public string CellLogPath = "";
 
@@ -2223,73 +2229,76 @@ namespace AutoTestSystem
             MBLT_POP_RETRY = 1;
             MBFT_RETRY = 1;
             MBLT_USB_RETRY = 1;
+
+            TempCPUTemperatureForRetry = "";
+
             SetLables(lbl_failCount, "", Color.White, false);
 
 
             SetTestStatus(TestStatus.START);
         }
 
-        public Station CopyTestsBeforeLoadBZT(Station stationObj)
-        {
-            if (stationObj == null || stationObj.tests == null)
-            {
-                throw new ArgumentNullException("stationObj or its tests cannot be null.");
-            }
+        //public Station CopyTestsBeforeLoadBZT(Station stationObj)
+        //{
+        //    if (stationObj == null || stationObj.tests == null)
+        //    {
+        //        throw new ArgumentNullException("stationObj or its tests cannot be null.");
+        //    }
 
-            List<phase_items> tests = new List<phase_items>();
+        //    List<phase_items> tests = new List<phase_items>();
 
-            Station copiedStationObj = new Station(
-                SN,                             
-                Global.FIXTURENAME,                         
-                Global.STATIONNAME,                         
-                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                Global.TESTMODE,                           
-                Global.QSDKVER,                          
-                Global.Version.ToString(),               
-                tests                                       
-            );
+        //    Station copiedStationObj = new Station(
+        //        SN,                             
+        //        Global.FIXTURENAME,                         
+        //        Global.STATIONNAME,                         
+        //        DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+        //        Global.TESTMODE,                           
+        //        Global.QSDKVER,                          
+        //        Global.Version.ToString(),               
+        //        tests                                       
+        //    );
 
-            foreach (var test in stationObj.tests)
-            {
-                if (test.test_name == "LOAD_BZT" || test.test_name == "LoadBZTFirmware")
-                {
-                    break; 
-                }
+        //    foreach (var test in stationObj.tests)
+        //    {
+        //        if (test.test_name == "LOAD_BZT" || test.test_name == "LoadBZTFirmware")
+        //        {
+        //            break; 
+        //        }
 
-                phase_items copiedTest = new phase_items
-                {
-                    test_name = test.test_name ?? string.Empty,
-                    test_value = test.test_value ?? string.Empty,
-                    units = test.units ?? string.Empty,      
-                    status = test.status,
-                    error_code = test.error_code ?? string.Empty,
-                    start_time = test.start_time,
-                    finish_time = test.finish_time,
-                    lower_limit = test.lower_limit ?? string.Empty,
-                    upper_limit = test.upper_limit ?? string.Empty
-                };
+        //        phase_items copiedTest = new phase_items
+        //        {
+        //            test_name = test.test_name ?? string.Empty,
+        //            test_value = test.test_value ?? string.Empty,
+        //            units = test.units ?? string.Empty,      
+        //            status = test.status,
+        //            error_code = test.error_code ?? string.Empty,
+        //            start_time = test.start_time,
+        //            finish_time = test.finish_time,
+        //            lower_limit = test.lower_limit ?? string.Empty,
+        //            upper_limit = test.upper_limit ?? string.Empty
+        //        };
 
-                copiedStationObj.tests.Add(copiedTest);
-            }
+        //        copiedStationObj.tests.Add(copiedTest);
+        //    }
 
-            return copiedStationObj;
-        }
+        //    return copiedStationObj;
+        //}
 
 
 
-        void ResetData(bool needresetTime = true, int numSqe = 0)
+        void ResetData(bool needresetTime = true)
         {
             mesPhases = new MesPhases();
 
 
-            if (numSqe == 0)
-            {
+            //if (numSqe == 0)
+            //{
                 stationObj = new Station(SN, Global.FIXTURENAME, Global.STATIONNAME, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Global.TESTMODE, Global.QSDKVER, Global.Version.ToString());
-            }
-            else
-            {
-                stationObj = CopyTestsBeforeLoadBZT(stationObj);
-            }
+            //}
+            //else
+            //{
+            //    stationObj = CopyTestsBeforeLoadBZT(stationObj);
+            //}
 
             
 
@@ -2320,10 +2329,7 @@ namespace AutoTestSystem
             {
                 sec = 0;
             }
-
-
-
-            seqNo = numSqe;
+            
             itemsNo = 0;
             stationStatus = true;
             inPutValue = "";
@@ -3736,7 +3742,7 @@ namespace AutoTestSystem
                                                         }
                                                     }
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
-                                                    seqNo = 27;
+                                                    seqNo = 0;
                                                     itemsNo = 0;
                                                     ResetData();
 
@@ -3847,10 +3853,10 @@ namespace AutoTestSystem
 
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
 
-                                                    seqNo = 7;
+                                                    seqNo = 0;
                                                     itemsNo = 0;
 
-                                                    ResetData(true, 7);
+                                                    ResetData();
 
                                                     Thread.Sleep(2000);
                                                     goto TX_RX_RETRY;
@@ -3925,10 +3931,10 @@ namespace AutoTestSystem
 
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
 
-                                                    seqNo = 7;
+                                                    seqNo = 0;
                                                     itemsNo = 0;
 
-                                                    ResetData(true, 7);
+                                                    ResetData();
 
                                                     
 
@@ -3978,9 +3984,9 @@ namespace AutoTestSystem
 
 
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
-                                                    seqNo = 2;
+                                                    seqNo = 0;
                                                     itemsNo = 0;
-                                                    ResetData(false);
+                                                    ResetData();
 
 
                                                     Thread.Sleep(2000);

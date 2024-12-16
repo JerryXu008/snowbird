@@ -359,6 +359,7 @@
     <Content Include="Config\serial\__init__.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Config\test.txt" />
     <Content Include="Config\testLeak.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
