@@ -478,8 +478,6 @@
     <None Include="Config\GoldenSN\GGC21D0422750210_DVT_V027_USBC25G_Test_Report.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Config\RTT.json" />
-    <None Include="Config\SFT.json" />
     <None Include="Config\SRF.json" />
     <None Include="IQpathloss_setup_1.13.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
