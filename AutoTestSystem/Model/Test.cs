@@ -5505,6 +5505,9 @@ namespace AutoTestSystem.Model
                                 )
                             {
                                 rReturn = true;
+                                loggerDebug("cat /sys/class/thermal/thermal_zone3/temp");
+                                loggerDebug(TempCPUTemperatureForRetry);
+                                loggerDebug("root@OpenWrt:/#");
                                 loggerDebug("getTemp:" +TempCPUTemperatureForRetry);
                                 item.testValue = TempCPUTemperatureForRetry;
 
@@ -5671,11 +5674,7 @@ namespace AutoTestSystem.Model
 
 
 
-                                    if (item.EeroName == "TEMP_BOOT") {
-                                        loggerDebug("保存临时温度:" + item.testValue);
-                                        TempCPUTemperatureForRetry = item.testValue;
-                                    
-                                    }
+                                
                                         
 
 
@@ -5698,6 +5697,12 @@ namespace AutoTestSystem.Model
 
                                 }
 
+                                if (item.EeroName == "TEMP_BOOT")
+                                {
+                                    loggerDebug("保存临时温度:" + item.testValue);
+                                    TempCPUTemperatureForRetry = item.testValue;
+
+                                }
 
                                 loggerDebug("min:" + item.Limit_min);
                                 loggerDebug("max:" + item.Limit_max);
