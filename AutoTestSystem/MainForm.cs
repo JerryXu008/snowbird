@@ -5444,6 +5444,7 @@ namespace AutoTestSystem
             }
 
 
+
             DateTime startUpload = DateTime.Now;
             bool result = false;
             try
@@ -5487,9 +5488,14 @@ namespace AutoTestSystem
 
                 }
 
-                if ((mesPhasesUpload.status == "FAIL" || mesPhasesUpload.status == "failed") && Global.STATIONNAME == "CCT")
+                if (mesPhasesUpload.error_details.ToLower().Contains("json_upload") || mesPhasesUpload.error_code == "JSON_UPLOAD" || mesPhasesUpload.error_code.ToLower() == "json_upload" || mesPhasesUpload.JSON_UPLOAD == "FALSE" )
                 {
-                    if(mesPhasesUpload.error_details.ToLower().Contains("json_upload") || mesPhasesUpload.error_code == "JSON_UPLOAD")
+                    return false;
+                }
+
+                if ((mesPhasesUpload.status == "FAIL" || mesPhasesUpload.status == "failed"))
+                {
+                    if((mesPhasesUpload.error_details.ToLower().Contains("json_upload") || mesPhasesUpload.error_code == "JSON_UPLOAD") && Global.STATIONNAME == "CCT")
                     {
                         return false;
                     }
