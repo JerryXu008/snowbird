@@ -3710,7 +3710,12 @@ namespace AutoTestSystem
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
                                                     seqNo = 0;
                                                     itemsNo = 0;
+
+                                                    var lastSec = sec;
+
                                                     ResetData();
+
+                                                    sec = lastSec;
 
                                                     Thread.Sleep(2000);
                                                     goto TX_RX_RETRY;
@@ -3744,7 +3749,12 @@ namespace AutoTestSystem
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
                                                     seqNo = 0;
                                                     itemsNo = 0;
+
+                                                    var lastSec = sec;
+
                                                     ResetData();
+
+                                                    sec = lastSec;
 
                                                     Thread.Sleep(2000);
                                                     goto TX_RX_RETRY;
@@ -3768,7 +3778,12 @@ namespace AutoTestSystem
                                                     seqNo = 0;
                                                     itemsNo = 0;
 
+
+                                                    var lastSec = sec;
+
                                                     ResetData();
+
+                                                    sec = lastSec;
 
                                                     Thread.Sleep(2000);
 
@@ -3856,7 +3871,12 @@ namespace AutoTestSystem
                                                     seqNo = 0;
                                                     itemsNo = 0;
 
+
+                                                    var lastSec = sec;
+
                                                     ResetData();
+
+                                                    sec = lastSec;
 
                                                     Thread.Sleep(2000);
                                                     goto TX_RX_RETRY;
@@ -3934,9 +3954,14 @@ namespace AutoTestSystem
                                                     seqNo = 0;
                                                     itemsNo = 0;
 
+
+                                                    var lastSec = sec;
+
                                                     ResetData();
 
-                                                    
+                                                    sec = lastSec;
+
+
 
                                                     Thread.Sleep(2000);
 
@@ -3986,7 +4011,12 @@ namespace AutoTestSystem
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
                                                     seqNo = 0;
                                                     itemsNo = 0;
+
+                                                    var lastSec = sec;
+
                                                     ResetData();
+
+                                                    sec = lastSec;
 
 
                                                     Thread.Sleep(2000);
