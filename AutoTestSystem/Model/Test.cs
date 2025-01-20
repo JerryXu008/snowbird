@@ -1106,13 +1106,13 @@ namespace AutoTestSystem.Model
                             var result = client.PostAsync(url, content).Result;
                             var response_content = result.Content.ReadAsByteArrayAsync().Result;
                             var responseStr = System.Text.Encoding.UTF8.GetString(response_content);
-                            logger.Debug(result.StatusCode + ":" + responseStr);
+                            loggerDebug(result.StatusCode + ":" + responseStr);
 
                             Root root = JsonConvert.DeserializeObject<Root>(responseStr);
 
                             if (root != null && root.result != null && root.result.Count > 0)
                             {
-                                logger.Debug("~~~~~~~~~~~~~~~~~~:" + Global.POE_PORT);
+                                loggerDebug("~~~~~~~~~~~~~~~~~~:" + Global.POE_PORT);
 
 
                                 int index = int.Parse(Global.POE_PORT) - 1;
@@ -1125,7 +1125,7 @@ namespace AutoTestSystem.Model
                                     index = root.result.Count - 1;
                                 }
 
-                                logger.Info(">>>>>>>>>>>Consumption=" + root.result[index].val.PowerConsumption);
+                                loggerInfo(">>>>>>>>>>>Consumption=" + root.result[index].val.PowerConsumption);
 
                                 double number = (double)(root.result[index].val.PowerConsumption) / 10;
                                 item.testValue = number.ToString("F2");
@@ -1134,7 +1134,7 @@ namespace AutoTestSystem.Model
                             }
                             else
                             {
-                                logger.Error("POE信息解析失败!!!");
+                                loggerError("POE信息解析失败!!!");
                             }
 
                         }
@@ -1195,7 +1195,7 @@ namespace AutoTestSystem.Model
 
                             string data = JsonConvert.SerializeObject(dict);
 
-                            logger.Info(data);
+                            loggerInfo(data);
 
                             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
                             var result = client.PostAsync(url, content).Result;
@@ -1204,12 +1204,12 @@ namespace AutoTestSystem.Model
 
                             if (result.IsSuccessStatusCode && responseStr.Contains("\"error\":null"))
                             {
-                                logger.Info("set success:" + responseStr);
+                                loggerInfo("set success:" + responseStr);
                                 rReturn = true;
                             }
                             else
                             {
-                                logger.Error("set fail:" + responseStr);
+                                loggerError("set fail:" + responseStr);
                             }
 
 
@@ -2326,12 +2326,12 @@ namespace AutoTestSystem.Model
                                     if (item.ItemName.Contains("_X"))
                                     {
                                         item.testValue = arr[0];
-                                        logger.Debug(">>>>>>>>>>X=" + item.testValue);
+                                        loggerDebug(">>>>>>>>>>X=" + item.testValue);
                                     }
                                     else if (item.ItemName.Contains("_Y"))
                                     {
                                         item.testValue = arr[1];
-                                        logger.Debug(">>>>>>>>>>Y=" + item.testValue);
+                                        loggerDebug(">>>>>>>>>>Y=" + item.testValue);
                                     }
                                     rReturn = true;
                                 }
@@ -2345,7 +2345,7 @@ namespace AutoTestSystem.Model
 
                                     }
                                     item.testValue = arr[3];
-                                    logger.Debug(">>>>>>>>>>LUM=" + item.testValue);
+                                    loggerDebug(">>>>>>>>>>LUM=" + item.testValue);
                                     rReturn = true;
                                 }
 
@@ -5640,7 +5640,7 @@ namespace AutoTestSystem.Model
                                 if (item.TestKeyword == "TEST_IMAGE_VERSION")
                                 {
                                     ImageVer = item.Spec;
-                                    logger.Info("<<<<<<<<<<读取到Spec:" + ImageVer);
+                                    loggerInfo("<<<<<<<<<<读取到Spec:" + ImageVer);
                                 }
 
                                 // 需要比较Spec
@@ -6013,7 +6013,7 @@ namespace AutoTestSystem.Model
                     }
                     catch
                     {
-                        logger.Error("~~~~~~~Errocode Subtract Error:" + item.ErrorCode);
+                        loggerError("~~~~~~~Errocode Subtract Error:" + item.ErrorCode);
 
                     }
 

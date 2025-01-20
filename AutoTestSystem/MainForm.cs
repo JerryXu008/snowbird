@@ -483,7 +483,7 @@ namespace AutoTestSystem
                 // var url = $@"http://172.23.43.43:9000/pathloss/checkpathloss/firefly/{Global.STATIONNAME}/{Global.FIXTURENAME}/{type}";
 
 
-                //  logger.Info("是否存在接口:" + url);
+                //  loggerInfo("是否存在接口:" + url);
 
                 HttpResponseMessage httpResponse = client.GetAsync(url).GetAwaiter().GetResult();
                 string responseBody = httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
@@ -571,12 +571,12 @@ namespace AutoTestSystem
 
 
 
-                logger.Info("pathloss 是否存在:" + exist);
+                loggerInfo("pathloss 是否存在:" + exist);
                 return exist == "1";
             }
             catch
             {
-                logger.Info("check Pathloss error");
+                loggerInfo("check Pathloss error");
                 return false;
             }
 
@@ -1051,7 +1051,7 @@ namespace AutoTestSystem
             if (isTesting)
             {
 
-                logger.Error("testing ,scan not work");
+                loggerError("testing ,scan not work");
                 return false;
 
             }
@@ -1938,7 +1938,7 @@ namespace AutoTestSystem
                         iniConfig.Writeini("Station", "STATIONNAME", Global.STATIONNAME);
                         iniConfig.Writeini("Station", "STATIONNO", Global.STATIONNO);
                         // iniConfig.Writeini("Station", "FIXTURENAME", Global.FIXTURENAME);
-                        logger.Debug($"Read fix number success,stationName:{Global.STATIONNAME}");
+                        loggerDebug($"Read fix number success,stationName:{Global.STATIONNAME}");
                         break;
                     }
 
@@ -2534,7 +2534,7 @@ namespace AutoTestSystem
                             SetLables(lbl_failCount, "Fail Count:" + FailCountTimes, Color.Red);
                         }
 
-                        logger.Info(">>>>>>>>>>>>>>: jump to fail");
+                        loggerInfo(">>>>>>>>>>>>>>: jump to fail");
                         if (testStatus == TestStatus.FAIL && SetIPflag)
                         {//SRF 测试失败设回默认IP重测
                             if (DUTCOMM != null)
@@ -2579,7 +2579,7 @@ namespace AutoTestSystem
                         break;
 
                     case TestStatus.PASS:
-                        logger.Info(">>>>>>>>>>>>>>:jump to  pass");
+                        loggerInfo(">>>>>>>>>>>>>>:jump to  pass");
                         Global.Total_Pass_Num++;
                         SetButton(this.bt_Status, "PASS", Color.Green);
                         SetButton(this.bt_errorCode, sec.ToString(), Color.Green);
@@ -2863,7 +2863,7 @@ namespace AutoTestSystem
 
                             if (Global.STATIONNAME != "BURNIN" && Global.STATIONNAME != "CCT" && Global.STATIONNAME != "SRF")
                             {
-                                // logger.Info("关闭poe");
+                                // loggerInfo("关闭poe");
                                 // Bd.PoeConfigSetting(Global.POE_PORT, "disable");
 
                             }
@@ -3125,7 +3125,7 @@ namespace AutoTestSystem
                             if (Global.AUTOTESTNOFIXUTRE_COUNT != "-1" && AUTOTESTNOFIXUTRE_COUNT > 0)
                             {
                                 AUTOTESTNOFIXUTRE_COUNT = AUTOTESTNOFIXUTRE_COUNT - 1;
-                                logger.Info("wati 1s");
+                                loggerInfo("wati 1s");
                                 Thread.Sleep(1000);
 
                                 isTestAgain = true;
@@ -3242,10 +3242,10 @@ namespace AutoTestSystem
                             sFTP.CreateDir($"/{Global.STATIONNAME}/{Global.STATIONNO}/{Global.TESTMODE.ToLower()}/{day}/{WorkOrder}");
                             sFTP.CreateDir($"/{Global.STATIONNAME}/{Global.STATIONNO}/{Global.TESTMODE.ToLower()}/{day}/{WorkOrder}/{finalTestResult}");
 
-                            logger.Info("upload csv");
+                            loggerInfo("upload csv");
                             sFTP.PutNoClose(CSVFilePath, $"/{Global.STATIONNAME}/{Global.STATIONNO}/{Global.TESTMODE.ToLower()}/{day}/{WorkOrder}/{finalTestResult}/{csvFileName}");
 
-                            logger.Info("upload log");
+                            loggerInfo("upload log");
                             var logName = Path.GetFileName(cellLogPath);
 
                             sFTP.PutNoClose(cellLogPath, $"/{Global.STATIONNAME}/{Global.STATIONNO}/{Global.TESTMODE.ToLower()}/{day}/{WorkOrder}/{finalTestResult}/{logName}");
@@ -3257,7 +3257,7 @@ namespace AutoTestSystem
 
                                 if (ZhuBoPath != null && ZhuBoPath != "")
                                 {
-                                    logger.Info("upload zhubo files");
+                                    loggerInfo("upload zhubo files");
                                     sFTP.PutNoClose(ZhuBoPath, $"/{Global.STATIONNAME}/{Global.STATIONNO}/{Global.TESTMODE.ToLower()}/{day}/{WorkOrder}/{finalTestResult}/{Path.GetFileName(ZhuBoPath)}");
                                 }
 
@@ -5060,7 +5060,7 @@ namespace AutoTestSystem
                 catch (Exception ex)
                 {
 
-                    logger.Error("时间3 转换失败");
+                    loggerError("时间3 转换失败");
                 }
 
 
@@ -5160,7 +5160,7 @@ namespace AutoTestSystem
                             var limit = UpdateLimitFromOnline(item.test_name, ref r);
                             if (r)
                             {
-                                logger.Debug($"更新limit,upperlimit={limit.upper_limit},lowerlimit={limit.lower_limit}");
+                                loggerDebug($"更新limit,upperlimit={limit.upper_limit},lowerlimit={limit.lower_limit}");
                                 item.upper_limit = limit.upper_limit;
                                 item.lower_limit = limit.lower_limit;
 
@@ -5311,12 +5311,12 @@ namespace AutoTestSystem
                         break;
                     }
                     else
-                        logger.Info($"{itemName} found, but {lim.model},{lim.station_type} is match.");
+                        loggerInfo($"{itemName} found, but {lim.model},{lim.station_type} is match.");
                 }
             }
             if (!findFlag)
             {
-                logger.Info($"{itemName} not found in online limit");
+                loggerInfo($"{itemName} not found in online limit");
             }
             return limit;
 
@@ -5419,14 +5419,14 @@ namespace AutoTestSystem
         {
             if (Global.TESTMODE.ToLower() == "debug")
             {
-                logger.Info("debug 模式 skip");
+                loggerInfo("debug 模式 skip");
                 return true;
 
             }
 
             if (result == false)
             {
-                logger.Info("测试结果fail，不上传burnin服务器");
+                loggerInfo("测试结果fail，不上传burnin服务器");
                 return true;
             }
 
@@ -5444,7 +5444,7 @@ namespace AutoTestSystem
             StringContent content = new StringContent(currentMes, Encoding.UTF8, "application/json");
             HttpResponseMessage httpResponse = client.PostAsync(url, content).GetAwaiter().GetResult();
             string responseBody = httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-            logger.Info(responseBody);
+            loggerInfo(responseBody);
             if (responseBody.Contains("成功"))
             {
                 return true;
@@ -6259,10 +6259,36 @@ namespace AutoTestSystem
                         {
                             richTextBox1.Clear();
                             loggerDebug($"Clear Data OK!");
+
+                            SummStr = new System.Collections.Concurrent.ConcurrentQueue<string>();
+
+
                             return;
                         }
                         loggerDebug($"Save test log OK.{path}");
-                        richTextBox1.SaveFile(path, a);
+
+
+                        if (Global.SUPERSAVETIME == "1")
+                        {
+
+                            foreach (var line in SummStr)
+                            {
+                                richTextBox1.AppendText(line + Environment.NewLine);
+                            }
+
+
+                            var logContent = string.Join(Environment.NewLine, SummStr.ToArray());
+
+                            using (StreamWriter writer = new StreamWriter(path, true))
+                            {
+                                writer.WriteLine(logContent); // 记录时间戳
+                            }
+                        }
+                        else
+                        {
+                            richTextBox1.SaveFile(path, a);
+
+                        }
 
                     }
                 }

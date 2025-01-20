@@ -778,7 +778,7 @@ namespace TestConsole
             //    var value = System.Convert.ToString(int_value, 10);
             //    var value1 = (double.Parse(value) / 10).ToString();
             //    EnvTemp = value1;
-            //    logger.Debug($"Temperature(degree C):" + EnvTemp);
+            
             //    rReturn = true;
 
 

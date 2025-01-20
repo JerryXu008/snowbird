@@ -185,7 +185,7 @@ namespace AutoTestSystem.DAL
                 }
                 else
                 {
-                    logger.Debug($"{SerialPort.PortName.ToUpper()}SendComdToFix-->{command}");
+                    loggerDebug($"{SerialPort.PortName.ToUpper()}SendComdToFix-->{command}");
                 }
 
 
@@ -199,8 +199,8 @@ namespace AutoTestSystem.DAL
                     {
                         strRecAll = sReceiveAll;
                         sReceiveAll = "";
-                        logger.Error(strRecAll);
-                        logger.Error($"Waiting for:{DataToWaitFor} TimeOut({timeout}),FAIL!!!");
+                        loggerError(strRecAll);
+                        loggerError($"Waiting for:{DataToWaitFor} TimeOut({timeout}),FAIL!!!");
                         return false;
                     }
                     Thread.Sleep(1);
@@ -264,19 +264,19 @@ namespace AutoTestSystem.DAL
                                 {
 
                                     value = value + getRandomValue(); ;
-                                    //   logger.Info("X1 min:" + value);
+                                    //   loggerInfo("X1 min:" + value);
                                     if (value < min)
                                     {
 
                                         value = value + getRandomValue(); ;
-                                        //   logger.Info("X2 min:" + value);
+                                        //   loggerInfo("X2 min:" + value);
 
 
                                         if (value < min)
                                         {
 
                                             value = value + getRandomValue(); ;
-                                            //  logger.Info("X3 min:" + value);
+                                            //  loggerInfo("X3 min:" + value);
                                         }
 
                                     }
@@ -317,21 +317,21 @@ namespace AutoTestSystem.DAL
                             {
 
                                 value = value - getRandomValue(); ;
-                                //  logger.Info("X1 max:" + value);
+                                //  loggerInfo("X1 max:" + value);
                                 if (value > max)
                                 {
 
                                     value = value - getRandomValue(); ;
-                                    //    logger.Info("X2 max:" + value);
+                                    //    loggerInfo("X2 max:" + value);
                                     if (value > max)
                                     {
 
                                         value = value - getRandomValue();
-                                        //     logger.Info("X3 max:" + value);
+                                        //     loggerInfo("X3 max:" + value);
                                         if (value > max)
                                         {
                                             value = value - getRandomValue(); ;
-                                            //   logger.Info("X4 max:" + value);
+                                            //   loggerInfo("X4 max:" + value);
                                         }
                                     }
                                 }
@@ -361,7 +361,7 @@ namespace AutoTestSystem.DAL
                     }
 
 
-                    //   logger.Info("go on Y");
+                    //   loggerInfo("go on Y");
 
                     //弥补Y
                     Value = GetValueSpecial(strRecAll, ",COR_Y=", ",LUM=");
@@ -396,18 +396,18 @@ namespace AutoTestSystem.DAL
                                 {
 
                                     value = value + getRandomValue(); ;
-                                    //      logger.Info("Y1 min:" + value);
+                                    //      loggerInfo("Y1 min:" + value);
                                     if (value < min)
                                     {
 
                                         value = value + getRandomValue(); ;
-                                        //         logger.Info("Y2 min:"+ value);
+                                        //         loggerInfo("Y2 min:"+ value);
 
                                         if (value < min)
                                         {
 
                                             value = value + getRandomValue(); ;
-                                            //         logger.Info("Y3 min:" + value);
+                                            //         loggerInfo("Y3 min:" + value);
                                         }
 
                                     }
@@ -447,21 +447,21 @@ namespace AutoTestSystem.DAL
                             {
 
                                 value = value - getRandomValue(); ;
-                                //     logger.Info("Y1 max:" + value);
+                                //     loggerInfo("Y1 max:" + value);
                                 if (value > max)
                                 {
 
                                     value = value - getRandomValue(); ;
-                                    //      logger.Info("Y2 max:" + value);
+                                    //      loggerInfo("Y2 max:" + value);
                                     if (value > max)
                                     {
 
                                         value = value - getRandomValue();
-                                        //       logger.Info("Y3 max:" + value);
+                                        //       loggerInfo("Y3 max:" + value);
                                         if (value > max)
                                         {
                                             value = value - getRandomValue(); ;
-                                            //         logger.Info("Y4 max:" + value);
+                                            //         loggerInfo("Y4 max:" + value);
                                         }
                                     }
                                 }
@@ -495,8 +495,8 @@ namespace AutoTestSystem.DAL
 
 
                 }
-                logger.Info(strRecAll);
-                logger.Info($"Waiting for:{DataToWaitFor} succeed!!");
+                loggerInfo(strRecAll);
+                loggerInfo($"Waiting for:{DataToWaitFor} succeed!!");
                 return true;
             }
             catch (Exception ex)

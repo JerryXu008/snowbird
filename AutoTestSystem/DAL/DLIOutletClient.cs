@@ -59,13 +59,13 @@ namespace AutoTestSystem.DAL
 
             if (body.Contains("URL=/index.htm"))
             {
-                logger.Info($"PowerCycle Outlet {outletIndex} PASS!");
+                loggerInfo($"PowerCycle Outlet {outletIndex} PASS!");
                 return true;
             }
             else
             {
-                logger.Info($"PowerCycle Outlet {outletIndex} FAIL!");
-                logger.Info("CycleOutlet body:" + body);
+                loggerInfo($"PowerCycle Outlet {outletIndex} FAIL!");
+                loggerInfo("CycleOutlet body:" + body);
                 return false;
             }
         }
@@ -77,13 +77,13 @@ namespace AutoTestSystem.DAL
             var body = await GetStringSafeAsync(url);
             if (body.Contains("URL=/index.htm"))
             {
-                logger.Info($"Set Outlet {outletIndex} {(desiredState ? "ON" : "OFF")} PASS!");
+                loggerInfo($"Set Outlet {outletIndex} {(desiredState ? "ON" : "OFF")} PASS!");
                 return true;
             }
             else
             {
-                logger.Info($"Set Outlet {outletIndex} {(desiredState ? "ON" : "OFF")} FAIL!");
-                logger.Info("SetOutlet body:" + body);
+                loggerInfo($"Set Outlet {outletIndex} {(desiredState ? "ON" : "OFF")} FAIL!");
+                loggerInfo("SetOutlet body:" + body);
                 return false;
             }
         }
@@ -91,7 +91,7 @@ namespace AutoTestSystem.DAL
         //public async Task<SwitchInfo> ConnectAndGetSwitchInfoAsync()
         //{
         //    //await ConnectAsync();
-        //    logger.Info("WebSwitchPower connect!");
+        //    loggerInfo("WebSwitchPower connect!");
         //    return await GetSwitchInfo();
         //}
 
@@ -130,19 +130,19 @@ namespace AutoTestSystem.DAL
         //        });
 
         //        loginUrl = GetUrl(connectionInfo, URLs.Login);
-        //        //logger.Info("WebPsLoginUrl:"+ loginUrl+",content:"+ content);
+        //        //loggerInfo("WebPsLoginUrl:"+ loginUrl+",content:"+ content);
         //        var result = await client.PostAsync(loginUrl, content);
 
         //        if (!result.IsSuccessStatusCode)
         //        {
         //            var responseBody = await result.Content.GetStringSafeAsync();
-        //            logger.Info(responseBody);
+        //            loggerInfo(responseBody);
         //            throw new Exception($"Failed to connect WebPowerSwitch.Response code: {result.StatusCode}");
         //        }
         //    }
         //    catch (Exception ex)
         //    {
-        //        logger.Info(ex.ToString());
+        //        loggerInfo(ex.ToString());
         //        //throw;
         //    }
         //}
@@ -170,7 +170,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ex)
             {
-                logger.Info(ex.ToString());
+                loggerInfo(ex.ToString());
             }
             return null;
         }
@@ -196,7 +196,7 @@ namespace AutoTestSystem.DAL
                         outletState = d.DocumentNode.SelectSingleNode(string.Format("/html/body/font/table/tr/td[2]/table[2]/tr[{0}]/td[3]/b/font", x + 3));
                         if (outletName == null || outletState == null)
                         {
-                            logger.Info("ParseRelayName:刷新失败，XPath节点InnerText为空");
+                            loggerInfo("ParseRelayName:刷新失败，XPath节点InnerText为空");
                         }
                     }
 
@@ -210,7 +210,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ex)
             {
-                logger.Info("ParseRelayName:" + ex.ToString());
+                loggerInfo("ParseRelayName:" + ex.ToString());
                 throw;
             }
         }
@@ -301,7 +301,7 @@ namespace AutoTestSystem.DAL
             }
             catch (Exception ex)
             {
-                logger.Info(ex.ToString());
+                loggerInfo(ex.ToString());
                 //throw;
             }
             return null;
@@ -323,7 +323,7 @@ namespace AutoTestSystem.DAL
                 }
                 catch (Exception ex)
                 {
-                    logger.Info($"HttpClient请求异常次数{retry},Retey. {ex.ToString()}");
+                    loggerInfo($"HttpClient请求异常次数{retry},Retey. {ex.ToString()}");
                     Thread.Sleep(2000);
                 }
             }

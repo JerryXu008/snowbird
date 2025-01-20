@@ -8,6 +8,7 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using PDUSPAPI;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -31,6 +32,7 @@ namespace AutoTestSystem.BLL
 {
     public static class Bd
     {
+        public static ConcurrentQueue<string> SummStr = new ConcurrentQueue<string>();
         public static ILog logger = Log4NetHelper.GetLogger(typeof(Bd));
 
         public static string TempCellLogPath = "\\Temp.txt";
@@ -130,28 +132,78 @@ namespace AutoTestSystem.BLL
         }
         public static void loggerDebug(string txt)
         {
-            logger.Debug(txt);
+
+            if (Global.SUPERSAVETIME == "1")
+            {
+                string newText = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " [DEBUG]" + " - " + txt;
+                SummStr.Enqueue(newText);
+            }
+            else
+            {
+                logger.Debug(txt);
+            }
+
             SaveLog(txt);
+
+
         }
         public static void loggerInfo(string txt)
         {
-            logger.Info(txt);
+            if (Global.SUPERSAVETIME == "1")
+            {
+                string newText = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " [INFO]" + " - " + txt;
+                SummStr.Enqueue(newText);
+            }
+            else
+            {
+                loggerInfo(txt);
+
+            }
             SaveLog(txt);
+
         }
         public static void loggerWarn(string txt)
         {
-            logger.Warn(txt);
+            if (Global.SUPERSAVETIME == "1")
+            {
+                string newText = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " [WARN]" + " - " + txt;
+                SummStr.Enqueue(newText);
+            }
+            else
+            {
+                logger.Warn(txt);
+            }
             SaveLog(txt);
+
         }
         public static void loggerError(string txt)
         {
-            logger.Error(txt);
+            if (Global.SUPERSAVETIME == "1")
+            {
+                string newText = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " [ERROR]" + " - " + txt;
+                SummStr.Enqueue(newText);
+            }
+            else
+            {
+                logger.Error(txt);
+            }
             SaveLog(txt);
+
         }
         public static void loggerFatal(string txt)
         {
-            logger.Fatal(txt);
+            if (Global.SUPERSAVETIME == "1")
+            {
+                string newText = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " [FATAL]" + " - " + txt;
+                SummStr.Enqueue(newText);
+            }
+            else
+            {
+                logger.Fatal(txt);
+            }
+
             SaveLog(txt);
+
         }
 
 
@@ -188,7 +240,7 @@ namespace AutoTestSystem.BLL
                 var childhWnd = AutoControl.FindHandle(hWnd, null, "Stop");
                 if (childhWnd != null && childhWnd != IntPtr.Zero)
                 {
-                    logger.Debug($"模拟{processName} 点击Stop");
+                    loggerDebug($"模拟{processName} 点击Stop");
 
                     AutoControl.SendClickOnControlByHandle(childhWnd);
                 }
@@ -196,7 +248,7 @@ namespace AutoTestSystem.BLL
             else
             {
 
-                logger.Debug($"未找到{processName} 句柄");
+                loggerDebug($"未找到{processName} 句柄");
             }
 
 
@@ -215,12 +267,12 @@ namespace AutoTestSystem.BLL
             {
                 // 设置注册表键值为 4，禁用 USB 存储设备
                 Registry.SetValue(keyName, valueName, 4, RegistryValueKind.DWord);
-                logger.Info("usb disabled ok");
+                loggerInfo("usb disabled ok");
 
             }
             catch (Exception ex)
             {
-                logger.Info("usb disabled Error:" + ex.Message);
+                loggerInfo("usb disabled Error:" + ex.Message);
 
             }
 

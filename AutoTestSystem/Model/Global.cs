@@ -108,7 +108,7 @@ namespace AutoTestSystem.Model
         public static Int32 Total_Pass_Num;
         public static Int32 Total_Abort_Num;
 
-
+        public static string SUPERSAVETIME;
 
         public static string BURNINWAITTIME;
         ///**************************ini配置文件各工站全局配置变量**********************/
@@ -486,7 +486,7 @@ namespace AutoTestSystem.Model
 
                 GUPORT  = iniConfig.Readini("Station", "GUPORT").Trim();
                 SkipSweep = iniConfig.Readini("Station", "SkipSweep").Trim();
-
+                SUPERSAVETIME = iniConfig.Readini("Station", "SUPERSAVETIME").Trim();
                 TestCasePath = iniConfig.Readini("Station", "TestCasePath").Trim();
                 PySCRIPT = iniConfig.Readini("Station", "PySCRIPT").Trim();
                 PROMPT = iniConfig.Readini("Station", "PROMPT").Trim();
@@ -498,6 +498,7 @@ namespace AutoTestSystem.Model
                 IsDownloadPathloss = iniConfig.Readini("Station", "IsDownloadPathloss").Trim();
 
                 NeedCheckSum = iniConfig.Readini("Station", "NeedCheckSum").Trim();
+
 
 
                 WebPsIp = iniConfig.Readini("Station", "WebPsIp").Trim();
