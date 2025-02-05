@@ -156,7 +156,7 @@ namespace AutoTestSystem.BLL
             }
             else
             {
-                loggerInfo(txt);
+                logger.Info(txt);
 
             }
             SaveLog(txt);
