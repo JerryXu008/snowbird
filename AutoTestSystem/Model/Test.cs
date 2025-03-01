@@ -1539,9 +1539,7 @@ namespace AutoTestSystem.Model
                                     Thread.Sleep(2000);
                                 }
 
-                                if(SRF_POP_RETRY==0 || RTT_PING_RETRY==0|| SFT_TXRX_RETRY==0 || MBLT_USB_RETRY==0 || MBFT_RETRY==0
-                                    || SFT_POP_RETRY==0 || MBLT_POP_RETRY==0
-                                    )
+                                if((SRF_POP_RETRY==0 || RTT_PING_RETRY==0|| SFT_TXRX_RETRY==0 || MBLT_USB_RETRY==0 || MBFT_RETRY==0|| SFT_POP_RETRY==0 || MBLT_POP_RETRY==0) && item.EeroName != "BUTTON" )
                                 {
 
                                     return rReturn = true;
