@@ -4533,7 +4533,7 @@ namespace AutoTestSystem
                                 {
                                     // 初始化要测试的测试用例参数,重复测试的时候,这些值需要清除
                                     sequences[seqNo].Clear();
-                                    inPutValue = "";
+                                    //inPutValue = "";
                                 }
                             }
                         }
