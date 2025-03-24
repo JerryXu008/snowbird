@@ -5070,12 +5070,18 @@ namespace AutoTestSystem.Model
 
 
 
-                            if (item.ComdOrParam != "1")
+                            //if (item.ComdOrParam != "1")
+                            //{
+                            //    var cmd2 = @"python ./Config/testLeak.py -p " + LeakCOM + " -cmd 01050008ff000df8";
+                            //    RunDosCmd(cmd2, 3);
+                            //}
+
+                            if (item.ComdOrParam == "2")
                             {
+                                loggerInfo("发送清零动作");
                                 var cmd2 = @"python ./Config/testLeak.py -p " + LeakCOM + " -cmd 01050008ff000df8";
                                 RunDosCmd(cmd2, 3);
                             }
-
 
                             DateTime startTime = DateTime.Now;
 
