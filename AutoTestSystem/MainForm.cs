@@ -5736,39 +5736,39 @@ namespace AutoTestSystem
             {
 
 
-                //RTT DHCP模式取消,特殊处理
-                if (Global.STATIONNAME == "RTT")
-                {
-                    loggerInfo("StationName:RTT uploadfail ,Cancel DHCP Mode...");
-                    var STAComm = new Telnet(new TelnetInfo { _Address = "192.168.1.1" });
-                    string revStr = "";
-                    if (STAComm.Open("root@OpenWrt:/#"))
-                    {
+                ////RTT DHCP模式取消,特殊处理
+                //if (Global.STATIONNAME == "RTT")
+                //{
+                //    loggerInfo("StationName:RTT uploadfail ,Cancel DHCP Mode...");
+                //    var STAComm = new Telnet(new TelnetInfo { _Address = "192.168.1.1" });
+                //    string revStr = "";
+                //    if (STAComm.Open("root@OpenWrt:/#"))
+                //    {
 
-                        STAComm.SendCommand("fw_setenv bootcmd bootipq", ref revStr, "root@OpenWrt:/#", 10);
-                        STAComm.SendCommand("fw_setenv revert_mode", ref revStr, "root@OpenWrt:/#", 10);
-                        STAComm.SendCommand("fw_setenv saveenv", ref revStr, "root@OpenWrt:/#", 10);
-
-
-                        Thread.Sleep(1000);
-                        if (STAComm.SendCommand("fw_printenv | grep bootipq", ref revStr, "bootcmd=bootipq", 5))
-                        {
-                            loggerInfo("StationName:RTT  DHCP Mode cancel success!");
-                        }
-                        else
-                        {
-                            loggerInfo("StationName:RTT  DHCP Mode cancel fail");
-                        }
+                //        STAComm.SendCommand("fw_setenv bootcmd bootipq", ref revStr, "root@OpenWrt:/#", 10);
+                //        STAComm.SendCommand("fw_setenv revert_mode", ref revStr, "root@OpenWrt:/#", 10);
+                //        STAComm.SendCommand("fw_setenv saveenv", ref revStr, "root@OpenWrt:/#", 10);
 
 
-                    }
+                //        Thread.Sleep(1000);
+                //        if (STAComm.SendCommand("fw_printenv | grep bootipq", ref revStr, "bootcmd=bootipq", 5))
+                //        {
+                //            loggerInfo("StationName:RTT  DHCP Mode cancel success!");
+                //        }
+                //        else
+                //        {
+                //            loggerInfo("StationName:RTT  DHCP Mode cancel fail");
+                //        }
 
-                    else
-                    {
-                        loggerInfo("StationName:RTT  DHCP Mode cancel fail!");
-                    }
 
-                }
+                //    }
+
+                //    else
+                //    {
+                //        loggerInfo("StationName:RTT  DHCP Mode cancel fail!");
+                //    }
+
+                //}
 
 
 
