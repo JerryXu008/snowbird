@@ -1089,8 +1089,6 @@ namespace AutoTestSystem
             }
 
 
-
-
             // 扫描SN
             string ScanSN = textBox1.Text.Trim().TrimEnd(new char[] { '\n', '\t', '\r' }).ToUpper();
 
@@ -1783,7 +1781,7 @@ namespace AutoTestSystem
         /// </summary>
         private bool CheckContinueFailNum()
         {
-            if (Global.ContinueFailNum >= Global.CONTINUE_FAIL_LIMIT)
+            if (Global.ContinueFailNum >= Global.CONTINUE_FAIL_LIMIT && (Global.STATIONNAME != "ALK" || Global.STATIONNAME != "ALKB"))
             {
                 toolStripContinuFailNum.InvokeOnToolStripItem(toolStripContinuFailNum => toolStripContinuFailNum.ForeColor = Color.Red);
                 ContinuousFailReset_Click(null, null);
@@ -1863,10 +1861,21 @@ namespace AutoTestSystem
         {
             //return;
 
-
-
             var Name = Environment.MachineName;
 
+            if ("YNLX22OF1559" == Name)
+            {
+
+                Name = "CCT-1111";
+
+                Global.STATIONNO = Name;
+                Global.FIXTURENAME = Global.STATIONNO;
+
+                int lastIndex = Global.STATIONNO.LastIndexOf('-');
+                Global.STATIONNAME = Global.STATIONNO.Substring(0, lastIndex);
+
+                return;
+            }
 
             // Name = "BURNIN-0001";
 
@@ -1884,6 +1893,7 @@ namespace AutoTestSystem
 
             //MessageBox.Show(Name);
             ///////////////////////////这里改了，记得改回来
+            ///
             if (Name.Contains("BURNIN") || Name.Contains("ALK") || Name.Contains("SETDHCP") || Name.ToLower().Contains("noisetest") || Name.ToLower().Contains("cct"))
             {
                 if (Name.Contains("-"))
@@ -2205,7 +2215,6 @@ namespace AutoTestSystem
 
 
 
-
             if (Global.STATIONNAME == "MBLT" || Global.STATIONNAME == "SFT" || Global.STATIONNAME == "BURNIN")
             {
                 // StopSFTPSever();
@@ -2516,6 +2525,11 @@ namespace AutoTestSystem
                         UBOOT_LED_W_ReMSG3 = "";
                         UBOOT_LED_W_ReMSG4 = "";
                         UBOOT_LED_W_ReMSG5 = "";
+
+                        if (Global.STATIONNAME == "MBLT")
+                        {
+                            RunDosCmd("netsh Advfirewall set allprofiles state off", 0, false);
+                        }
 
                         timer = new System.Threading.Timer(TimerCallBack, null, 0, 1000);
                         SetButtonPro(buttonBegin, Properties.Resources.pause);
