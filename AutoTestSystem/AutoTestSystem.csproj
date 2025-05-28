@@ -180,6 +180,7 @@
     <Compile Include="ConsumalForm.Designer.cs">
       <DependentUpon>ConsumalForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="DAL\AdbManager.cs" />
     <Compile Include="DAL\AsyncSocket.cs" />
     <Compile Include="DAL\Communication.cs" />
     <Compile Include="DAL\Comport.cs" />
@@ -187,6 +188,7 @@
     <Compile Include="DAL\DosCmd.cs" />
     <Compile Include="DAL\GPIB.cs" />
     <Compile Include="DAL\HttpAsync.cs" />
+    <Compile Include="DAL\SetNetClickManager.cs" />
     <Compile Include="DAL\SSH.cs" />
     <Compile Include="DAL\SyncSocket.cs" />
     <Compile Include="DAL\Telnet.cs" />
@@ -425,6 +427,12 @@
     </Content>
     <Content Include="lib\NationalInstruments.Visa.dll" />
     <Content Include="lib\RemoteObject.dll" />
+    <Content Include="searchble.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="searchnet.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="UploadPathLossTool\Config.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

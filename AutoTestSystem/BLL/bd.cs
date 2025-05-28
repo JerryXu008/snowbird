@@ -1675,6 +1675,28 @@ namespace AutoTestSystem.BLL
                 return "";
             }
         }
+        public static string RunDosCmd3(string command, int timeout = 0)
+        {
+            logger.Debug($"DosSendComd-->{command}");
+            using (var p = new Process())
+            {
+                p.StartInfo.FileName = "cmd.exe";
+                p.StartInfo.Arguments = "/c " + command;    //命令运行之后窗口关闭
+                p.StartInfo.UseShellExecute = false;        //是否使用操作系统shell启动
+                p.StartInfo.RedirectStandardInput = true;   //接受来自调用程序的输入信息
+                p.StartInfo.RedirectStandardOutput = true;  //由调用程序获取输出信息
+                p.StartInfo.RedirectStandardError = true;   //重定向标准错误输出
+                p.StartInfo.CreateNoWindow = true;          //不显示程序窗口
+                var error = "";
+                p.ErrorDataReceived += (sender, e) => { error += e.Data; };
+                p.Start();
+                p.BeginErrorReadLine();                     //获取cmd窗口的输出信息
+                var output = p.StandardOutput.ReadToEnd();
+                p.WaitForExit(timeout * 1000);
+                p.Close();
+                return output + error;
+            }
+        }
         // 发送命令后不管
         public static void SendDosCmd(string cmd)
         {
@@ -1873,6 +1895,12 @@ namespace AutoTestSystem.BLL
                         RunDosCmd("arp -d & exit");
                 }
                 if (Global.STATIONNAME == "RTT")
+                {
+
+                    if (i % 4 == 0)
+                        RunDosCmd("arp -d & exit");
+                }
+                if (Global.STATIONNAME == "")
                 {
 
                     if (i % 4 == 0)

@@ -116,6 +116,14 @@ namespace AutoTestSystem.Model
             }
 
 
+            // 发送的命令中有变量
+            while (!String.IsNullOrEmpty(item.ExpectStr) && item.ExpectStr.Contains("<") && item.ExpectStr.Contains(">"))
+            {
+                string verName = GetMidStr(item.ExpectStr, "<", ">");
+                item.ExpectStr = GetMidStr(item.ExpectStr, null, "<") + GetVerReflection(f1, verName) + GetMidStr(item.ExpectStr, ">", null);
+                retry = 0;  //！有变量不允许retry
+                retryTimes = 0;
+            }
 
 
             // 发送的命令中有变量
@@ -430,52 +438,584 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
+                    //case "GetCsnErroMessage_CCT":
+                    //    {
+
+                    //        if (Global.TESTMODE == "debug")
+                    //        {
+                    //            loggerDebug("debug,skip");
+                    //            return rReturn = true;
+                    //        }
+
+
+                    //        var url = $"http://10.90.116.132:8086/api/CHKRoute/serial/{SN}/station/CCT-1630";
+                    //        loggerDebug(url);
+
+                    //        var ret = "";
+                    //        try
+                    //        { 
+                    //            // ret = HttpGet(url);
+                    //            ret = HttpPost(url, null, out _);
+
+
+                    //            loggerInfo(">>>>:" + ret);
+                    //            if (ret.Contains("OK"))
+                    //            {
+                    //                int ii = 0;
+                    //                rReturn = true;
+                    //            }
+                    //            else
+                    //            {
+
+                    //                MainForm.f1.ShowLbl_FAIL_TEXT(ret);
+                    //                rReturn = false;
+                    //            }
+                    //        }
+                    //        catch (Exception ex)
+                    //        {
+                    //            MainForm.f1.ShowLbl_FAIL_TEXT(ret);
+                    //            loggerInfo(">>>>:" + ex.Message);
+                    //            rReturn = false;
+                    //        }
+
+
+
+
+                    //    }
+                    //    break;
+
                     case "GetCsnErroMessage_CCT":
                         {
 
                             if (Global.TESTMODE == "debug")
                             {
-                                loggerDebug("debug,skip");
+                                logger.Debug("debug skip");
                                 return rReturn = true;
                             }
 
-
-                            var url = $"http://10.90.116.132:8086/api/CHKRoute/serial/{SN}/station/CCT-1630";
-                            loggerDebug(url);
+                            var url = $"http://{Global.MESIP}:{Global.MESPORT}/api/1/CheckRoute/serial/{SN}/station/{Global.STATIONNO}";
 
                             var ret = "";
                             try
-                            { 
-                                // ret = HttpGet(url);
-                                ret = HttpPost(url, null, out _);
-
-
-                                loggerInfo(">>>>:" + ret);
+                            {
+                                ret = HttpGet(url);
+                                logger.Info(">>>>:" + ret);
                                 if (ret.Contains("OK"))
                                 {
-                                    int ii = 0;
                                     rReturn = true;
                                 }
                                 else
                                 {
-
-                                    MainForm.f1.ShowLbl_FAIL_TEXT(ret);
                                     rReturn = false;
                                 }
                             }
                             catch (Exception ex)
                             {
-                                MainForm.f1.ShowLbl_FAIL_TEXT(ret);
-                                loggerInfo(">>>>:" + ex.Message);
+                                logger.Error("@@@@@:" + ex.Message);
+                                logger.Error("#####:" + ret);
                                 rReturn = false;
                             }
 
+                        }
+                        break;
 
+                    case "ReportChildBoard_CCT":
+                        {
+                            var url = $"http://{Global.MESIP}:{Global.MESPORT}/api/1/serial/{SN}/station/{Global.STATIONNO}";
+                            
+                            logger.Debug(url);
+
+                            var ret = "";
+                            try
+                            {
+                                ret = HttpGet(url);
+                                logger.Info(">>>>:" + ret);
+
+                                // 移除所有的反斜杠
+                                string jsonString = ret.Replace("\\", "");
+
+                                // 提取 mac 的值
+                                int macStartIndex = jsonString.IndexOf("\"mac\":\"") + 7; // 7 是 "mac":"" 的长度
+                                int macEndIndex = jsonString.IndexOf("\"", macStartIndex);
+                                string mac = jsonString.Substring(macStartIndex, macEndIndex - macStartIndex);
+
+                                // 提取 board_part_number 的值
+                                int boardPartNumberStartIndex = jsonString.IndexOf("\"board_part_number\":\"") + 21; // 21 是 "board_part_number":"" 的长度
+                                int boardPartNumberEndIndex = jsonString.IndexOf("\"", boardPartNumberStartIndex);
+                                string boardPartNumber = jsonString.Substring(boardPartNumberStartIndex, boardPartNumberEndIndex - boardPartNumberStartIndex);
+
+
+                                logger.Info($"MAC: {mac}");
+                                logger.Info($"Board Part Number: {boardPartNumber}");
+
+                                item.testValue = boardPartNumber.Trim();
+                                mesPhases.ChildBoardSN = boardPartNumber.Trim();
+
+                                MesMac = mac;
+
+                                logger.Debug("Mac:" + mac);
+                                rReturn = true;
+
+                            }
+                            catch
+                            {
+
+                                logger.Info(">>>>:" + ret);
+                                rReturn = false;
+                            }
+                        }
+                        break;
+
+                    case "MAC_OK":
+                        {
+
+                            item.testValue = MesMac;
+                            if (MesMac != "")
+                            {
+                                rReturn = true;
+                            }
+                            else
+                            {
+                                rReturn = false;
+                            }
+
+                            break;
+
+                        }
+
+                    case "WakeUpPhone":
+                        adbManager.AbWakeUpPhone();
+                        rReturn = true;
+                        break;
+                    
+                    case "SetupNetwork":
+                        {
+
+                            bool _setup = adbManager.SetUpNetWork();
+
+                            rReturn = _setup;
+
+                        }
+                        break;
+
+                    case "RemoveNetwork":
+                        {
+
+                            bool _remove = adbManager.RemoveNetWork();
+
+                            rReturn = _remove;
+
+                        }
+                        break;
+
+                    case "CheckConnectCable":
+
+                        {
+                            bool _checkcable = false;
+
+                            for (int i = 0; i < 8; i++)
+                            {
+                                _checkcable = adbManager.CheckConnectCable();
+
+                                if (_checkcable)
+                                {
+                                    break;
+                                }
+
+
+                                if (_checkcable == false && i >= 4)
+                                {
+                                    ShowFixtureTip usbDialog = new ShowFixtureTip();
+                                    usbDialog.TextHandler = (str) => { };
+                                    usbDialog.StartPosition = FormStartPosition.CenterScreen;
+                                    usbDialog.ShowTip("没有与Sample的有线网络连接，请联系TE确认。\r\n Không có kết nối dây mạng đến Sample, vui lòng gọi TE xác nhận");
+
+
+                                    //// 设置窗体为无边框样式
+                                    usbDialog.FormBorderStyle = FormBorderStyle.None;
+
+
+
+                                    var result = usbDialog.ShowDialog();
+
+                                    if (result == DialogResult.No)
+                                    {
+                                        _checkcable = false;
+                                    }
+                                    else
+                                    {
+                                        _checkcable = true;
+                                    }
+
+                                }
+                                Thread.Sleep(1000);
+                            }
+
+
+                            rReturn = _checkcable;
+                        }
+
+                        break;
+
+                    case "Wifi_SSID_Check":
+                        {
+                            //var r = setNetClickManager.CheckSSID(Global.WIFINAME);
+                            logger.Info($"looking for to BSSID of {Global.WIFINAME}");
+                            Thread.Sleep(2000);
+                            var resp = RunDosCmd3("netsh wlan show networks mode=bssid");
+                            string[] lines = resp.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                            bool foundSSID = false;
+                            int bssidCount = 0;
+
+                            foreach (string line in lines)
+                            {
+                                string trimmedLine = line.Trim();
+
+                                if (trimmedLine.StartsWith("SSID") && trimmedLine.Contains(Global.WIFINAME))
+                                {
+                                    foundSSID = true;
+                                    bssidCount = 0;
+                                }
+                                else if (foundSSID && trimmedLine.StartsWith("BSSID"))
+                                {
+                                    bssidCount++;
+                                }
+                                else if (foundSSID && trimmedLine.StartsWith("SSID") && !trimmedLine.Contains(Global.WIFINAME))
+                                {
+                                    break;
+                                }
+                            }
+
+                            rReturn = foundSSID && bssidCount >= 2;
+                            if (rReturn) logger.Info(resp);
+                        }
+                        break;
+
+                    case "SCAN_BLE":
+                        {
+                            string mac = MesMac;
+
+                            // 移除冒号
+                            string macHex = mac.Replace(":", "");
+
+                            // 将MAC地址转换为一个64位的十六进制整数
+                            ulong macValue = Convert.ToUInt64(macHex, 16);
+
+                            // 加上十六进制的2
+                            macValue += 0x01;
+
+                            // 将结果转换回十六进制字符串
+                            string newMacHex = macValue.ToString("X12");
+
+                            // 按每两个字符插入冒号
+                            string newMac = string.Join(":",
+                                new string[]
+                                {
+                newMacHex.Substring(0, 2),
+                newMacHex.Substring(2, 2),
+                newMacHex.Substring(4, 2),
+                newMacHex.Substring(6, 2),
+                newMacHex.Substring(8, 2),
+                newMacHex.Substring(10, 2)
+                                });
+
+                            logger.Debug("Bluetooth MAC Address: " + newMac.ToLower());
+
+                            var r = setNetClickManager.CheckBLE(newMac.ToLower());
+
+                            if (r)
+                            {
+                                item.testValue = newMac.ToLower();
+                            }
+                            else
+                            {
+                                item.testValue = "False";
+                            }
+
+                            rReturn = r;
+                        }
+                        break;
+
+                    case "CheckBlueDetailX":
+                        {
+                            item.testValue = LED_BOOTUP_B_X;
+
+                            rReturn = true;
+
+                        }
+                        break;
+                    
+                    case "CheckBlueDetailY":
+                        {
+
+                            item.testValue = LED_BOOTUP_B_Y;
+
+                            rReturn = true;
+
+                        }
+                        break;
+
+                    case "CheckBlue":
+                        {
+                            LED_BOOTUP_B_X = "";
+                            LED_BOOTUP_B_Y = "";
+                            FixSerialPort.OpenCOM();
+
+                            var startTime = DateTime.Now; // 记录开始时间
+                            var timeout = TimeSpan.FromSeconds(80); // 设置超时时间为120秒
+
+                            while (true)
+                            {
+                                var revStr = "";
+
+                                if (FixSerialPort.SendCommandToFix(item.ComdOrParam, ref revStr, "%END", 3))
+                                {
+                                    var XSubStr1 = "COR_X=";
+                                    var XSubStr2 = ",COR_Y=";
+                                    var YSubStr1 = ",COR_Y=";
+                                    var YSubStr2 = ",LUM=";
+                                    revStr = Regex.Replace(revStr, "\r", "");
+                                    revStr = Regex.Replace(revStr, "\n", "");
+                                    revStr = Regex.Replace(revStr, "\t", "");
+
+                                    var X = GetValue(revStr, XSubStr1, XSubStr2).Replace(";", "");
+                                    var Y = GetValue(revStr, YSubStr1, YSubStr2).Replace(";", "");
+
+
+                                    LED_BOOTUP_B_X = X;
+                                    LED_BOOTUP_B_Y = Y;
+
+
+                                    var r1 = CompareLimit("0.125", "0.136", X, out info);
+                                    var r2 = CompareLimit("0.052", "0.089", Y, out info);
+
+
+
+
+
+                                    if (r1 && r2)
+                                    {
+                                        rReturn = true;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        Thread.Sleep(500);
+                                    }
+                                }
+                                else
+                                {
+                                    Thread.Sleep(500);
+                                    continue;
+                                }
+
+                                // 检查是否超过120秒
+                                if (DateTime.Now - startTime > timeout)
+                                {
+                                    rReturn = false; // 设置rReturn为false，表示超时退出
+                                    break;
+                                }
+                            }
+
+                        }
+                        break;
+
+                    case "CheckWhiteDetailX":
+                        {
+                            item.testValue = LED_SETUP_W_X;
+
+                            rReturn = true;
+
+                        }
+                        break;
+                    
+                    case "CheckWhiteDetailY":
+                        {
+
+                            item.testValue = LED_SETUP_W_Y;
+
+                            rReturn = true;
+
+                        }
+                        break;
+
+                    case "CheckWhite":
+                        {
+                            FixSerialPort.OpenCOM();
+
+                            var startTime = DateTime.Now; // 记录开始时间
+                            var timeout = TimeSpan.FromSeconds(120); // 设置超时时间为120秒
+
+                            while (true)
+                            {
+                                var revStr = "";
+
+                                if (FixSerialPort.SendCommandToFix(item.ComdOrParam, ref revStr, "%END", 3))
+                                {
+                                    var XSubStr1 = "COR_X=";
+                                    var XSubStr2 = ",COR_Y=";
+                                    var YSubStr1 = ",COR_Y=";
+                                    var YSubStr2 = ",LUM=";
+                                    revStr = Regex.Replace(revStr, "\r", "");
+                                    revStr = Regex.Replace(revStr, "\n", "");
+                                    revStr = Regex.Replace(revStr, "\t", "");
+
+                                    var X = GetValue(revStr, XSubStr1, XSubStr2).Replace(";", "");
+                                    var Y = GetValue(revStr, YSubStr1, YSubStr2).Replace(";", "");
+
+
+                                    LED_SETUP_W_X = X;
+                                    LED_SETUP_W_Y = Y;
+
+
+                                    var r1 = CompareLimit("0.338", "0.379", X, out info);
+                                    var r2 = CompareLimit("0.339", "0.374", Y, out info);
+
+
+
+
+
+                                    if (r1 && r2)
+                                    {
+                                        rReturn = true;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        Thread.Sleep(500);
+                                    }
+                                }
+                                else
+                                {
+                                    Thread.Sleep(500);
+                                    continue;
+                                }
+
+                                // 检查是否超过120秒
+                                if (DateTime.Now - startTime > timeout)
+                                {
+                                    rReturn = false; // 设置rReturn为false，表示超时退出
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+
+                    case "CheckRed":
+                        {
+                            LED_BOOTUP_B_X = "";
+                            LED_BOOTUP_B_Y = "";
+                            FixSerialPort.OpenCOM();
+
+                            //按下按钮：
+
+                            var revStr = "";
+                            for (var i = 0; i < 3; i++)
+                            {
+                                revStr = "";
+                                var r1 = FixSerialPort.SendCommandToFix("AT+RESET_PRESS%", ref revStr, "OK", 3);
+                                if (r1)
+                                {
+                                    break;
+                                }
+                                Thread.Sleep(1000);
+                            }
+
+
+
+                            var startTime = DateTime.Now; // 记录开始时间
+                            var timeout = TimeSpan.FromSeconds(50); // 设置超时时间为120秒
+
+                            while (true)
+                            {
+                                revStr = "";
+
+                                if (FixSerialPort.SendCommandToFix(item.ComdOrParam, ref revStr, "%END", 3))
+                                {
+                                    var XSubStr1 = "COR_X=";
+                                    var XSubStr2 = ",COR_Y=";
+                                    var YSubStr1 = ",COR_Y=";
+                                    var YSubStr2 = ",LUM=";
+
+                                    revStr = Regex.Replace(revStr, "\r", "");
+                                    revStr = Regex.Replace(revStr, "\n", "");
+                                    revStr = Regex.Replace(revStr, "\t", "");
+
+                                    var X = GetValue(revStr, XSubStr1, XSubStr2).Replace(";", "");
+                                    var Y = GetValue(revStr, YSubStr1, YSubStr2).Replace(";", "");
+
+
+                                    LED_BOOTUP_B_X = X;
+                                    LED_BOOTUP_B_Y = Y;
+
+
+                                    var r1 = CompareLimit("0.663", "0.755", X, out info);
+                                    var r2 = CompareLimit("0.245", "0.337", Y, out info);
+
+                                    if (r1 && r2)
+                                    {
+                                        rReturn = true;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        Thread.Sleep(500);
+                                    }
+                                }
+                                else
+                                {
+                                    Thread.Sleep(500);
+                                    continue;
+                                }
+
+                                // 检查是否超过120秒
+                                if (DateTime.Now - startTime > timeout)
+                                {
+                                    rReturn = false; // 设置rReturn为false，表示超时退出
+                                    break;
+                                }
+                            }
+
+                            revStr = "";
+                            for (var i = 0; i < 3; i++)
+                            {
+                                revStr = "";
+                                var r1 = FixSerialPort.SendCommandToFix("AT+RESET_RELEASE%", ref revStr, "OK", 3);
+                                if (r1)
+                                {
+                                    break;
+                                }
+                                Thread.Sleep(1000);
+                            }
 
 
                         }
                         break;
 
+                    case "ShowFixtureTip2":
+                        {
+
+                            return rReturn = true;
+                        }
+
+                    case "PingDUT_CCT":
+
+                        try
+                        {
+                            NetshInterfaceDisEnable("autocct");
+                            Thread.Sleep(3000);
+                            NetshInterfaceEnable("autocct");
+
+                            rReturn = PingIP(!IsNullOrEmpty(item.ComdOrParam) ? item.ComdOrParam : DUTIP, int.Parse(item.TimeOut));
+
+                        }
+                        catch (Exception ex)
+                        {
+                            rReturn = false;
+                            logger.Error(ex.ToString());
+                        }
+
+                        break;
 
                     case "PowerPingDUT":
 
@@ -5474,13 +6014,13 @@ namespace AutoTestSystem.Model
                             if(Global.STATIONNAME == "SRF" && item.TestKeyword.Contains("SetIpaddrEnv") && Global.TESTMODE == "reliability")
                             {
                                 
-                                loggerDebug("Reliability Mode SetIpaddrEnv SKip ,do not run");
+                                loggerDebug("Reliability Mode SetIpaddrEnv Skip ,do not run");
                                 return rReturn = true;
                             }
                             //RTT-1772 Fixture ORT skip test SetDHCP
                             if (Global.STATIONNAME == "RTT" && item.TestKeyword.Contains("SetDHCP") && Global.TESTMODE == "reliability")
                             {
-                                loggerDebug("Reliability Mode SetDHCP SKip ,do not run");
+                                loggerDebug("Reliability Mode SetDHCP Skip ,do not run");
                                 return rReturn = true;
                             }
 
@@ -5497,7 +6037,7 @@ namespace AutoTestSystem.Model
                             else if ((Global.TESTMODE == "debug" || Global.TESTMODE == "fa" || IsDebug) && item.EeroName.Trim() == "CHECK_ART_PARTITION")
                             {
                                 rReturn = true;
-                                loggerDebug("Debug Mode CHECK_ART_PARTITION SKip ,do not run");
+                                loggerDebug("Debug Mode CHECK_ART_PARTITION Skip ,do not run");
                             }
                             else if (item.EeroName.Trim() == "TEMP_BOOT"
                                    &&

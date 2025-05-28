@@ -212,7 +212,15 @@ namespace AutoTestSystem
 
         public bool isTesting = false;
 
+        public static SetNetClickManager setNetClickManager;
 
+        public static AdbManager adbManager;
+
+        public static string LED_BOOTUP_B_X = "";
+        public static string LED_BOOTUP_B_Y = "";
+
+        public static string LED_SETUP_W_X = "";
+        public static string LED_SETUP_W_Y = "";
 
         //ALK 气压值和 泄漏值
 
@@ -401,7 +409,9 @@ namespace AutoTestSystem
             //test 
 
 
+            setNetClickManager = new SetNetClickManager();
 
+            adbManager = new AdbManager();
 
 
             //if (Screen.PrimaryScreen.Bounds.Width != 1920 && Screen.PrimaryScreen.Bounds.Width != 1536)
@@ -1896,6 +1906,45 @@ namespace AutoTestSystem
             ///
             if (Name.Contains("BURNIN") || Name.Contains("ALK") || Name.Contains("SETDHCP") || Name.ToLower().Contains("noisetest") || Name.ToLower().Contains("cct"))
             {
+                if (Name.Contains("CCT"))
+                {
+                    ////CCT 
+                    lbl_StationNo.Text = Name;
+                    Global.STATIONNO = Name;
+                    Global.STATIONNAME = "CCT";
+                    Global.FIXTURENAME = Name;
+                    iniConfig.Writeini("Station", "STATIONNAME", Global.STATIONNAME);
+                    iniConfig.Writeini("Station", "STATIONNO", Global.STATIONNO);
+                    iniConfig.Writeini("Station", "FIXTURENAME", Global.FIXTURENAME);
+
+
+
+                    FixSerialPort = new Comport(FixCOMinfo);
+                    FixSerialPort.OpenCOM();
+
+                    string recvStr = "";
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (FixSerialPort.SendCommandToFix("AT+FIXTURE_STATUS%", ref recvStr, "\r\n", 1))
+                        {
+                            recvStr = recvStr.Replace("\r\n", "").Trim();
+                            Global.CCT_AUTO = "1";
+                            break;
+                        }
+
+                        Thread.Sleep(300);
+                    }
+                    if (string.IsNullOrWhiteSpace(recvStr))
+                    {
+                        Global.CCT_AUTO = "0";
+                    }
+
+
+                    return;
+                }
+
+
                 if (Name.Contains("-"))
                 {
                     Global.STATIONNO = Name;
@@ -2769,6 +2818,36 @@ namespace AutoTestSystem
 
                                     //  loggerInfo("失败了连续ping 10次");
                                     //  PingIP("192.168.1.10", 10);
+                                }else if(Global.STATIONNAME == "CCT")
+                                {
+                                    var revStr = "";
+                                    if (TempItemFAILName == "PING_GOOGLE" || TempItemFAILName == "WIFI_SSID_CHECK" || TempItemFAILName == "CheckRed" || TempItemFAILName == "LED_RESET_R_X" || TempItemFAILName == "LED_RESET_R_Y")
+                                    {
+                                        logger.Error("测试fail，prepare remove network");
+                                        FixSerialPort.OpenCOM();
+                                        logger.Info("start reboot product");
+                                        FixSerialPort.SendCommandToFix("AT+RESET_PRESS%", ref revStr, "OK", 5);
+                                        FixSerialPort.SendCommandToFix("AT+RESET_RELEASE%", ref revStr, "OK", 5);
+
+                                        bool _rm_network = false;
+
+                                        for (int i = 0; i < 3; i++)
+                                        {
+                                            if (adbManager.RemoveNetWork())
+                                            {
+                                                _rm_network = true;
+                                                break;
+                                            }
+                                            logger.Warn($"Remove network failed. Retry {i + 1}");
+                                        }
+
+                                        if (_rm_network)
+                                            logger.Info("Remove network success");
+                                        else
+                                            logger.Error("Remove network failed after 3 attempts");
+
+
+                                    }
                                 }
 
 
@@ -3825,7 +3904,11 @@ namespace AutoTestSystem
                                                 )
                                             {
                                                 MBFT_RETRY--;
-                                                if (MBFT_RETRY >= 0)
+                                                if(Global.TESTMODE.ToLower() == "fa")
+                                                {
+                                                    MBFT_RETRY = -1;
+                                                }
+                                                if (MBFT_RETRY >= 0 )
                                                 {
                                                     FixSerialPort.OpenCOM();
                                                     var recvStr = "";

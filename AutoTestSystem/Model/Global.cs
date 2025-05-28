@@ -71,6 +71,9 @@ namespace AutoTestSystem.Model
         public static string Compensation;
 
         public static string GUPORT;
+        public static string PythonPath;
+        public static string WIFINAME;
+        public static string CCT_AUTO;
         ///**************************ini配置文件DUT全局配置变量**********************/
         public static string DUTIP;
         public static string SSH_PORT;
@@ -286,8 +289,17 @@ namespace AutoTestSystem.Model
             try
             {
                 Global.Sequences = null;
-                JsonFilePath = $@"{System.Environment.CurrentDirectory}\Config\{STATIONNAME}.json";
-                string shaPath = $@"{System.Environment.CurrentDirectory}\Config\{STATIONNAME}_key.txt";
+                string shaPath = "";
+                if (Global.CCT_AUTO == "1")
+                {
+                    JsonFilePath = $@"{System.Environment.CurrentDirectory}\Config\CCT_AUTO.json";
+                    shaPath = $@"{System.Environment.CurrentDirectory}\Config\CCT_AUTO_key.txt";
+                }
+                else
+                {
+                    JsonFilePath = $@"{System.Environment.CurrentDirectory}\Config\{STATIONNAME}.json";
+                    shaPath = $@"{System.Environment.CurrentDirectory}\Config\{STATIONNAME}_key.txt";
+                }
                 string sha = Bd.BinaryRead(shaPath);
                 SaveLog($"  txtSHA:{sha}");
                 string JsonSHA = Bd.GetSHA256(JsonFilePath);
@@ -499,7 +511,9 @@ namespace AutoTestSystem.Model
 
                 NeedCheckSum = iniConfig.Readini("Station", "NeedCheckSum").Trim();
 
-
+                PythonPath = iniConfig.Readini("Station", "PythonPath").Trim();
+                WIFINAME = iniConfig.Readini("Station", "WIFINAME").Trim();
+                CCT_AUTO = iniConfig.Readini("Station", "CCT_AUTO").Trim();
 
                 WebPsIp = iniConfig.Readini("Station", "WebPsIp").Trim();
                 WPSPortNum = iniConfig.Readini("Station", "WPSPortNum").Trim();
