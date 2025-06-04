@@ -1900,7 +1900,7 @@ namespace AutoTestSystem.BLL
                     if (i % 4 == 0)
                         RunDosCmd("arp -d & exit");
                 }
-                if (Global.STATIONNAME == "")
+                if (Global.STATIONNAME == "MBFT")
                 {
 
                     if (i % 4 == 0)
