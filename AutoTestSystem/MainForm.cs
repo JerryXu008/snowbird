@@ -2344,7 +2344,7 @@ namespace AutoTestSystem
 
 
 
-        void ResetData(bool needresetTime = true)
+        void ResetData(bool needresetTime = true, bool clearHistory = false)
         {
             mesPhases = new MesPhases();
 
@@ -2441,6 +2441,11 @@ namespace AutoTestSystem
             PowerToTelnetEndTime = new DateTime();
 
             NoiseGlobalReturn = false;
+
+            if (clearHistory)
+            {
+                SummStr = new System.Collections.Concurrent.ConcurrentQueue<string>();
+            }
 
             DataManager.ShareInstance.ClearData();
         }
@@ -3882,7 +3887,7 @@ namespace AutoTestSystem
 
                                                     goto TX_RX_RETRY;
                                                 }
-                                                
+
                                             }
                                         }
                                         if (Global.STATIONNAME == "MBFT")
@@ -3904,11 +3909,7 @@ namespace AutoTestSystem
                                                 )
                                             {
                                                 MBFT_RETRY--;
-                                                if(Global.TESTMODE.ToLower() == "fa")
-                                                {
-                                                    MBFT_RETRY = -1;
-                                                }
-                                                if (MBFT_RETRY >= 0 )
+                                                if (MBFT_RETRY >= 0)
                                                 {
                                                     FixSerialPort.OpenCOM();
                                                     var recvStr = "";
@@ -3992,9 +3993,12 @@ namespace AutoTestSystem
                                                 || tempItem.ItemName == "StartProcessATSuite"
                                                 || tempItem.ItemName == "PassSN"
                                                 || tempItem.TestKeyword == "SRFTempScrap"
+                                                || tempItem.ItemName == "WIFI_TX_POWER_F5180_EHT_BW20_MCS0_C0"
+                                                || tempItem.ItemName == "WIFI_TX_POWER_F2412_EHT_BW20_MCS0_C1"
                                                 )
                                             {
                                                 SRF_POP_RETRY--;
+
                                                 if (SRF_POP_RETRY >= 0)
                                                 {
 
@@ -4054,7 +4058,7 @@ namespace AutoTestSystem
 
                                                     var lastSec = sec;
 
-                                                    ResetData();
+                                                    ResetData(true, true);
 
                                                     sec = lastSec;
 
@@ -4069,15 +4073,26 @@ namespace AutoTestSystem
 
                                         if (Global.STATIONNAME == "RTT")
                                         {
-                                            if (tempItem.ItemName == "WiFi_SPEED_5650_TX_SERIAL_Repeat"
-                                                ||
+                                            if (
+                                               tempItem.ItemName == "WiFi_SPEED_5650_TX_SERIAL_Repeat"
+                                               ||
                                                tempItem.ItemName == "WiFi_SPEED_5650_RX_SERIAL_Repeat"
                                                ||
                                                tempItem.ItemName == "WiFi_SPEED__TX_SERIAL_Repeat"
                                                ||
                                                tempItem.ItemName == "WiFi_SPEED__RX_SERIAL_Repeat"
                                                ||
+                                               tempItem.ItemName == "WiFi_SPEED_5650_TX_SERIAL"
+                                               ||
+                                               tempItem.ItemName == "WiFi_SPEED_5650_RX_SERIAL"
+                                               ||
+                                               tempItem.ItemName == "WiFi_SPEED__TX_SERIAL"
+                                               ||
+                                               tempItem.ItemName == "WiFi_SPEED__RX_SERIAL"
+                                               ||
                                                tempItem.ItemName == "PING_GU"
+                                               ||
+                                               tempItem.ItemName == "BlePeripheral_Rpi2"
 
                                                 )
                                             {
@@ -4434,6 +4449,7 @@ namespace AutoTestSystem
                                             || (tempItem.ErrorCode.Contains("1.4.3.6:"))
                                             || (tempItem.ErrorCode.Contains("3.1.1:"))
                                             || (tempItem.ErrorCode.Contains("3.3:"))
+                                            || (tempItem.ErrorCode.Contains("0.0.0.0"))
                                             )
                                         {
 
