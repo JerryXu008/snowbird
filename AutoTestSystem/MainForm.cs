@@ -3995,6 +3995,8 @@ namespace AutoTestSystem
                                                 || tempItem.TestKeyword == "SRFTempScrap"
                                                 || tempItem.ItemName == "WIFI_TX_POWER_F5180_EHT_BW20_MCS0_C0"
                                                 || tempItem.ItemName == "WIFI_TX_POWER_F2412_EHT_BW20_MCS0_C1"
+                                                || tempItem.ErrorCode.Contains("6.2.1.5.0.1")
+                                                || tempItem.ErrorCode.Contains("6.3.1.5.1.2")
                                                 )
                                             {
                                                 SRF_POP_RETRY--;
@@ -4093,12 +4095,17 @@ namespace AutoTestSystem
                                                tempItem.ItemName == "PING_GU"
                                                ||
                                                tempItem.ItemName == "BlePeripheral_Rpi2"
+                                               ||
+                                               tempItem.ErrorCode.Contains("6.1.1.5.1:")
+                                               ||
+                                               tempItem.ErrorCode.Contains("6.1.0.5.1:")
+                                               ||
+                                               tempItem.ErrorCode.Contains("3.5:")
 
                                                 )
                                             {
 
                                                 RTT_PING_RETRY--;
-                                                RTT_PING_RETRY = -1;
                                                 if (RTT_PING_RETRY >= 0)
                                                 {
 
@@ -4126,7 +4133,7 @@ namespace AutoTestSystem
 
                                                     var lastSec = sec;
 
-                                                    ResetData();
+                                                    ResetData(true,false);
 
                                                     sec = lastSec;
 
