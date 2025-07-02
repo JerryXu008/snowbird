@@ -4569,7 +4569,7 @@
         "startIndex": 0,
         "start_time_json": "0001-01-01T00:00:00",
         "start_time": "0001-01-01T00:00:00",
-        "ItemName": "BlePeripheral_Rpi",
+        "ItemName": "BlePeripheral_Rpi2",
         "ErrorCode": "3.5: Device.Bluetooth",
         "RetryTimes": "0",
         "TimeOut": "15",
