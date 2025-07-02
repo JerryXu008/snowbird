@@ -4050,7 +4050,7 @@ namespace AutoTestSystem
                                                         return;
                                                     }
 
-                                                    Thread.Sleep(2000);
+                                                    Thread.Sleep(1000);
 
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
 
@@ -4062,11 +4062,9 @@ namespace AutoTestSystem
 
                                                     ResetData(true, true);
 
-                                                    sec = lastSec;
+                                                    //sec = lastSec;
 
-
-
-                                                    Thread.Sleep(2000);
+                                                    Thread.Sleep(1000);
 
                                                     goto TX_RX_RETRY;
                                                 }
@@ -4112,8 +4110,6 @@ namespace AutoTestSystem
                                                     var rr = "";
                                                     loggerDebug("special fail,begin reboot>>>>>>>>>>>>");
                                                     DUTCOMM.SendCommand("reboot", ref rr, "", 120);
-                                                    
-
 
                                                     var STAComm = new Telnet(new TelnetInfo { _Address = "192.168.1.200" });
                                                     string revStr = "";
@@ -4121,11 +4117,8 @@ namespace AutoTestSystem
                                                     Thread.Sleep(1000);
                                                     STAComm.SendCommand("reboot", ref revStr, "", 10);
 
-
-
                                                     //loggerDebug("waiting 35s");
                                                     // Thread.Sleep(35000);
-
 
                                                     sequences = ObjectCopier.Clone<List<Sequence>>(Global.Sequences);
                                                     seqNo = 0;

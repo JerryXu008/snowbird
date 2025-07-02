@@ -3546,12 +3546,6 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
-
-
-
-
-
-
                     case "RadioValidation_6G_Simple":
                     case "RadioValidation_5G_Simple":
                     case "RadioValidation_2G_Simple":
