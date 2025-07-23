@@ -786,7 +786,7 @@ namespace AutoTestSystem.Model
                                     LED_BOOTUP_B_Y = Y;
 
 
-                                    var r1 = CompareLimit("0.125", "0.136", X, out info);
+                                    var r1 = CompareLimit("0.107", "0.157", X, out info);
                                     var r2 = CompareLimit("0.052", "0.089", Y, out info);
 
 
@@ -868,8 +868,8 @@ namespace AutoTestSystem.Model
                                     LED_SETUP_W_Y = Y;
 
 
-                                    var r1 = CompareLimit("0.338", "0.379", X, out info);
-                                    var r2 = CompareLimit("0.339", "0.374", Y, out info);
+                                    var r1 = CompareLimit("0.338", "0.394", X, out info);
+                                    var r2 = CompareLimit("0.339", "0.392", Y, out info);
 
 
 
@@ -1955,17 +1955,17 @@ namespace AutoTestSystem.Model
                         }
                         break;
 
-                    //case "ReportChildBoard":
-                    //    {
-                    //        if (mescheckroute.GetCsnErroMessage(SN, out string serialNum, out string ItemPartSN, out string MesMac, out string mesMsg)
-                    //            && mesMsg.Contains("OK"))
-                    //        {
-                    //            item.testValue = ItemPartSN.Trim();
-                    //            mesPhases.ChildBoardSN = ItemPartSN.Trim();
-                    //            rReturn = true;
-                    //        }
-                    //    }
-                    //    break;
+                    case "ReportChildBoard":
+                        {
+                            if (mescheckroute.GetCsnErroMessage(SN, out string serialNum, out string ItemPartSN, out string MesMac, out string mesMsg)
+                                && mesMsg.Contains("OK"))
+                            {
+                                item.testValue = ItemPartSN.Trim();
+                                mesPhases.ChildBoardSN = ItemPartSN.Trim();
+                                rReturn = true;
+                            }
+                        }
+                        break;
 
                     case "GetMesIP":
                         {
