@@ -5083,8 +5083,6 @@ namespace AutoTestSystem
         private bool UploadJsonToClient()
         {
 
-             
-
             DateTime startUpload = DateTime.Now;
             bool result = false;
             string JsonPath = $@"{Global.LogPath}\Json\{SN}_{DateTime.Now:HHmmss}.json";

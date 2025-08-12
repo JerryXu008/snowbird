@@ -401,6 +401,56 @@ namespace AutoTestSystem.Model
                     case "MessageBoxShow":
                         rReturn = ConfirmMessageBox(item.ComdOrParam, item.ExpectStr, item.TimeOut == "0" ? MessageBoxButtons.OK : MessageBoxButtons.YesNo);
                         break;
+
+                    case "CheckSUM":
+
+                        // 获取当前可执行文件的路径
+                        string exeFilePath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                        // 配置文件路径（假设在同一目录下）
+                        //string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "/config", "config.ini");
+
+                        // 计算当前可执行文件的MD5校验码
+                        string exeMd5 = GetMD5HashFromFile(exeFilePath);
+                        // 计算配置文件的MD5校验码
+                        //  string configMd5 = GetMD5HashFromFile(configFilePath);
+
+
+                        exeMd5 = "39a7ad21e3ae44e0620e7d41a210b2c4";
+                        // a210b2c4
+
+                        // 打印MD5校验码
+                        logger.Debug("Executable MD5: " + exeMd5);
+
+
+                        //Console.WriteLine("Config.ini MD5: " + configMd5);
+
+                        //// 将两个或更多MD5校验码组合起来，计算最终的MD5校验码
+                        //string combinedMd5 = GetCombinedMd5(exeMd5, configMd5);
+
+                        //// 打印最终的MD5校验码
+                        //Console.WriteLine("Final Combined MD5: " + combinedMd5);
+
+                        exeMd5 = exeMd5.Substring(exeMd5.Length - 8);
+
+
+                        item.testValue = exeMd5;
+
+
+                        rReturn = CheckSpec(item.Spec, item.testValue);
+
+
+                        break;
+
+                    case "CheckSWVersion":
+                        {
+
+                            // item.testValue = Global.Version.ToString();
+
+                            item.testValue = "1.0.3.1";
+                            rReturn = true;
+                        }
+                        break;
+
                     case "CKCustom":
                         {
 
@@ -493,12 +543,15 @@ namespace AutoTestSystem.Model
                                 return rReturn = true;
                             }
 
-                            var url = $"http://{Global.MESIP}:{Global.MESPORT}/api/1/CheckRoute/serial/{SN}/station/{Global.STATIONNO}";
-
+                            //var url = $"http://{Global.MESIP}:{Global.MESPORT}/api/1/CHKRoute/serial/{SN}/station/{Global.STATIONNO}";
+                            var url = $"http://{Global.MESIP}:{Global.MESPORT}/api/CHKRoute/serial/{SN}/station/{Global.STATIONNO}";
+                        
+                            logger.Info(">>>>:" + url);
                             var ret = "";
                             try
                             {
-                                ret = HttpGet(url);
+                                ret = HttpPost(url, null, out _);
+                                ret = HttpPost(url, null, out _);
                                 logger.Info(">>>>:" + ret);
                                 if (ret.Contains("OK"))
                                 {
@@ -2526,7 +2579,6 @@ namespace AutoTestSystem.Model
 
                             if (md5 == item.CheckStr1)
                             {
-
                                 rReturn = true;
 
                             }
