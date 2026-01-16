@@ -403,9 +403,7 @@
     <None Include="Resources\redled.jpg" />
     <Content Include="Resources\Upan.png" />
     <None Include="Resources\whiteled.jpg" />
-    <Content Include="Scan_Barcode_C03.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Scan_Barcode_C03.exe" />
     <Content Include="DynamsoftKey.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -21,9 +21,11 @@ namespace AutoTestSystem.DAL
         public bool SetUpNetWork()
         {
             int retry = 3;
-            // Package của ứng dụng
+        // Package của ứng dụng
 
-           RETRY_SETUPNETWORK:
+        RETRY_SETUPNETWORK:
+
+            retry--;
 
             DeleteXmlFile();
             logger.Info("Open apk eero...");
@@ -70,7 +72,7 @@ namespace AutoTestSystem.DAL
             DumpUiAutomator();
 
             // Click vào button "Next"
-            for(int i = 0; i < 3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 logger.Info("Find button and click '->'...");
                 if (!ClickElementById("com.eero.android:id/button_next"))
@@ -87,22 +89,6 @@ namespace AutoTestSystem.DAL
                     return false;
                 }
                 System.Threading.Thread.Sleep(500);
-            }
-
-            DumpUiAutomator();
-
-            logger.Info("Find and click 'Next'...");
-
-            if (DumpUiAutomatorAndWaitForElement("resource-id", "com.eero.android:id/setup_confirmation_next_button", 30))
-            {
-                logger.Info("Button 'Next' found. Click it...");
-                ClickElementById("com.eero.android:id/setup_confirmation_next_button");
-                DeleteXmlFile();
-            }
-            else
-            {
-                logger.Info("not found 'Next' button, try to click Basement");
-                DeleteXmlFile();
             }
             System.Threading.Thread.Sleep(500);
             DumpUiAutomator();
@@ -126,7 +112,7 @@ namespace AutoTestSystem.DAL
             System.Threading.Thread.Sleep(500);
             DumpUiAutomator();
 
-            if (!InputTextById("com.eero.android:id/network_name_edit_text","snowbird"))
+            if (!InputTextById("com.eero.android:id/network_name_edit_text", "snowbird"))
             {
                 logger.Info("Not found 'com.eero.android:id/network_name_edit_text'");
                 DeleteXmlFile();
@@ -177,22 +163,49 @@ namespace AutoTestSystem.DAL
                     goto RETRY_SETUPNETWORK;
                 }
             }
-            System.Threading.Thread.Sleep(2000);
-            
+            Thread.Sleep(2000);
+
+            DumpUiAutomator();
+            if (!ClickElementById("com.eero.android:id/button_next"))
+            {
+                logger.Info("Not found ID 'com.eero.android:id/button_next'.");
+                DeleteXmlFile();
+            }
+
             DumpUiAutomator();
 
-            if (!ClickElementById("com.eero.android:id/next_button"))
+            if (DumpUiAutomatorAndWaitForElement("text", "Maybe later", 10))
             {
-                logger.Info("Not found ID 'com.eero.android:id/next_button'.");
+                logger.Info("Button 'Maybe later' found. Click it...");
+                ClickElementByText("Maybe later");
                 DeleteXmlFile();
-                if (retry > 0)
-                {
-                    KillApp(packageName);
-                    goto RETRY_SETUPNETWORK;
-                }
-                return false;
             }
-            System.Threading.Thread.Sleep(2000);
+            else
+            {
+                logger.Info("Not found button 'Maybe later' before waitting.");
+                DeleteXmlFile();
+
+            }
+
+            Thread.Sleep(2000);
+
+            DumpUiAutomator();
+            //Check connection 
+
+            if (DumpUiAutomatorAndWaitForElement("text", "CANCEL", 3))
+            {
+                logger.Info("Button 'Next' found. Click it...");
+                ClickElementById("CANCEL");
+                DeleteXmlFile();
+            }
+            else
+            {
+                logger.Info("not found 'CANCEL' button, try to click Basement");
+                DeleteXmlFile();
+            }
+
+
+            Thread.Sleep(3000);
 
             KillApp(packageName);
 
@@ -222,80 +235,104 @@ namespace AutoTestSystem.DAL
             return result;
         }
 
-        public bool RemoveNetWork()
+        public bool RemoveNetWork(int maxRetry = 3)
         {
-            OpenApplication(packageName);
-            // Chờ ứng dụng mở
-            System.Threading.Thread.Sleep(2000);
-
-            DumpUiAutomator();
-            //Check connection 
-
-            if (DumpUiAutomatorAndWaitForElement("text", "CANCEL", 3))
+            for (int attempt = 1; attempt <= maxRetry; attempt++)
             {
-                logger.Info("Button 'Next' found. Click it...");
-                ClickElementById("CANCEL");
+                logger.Info($"RemoveNetWork attempt {attempt}/{maxRetry}");
+
+                bool stepFail = false;
+
+                OpenApplication(packageName);
+                Thread.Sleep(2000);
+
+                DumpUiAutomator();
+
+                // Check popup CANCEL
+                if (DumpUiAutomatorAndWaitForElement("text", "CANCEL", 3))
+                {
+                    logger.Info("Button 'CANCEL' found. Click it...");
+                    ClickElementById("CANCEL");
+                }
+                else
+                {
+                    logger.Info("Not found 'CANCEL' button.");
+                }
                 DeleteXmlFile();
+
+                // Click Basement
+                DumpUiAutomator();
+                logger.Info("Find and click button 'Basement'...");
+                if (!ClickElementByText("Basement"))
+                {
+                    logger.Info("Not found button 'Basement'.");
+                    stepFail = true;
+                }
+
+                if (!stepFail)
+                {
+                    Thread.Sleep(500);
+                    DumpUiAutomator();
+                    if (!ClickElementById("eero_device_detail_toolbar_action_button"))
+                    {
+                        logger.Info("Not found toolbar action button.");
+                        stepFail = true;
+                    }
+                }
+
+                if (!stepFail)
+                {
+                    Thread.Sleep(500);
+                    DumpUiAutomator();
+                    if (!ClickElementByText("Remove Basement"))
+                    {
+                        logger.Info("Not found 'Remove Basement'.");
+                        stepFail = true;
+                    }
+                }
+
+                if (!stepFail)
+                {
+                    Thread.Sleep(500);
+                    DumpUiAutomator();
+                    if (!ClickElementByText("Delete network"))
+                    {
+                        logger.Info("Not found 'Delete network'.");
+                        stepFail = true;
+                    }
+                }
+
+                if (!stepFail)
+                {
+                    Thread.Sleep(500);
+                    DumpUiAutomator();
+                    if (!ClickElementByText("DELETE NETWORK"))
+                    {
+                        logger.Info("Not found 'DELETE NETWORK'.");
+                        stepFail = true;
+                    }
+                }
+
+                if (!stepFail)
+                {
+                    Thread.Sleep(2000);
+                    KillApp(packageName);
+                    logger.Info("RemoveNetWork SUCCESS");
+                    return true;
+                }
+
+                // FAIL → kill app → wait → retry
+                logger.Warn($"RemoveNetWork failed at attempt {attempt}, retrying...");
+                KillApp(packageName);
+                DeleteXmlFile();
+                Thread.Sleep(2000);
             }
-            else
-            {
-                logger.Info("not found 'CANCEL' button, try to click Basement");
-                DeleteXmlFile();
-            }
 
-            DumpUiAutomator();
-            //Check connection /
-            logger.Info("Find and click button 'Basement'...");
-            if (!ClickElementByText("Basement"))
-            {
-                logger.Info("Not found button 'Basement'.");
-                DeleteXmlFile();
-                return false;
-            }
-            //Menu drop 
-            System.Threading.Thread.Sleep(500);
-            DumpUiAutomator();
-
-            if (!ClickElementById("eero_device_detail_toolbar_action_button"))
-            {
-                logger.Info("Not found button 'eero_device_detail_toolbar_action_button'.");
-                DeleteXmlFile();
-                return false;
-            } 
-            //Remove Bedroom
-            System.Threading.Thread.Sleep(500);
-            DumpUiAutomator();
-            if (!ClickElementByText("Remove Basement"))
-            {
-                logger.Info("Not found button 'Remove Basement'.");
-                DeleteXmlFile();
-                return false;
-            }
-            //Remove Bedroom eero
-            System.Threading.Thread.Sleep(500);
-            DumpUiAutomator();
-            if (!ClickElementByText("Delete network"))
-            {
-                logger.Info("Not found button 'Delete network'.");
-                DeleteXmlFile();
-                return false;
-            }
-
-            //OK
-            System.Threading.Thread.Sleep(500);
-            DumpUiAutomator();
-            if (!ClickElementByText("DELETE NETWORK"))
-            {
-                logger.Info("Not found 'DELETE NETWORK'.");
-                DeleteXmlFile();
-                return false;
-            }
-
-            System.Threading.Thread.Sleep(2000);
-            KillApp(packageName);
-
-            return true ;
+            logger.Error("RemoveNetWork FAILED after all retries");
+            return false;
         }
+
+
 
         private static bool InputTextById(string resourceId, string inputText)
         {

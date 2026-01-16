@@ -5083,6 +5083,11 @@ namespace AutoTestSystem
         private bool UploadJsonToClient()
         {
 
+            if (stationObj.status == "failed" && Global.STATIONNAME == "CCT")
+            {
+                return false;
+            }
+
             DateTime startUpload = DateTime.Now;
             bool result = false;
             string JsonPath = $@"{Global.LogPath}\Json\{SN}_{DateTime.Now:HHmmss}.json";
@@ -5638,6 +5643,10 @@ namespace AutoTestSystem
                 if ((mesPhasesUpload.status == "FAIL" || mesPhasesUpload.status == "failed"))
                 {
                     if((mesPhasesUpload.error_details.ToLower().Contains("json_upload") || mesPhasesUpload.error_code == "JSON_UPLOAD") && Global.STATIONNAME == "CCT")
+                    {
+                        return false;
+                    }
+                    if(Global.STATIONNAME == "CCT")
                     {
                         return false;
                     }
